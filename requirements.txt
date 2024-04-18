@@ -73,7 +73,7 @@ pytz==2024.1
 rapidfuzz==3.7.0
 readchar==4.0.6
 requests==2.31.0
-requests-oauthlib==1.4.0
+requests-oauthlib==2.0.0
 requests-toolbelt==1.0.0
 rsa==4.9
 SecretStorage==3.3.3
