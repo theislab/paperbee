@@ -4,7 +4,9 @@
       "minor_version": 1
   },
   "display_information": {
-      "name": "Bolt Template App"
+      "name": "SlackPapers",
+      "description": "A Slack app that do all things papers",
+        "background_color": "#ec5e71"
   },
   "features": {
       "app_home": {
@@ -13,8 +15,8 @@
           "messages_tab_read_only_enabled": true
       },
       "bot_user": {
-          "display_name": "Bolt Template App",
-          "always_online": false
+          "display_name": "SlackPapers",
+          "always_online": true
       },
       "shortcuts": [
           {

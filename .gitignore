@@ -1,6 +1,7 @@
 # general things to ignore
 build/
 dist/
+files/
 docs/_sources/
 docs/.doctrees
 .eggs/

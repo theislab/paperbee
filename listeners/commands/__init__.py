@@ -1,6 +1,6 @@
 from slack_bolt import App
-from .sample_command import sample_command_callback
+from .search_articles_command import search_articles_command_callback
 
 
 def register(app: App):
-    app.command("/sample-command")(sample_command_callback)
+    app.command("/search-articles")(search_articles_command_callback)
