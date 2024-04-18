@@ -27,7 +27,7 @@ google-auth==2.28.2
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.0
 googleapis-common-protos==1.63.0
-gspread==6.0.2
+gspread==6.1.0
 gspread-dataframe==3.3.1
 habanero==1.2.6
 httplib2==0.22.0
