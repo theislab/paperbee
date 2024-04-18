@@ -18,7 +18,7 @@ edlib==1.3.9
 exceptiongroup==1.2.0
 fastjsonschema==2.19.1
 feedparser==6.0.10
-filelock==3.13.3
+filelock==3.13.4
 findpapers==0.6.7
 flake8==7.0.0
 google-api-core==2.17.1
