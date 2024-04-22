@@ -124,11 +124,16 @@ class PapersFinder:
             credentials_json_path=self.google_credentials_json,
         )
         gsheet_cache = gsheet_updater.read_sheet_data(sheet_name=self.sheet_name)
-        published_dois = [article["DOI"] for article in gsheet_cache]
 
-        processed_articles_filtered = processed_articles[
-            ~processed_articles["DOI"].isin(published_dois)
-        ]
+        if gsheet_cache:
+            published_dois = [article["DOI"] for article in gsheet_cache]
+
+            processed_articles_filtered = processed_articles[
+                ~processed_articles["DOI"].isin(published_dois)
+            ]
+        else:  # Sheet is empty (the moment of deployment)
+            processed_articles_filtered = processed_articles
+
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
         if row_data:
