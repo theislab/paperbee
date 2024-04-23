@@ -115,7 +115,6 @@ class PapersFinder:
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 
-
         if self.interactive_filtering:
             cli = InteractiveCLIFilter(processed_articles)
             processed_articles = cli.filter_articles()
@@ -151,7 +150,7 @@ class PapersFinder:
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
         if row_data:
-          gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
+            gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
         return row_data
 
     def post_paper_to_slack(self, papers: List[List[str]]) -> None:
