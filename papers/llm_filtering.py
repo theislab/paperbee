@@ -3,22 +3,16 @@ from openai import OpenAI
 from papers import config
 
 
-def is_relevant(title, keywords=None, model="gpt-3.5-turbo", api_key=None):
-    
-    client = OpenAI(api_key=api_key)
-
+def is_relevant(client, filtering_prompt, title, keywords=None, model="gpt-3.5-turbo"):
     if keywords:
         message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords)}"
     else:
         message = f"Title of the publication: '{title}'"
 
-    with open(config.LOCAL_FILTERING_PROMPT_PATH, "r") as f:
-        prompt = f.read()
-
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": prompt},
+            {"role": "system", "content": filtering_prompt},
             {"role": "user", "content": message}
         ]
     )
@@ -27,7 +21,7 @@ def is_relevant(title, keywords=None, model="gpt-3.5-turbo", api_key=None):
 
 
 class LLMFilter:
-    def __init__(self, df):
+    def __init__(self, df, model="gpt-3.5-turbo"):
         """
         Initialize the ArticleFilter class with a DataFrame.
 
@@ -35,6 +29,10 @@ class LLMFilter:
             df (pd.DataFrame): DataFrame containing articles with their details.
         """
         self.df = df
+        self.client = OpenAI(api_key=config.OPENAI_API_KEY)
+        self.model = model
+        with open(config.LOCAL_FILTERING_PROMPT_PATH, "r") as f:
+            self.filtering_prompt = f.read()
 
     def filter_articles(self):
         """
@@ -46,7 +44,8 @@ class LLMFilter:
         retained_indices = []
 
         for index, article in self.df.iterrows():
-            if is_relevant(title=article['Title'], keywords=article['Keywords'], api_key=config.OPENAI_API_KEY):
+            if is_relevant(client=self.client, filtering_prompt=self.filtering_prompt,
+                           title=article['Title'], keywords=article['Keywords']):
                 retained_indices.append(index)
 
         # Filter the DataFrame to only include retained articles
