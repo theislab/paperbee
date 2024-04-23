@@ -5,6 +5,7 @@ from typing import List, Dict, Any, Tuple
 from .google_sheet import GoogleSheetsUpdater
 from .utils import PubMedClient, ArticlesProcessor, parse_date
 from .slack_papers_formatter import SlackPaperPublisher
+from .llm_filtering import LLMFilter
 from .cli import InteractiveCLIFilter
 from . import config
 import pandas as pd
@@ -35,6 +36,7 @@ class PapersFinder:
         spreadsheet_id: str,
         sheet_name: str,
         interactive: bool = False,
+        llm_filtering: bool = False,
         query: str = None,
         since: str = None,
     ) -> None:
@@ -56,11 +58,13 @@ class PapersFinder:
         self.channeld_id: str = config.SLACK_CHANNEL_ID
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.interactive_filtering: bool = interactive
+        self.llm_filtering: bool = llm_filtering
         self.slack_publisher = SlackPaperPublisher(
             WebClient(config.SLACK_BOT_TOKEN),
             Logger("SlackPaperPublisher"),
             channel_id=self.channeld_id,
         )
+        self.logger = Logger("PapersFinder")
 
     def find_and_process_papers(self) -> pd.DataFrame:
         """
@@ -103,9 +107,19 @@ class PapersFinder:
         articles = [article for article in articles if article.get("url") is not None]
         processor = ArticlesProcessor(articles, self.today_str)
         processed_articles = processor.articles
+
+        self.logger.info(f"Found {len(processed_articles)} articles.")
+
+        if self.llm_filtering:
+            llm_filter = LLMFilter(processed_articles)
+            processed_articles = llm_filter.filter_articles()
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
+
+
         if self.interactive_filtering:
             cli = InteractiveCLIFilter(processed_articles)
             processed_articles = cli.filter_articles()
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles manually.")
 
         return processed_articles
 
