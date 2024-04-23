@@ -6,6 +6,7 @@ from .google_sheet import GoogleSheetsUpdater
 from .utils import PubMedClient, ArticlesProcessor, parse_date
 from .slack_papers_formatter import SlackPaperPublisher
 from .cli import InteractiveCLIFilter
+from . import config
 import pandas as pd
 from logging import Logger
 from slack_sdk import WebClient
@@ -35,7 +36,6 @@ class PapersFinder:
         sheet_name: str,
         interactive: bool = False,
         query: str = None,
-        channel_id: str = "C04V4NQTBB8",  # papers channel id
         since: str = None,
     ) -> None:
         self.root_dir: str = root_dir
@@ -50,14 +50,14 @@ class PapersFinder:
         self.limit: int = 300
         self.limit_per_database: int = 100
         self.databases = ["biorxiv", "arxiv", "pubmed"]
-        self.google_credentials_json = os.environ.get("GOOGLE_CRED_PATH")
+        self.google_credentials_json = config.GOOGLE_CREDENTIALS_JSON
         self.query_file: str = os.path.join(root_dir, "query.txt")
         self.query: str = query
-        self.channeld_id: str = channel_id
+        self.channeld_id: str = config.SLACK_CHANNEL_ID
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.interactive_filtering: bool = interactive
         self.slack_publisher = SlackPaperPublisher(
-            WebClient(os.environ.get("SLACK_BOT_TOKEN")),
+            WebClient(config.SLACK_BOT_TOKEN),
             Logger("SlackPaperPublisher"),
             channel_id=self.channeld_id,
         )
@@ -124,11 +124,16 @@ class PapersFinder:
             credentials_json_path=self.google_credentials_json,
         )
         gsheet_cache = gsheet_updater.read_sheet_data(sheet_name=self.sheet_name)
-        published_dois = [article["DOI"] for article in gsheet_cache]
 
-        processed_articles_filtered = processed_articles[
-            ~processed_articles["DOI"].isin(published_dois)
-        ]
+        if gsheet_cache:
+            published_dois = [article["DOI"] for article in gsheet_cache]
+
+            processed_articles_filtered = processed_articles[
+                ~processed_articles["DOI"].isin(published_dois)
+            ]
+        else:  # Sheet is empty (the moment of deployment)
+            processed_articles_filtered = processed_articles
+
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
         if row_data:

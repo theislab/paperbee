@@ -101,9 +101,9 @@ class GoogleSheetsUpdater:
         if sheet is None:
             raise Exception("Failed to open the specified sheet for inserting rows.")
 
-        assert (
-            row <= nr_rows
-        ), f"Selected row index {row} is too high for the sheet having {nr_rows} rows."
+        # assert (
+        #     row <= nr_rows
+        # ), f"Selected row index {row} is too high for the sheet having {nr_rows} rows."
 
         inherit_from_before = 2 <= row <= nr_rows
         if len(rows_data) == 1:

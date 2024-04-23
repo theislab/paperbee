@@ -1,9 +1,11 @@
 from papers.papers_finder import PapersFinder
 
+from papers import config
+
 
 finder = PapersFinder(
-    root_dir="/home/daniele/Code/slack-papers-app/files/",
-    spreadsheet_id="1WV8xjZnUbWpM26nJvs7_fFkh3f2TZuBRdOnI2WUFgEs",
+    root_dir=config.LOCAL_ROOT_DIR,
+    spreadsheet_id=config.GOOGLE_SPREADSHEET_ID,
     sheet_name="Papers",
     interactive=True,
 )
