@@ -95,7 +95,7 @@ class SlackPaperPublisher:
             message_blocks.append(
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "Posted with `slack-papers-app` <https://github.com/theislab/slack_papers_bot|GitHub>"}
+                    "text": {"type": "mrkdwn", "text": "Posted with `slack-papers-app` <https://github.com/lueckenlab/slack_papers_bot|GitHub>"}
                 }
             )
 

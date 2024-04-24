@@ -9,3 +9,6 @@ GOOGLE_CREDENTIALS_JSON =  os.environ.get("GOOGLE_CRED_PATH")
 GOOGLE_SPREADSHEET_ID = "1vhUam64Rir-dUsoRi-8-QdNSzT22hGGuJmScfgz_3dk"
 
 LOCAL_ROOT_DIR = "/Users/vladimir.shitov/Documents/science/sc_papers/"
+LOCAL_FILTERING_PROMPT_PATH = "/Users/vladimir.shitov/Documents/programming/slack_papers_bot/files/filtering_prompt.txt"
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
