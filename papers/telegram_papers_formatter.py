@@ -46,8 +46,9 @@ class TelegramPaperPublisher:
         divider = escape_reserved_symbols("────────────")
 
         try:
-            header = "Good morning ☕ Here are today's papers\\! Enjoy your reading\\! 👋\n"
+            header = "Good morning ☕ Here are today's papers\\!\n"
             # footer = f"*View all papers:* [Google Sheet](https://docs\\.google\\.com/spreadsheets/d/{spreadsheet_id}) :books:"
+            footer = "\nEnjoy your reading\\! 👋\n"
             message_blocks = [
                 header,
                 "*Preprints:*👇"
@@ -59,7 +60,7 @@ class TelegramPaperPublisher:
                 message_blocks.append("No preprints found today\\.")
 
             message_blocks.append(divider)
-            message_blocks.append("*Papers:*👇")
+            message_blocks.append("\n*Papers:*👇")
 
             if len(papers) > 0:
                 for paper in papers:
@@ -68,9 +69,9 @@ class TelegramPaperPublisher:
                 message_blocks.append("No papers found today\\.")
 
             message_blocks.append(divider)
-            # message_blocks.append(footer)
-            message_blocks.append(f"Published on {escape_reserved_symbols(today)}")
-            message_blocks.append("Posted with `slack\\-papers\\-app` [GitHub](https://github\\.com/lueckenlab/slack_papers_bot)")
+            message_blocks.append(footer)
+            # message_blocks.append(f"Published on {escape_reserved_symbols(today)}")
+            # message_blocks.append("Posted with `slack\\-papers\\-app` [GitHub](https://github\\.com/lueckenlab/slack_papers_bot)")
 
             print("MESSAGE:", "\n".join(message_blocks))
 
