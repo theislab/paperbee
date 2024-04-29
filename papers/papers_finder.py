@@ -7,6 +7,7 @@ from logging import Logger
 import findpapers
 import pandas as pd
 from slack_sdk import WebClient
+from tqdm import tqdm
 
 from .google_sheet import GoogleSheetsUpdater
 from .utils import PubMedClient, ArticlesProcessor, parse_date
@@ -97,7 +98,7 @@ class PapersFinder:
             articles: Dict[str, Any] = json.load(papers_file)["papers"]
 
         doi_extractor = PubMedClient()
-        for article in articles:
+        for article in tqdm(articles):
             if "PubMed" in article["databases"]:
                 doi = doi_extractor.get_doi_from_title(article["title"])
                 article["url"] = f"https://doi.org/{doi}" if doi else None
