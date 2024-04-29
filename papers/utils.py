@@ -125,7 +125,10 @@ class PubMedClient:
         if not pubmed_id:
             return None
 
-        fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
+        if seconds_to_wait:
+            sleep(seconds_to_wait)
+
+        fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml{api_key}"
         fetch_response = requests.get(fetch_url)
         root = ET.fromstring(fetch_response.content)
 
