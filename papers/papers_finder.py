@@ -183,7 +183,7 @@ class PapersFinder:
         )
         return response
     
-    def post_paper_to_telegram(self, papers: List[List[str]]) -> None:
+    async def post_paper_to_telegram(self, papers: List[List[str]]) -> None:
         """
         Posts the papers to Telegram.
 
@@ -197,7 +197,7 @@ class PapersFinder:
         )
 
         papers, preprints = self.telegram_publisher.format_papers(papers)
-        response = self.telegram_publisher.publish_papers(
+        response = await self.telegram_publisher.publish_papers(
             papers, preprints, self.today_str, self.spreadsheet_id
         )
         return response
@@ -213,7 +213,7 @@ class PapersFinder:
         else:
             print(f"File not found, no deletion needed for: {yesterday_file}")
 
-    def run_daily(self, post_to_slack=True, post_to_telegram=False) -> Tuple[pd.DataFrame, Any]:
+    async def run_daily(self, post_to_slack=True, post_to_telegram=False) -> Tuple[pd.DataFrame, Any]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
         """
@@ -223,7 +223,7 @@ class PapersFinder:
             response = self.post_paper_to_slack(papers)
 
         if post_to_telegram:
-            response = self.post_paper_to_telegram(papers)
+            response = await self.post_paper_to_telegram(papers)
 
         self.cleanup_files()
 

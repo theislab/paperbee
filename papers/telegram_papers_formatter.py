@@ -36,7 +36,7 @@ class TelegramPaperPublisher:
 
         return papers, preprints
 
-    def publish_papers(
+    async def publish_papers(
         self,
         papers: List[List[str]],
         preprints: List[List[str]],
@@ -75,7 +75,7 @@ class TelegramPaperPublisher:
 
             print("MESSAGE:", "\n".join(message_blocks))
 
-            response = self.bot.send_message(
+            response = await self.bot.send_message(
                 chat_id=self.channel_id,
                 text="\n".join(message_blocks),
                 parse_mode="MarkdownV2"
