@@ -95,7 +95,7 @@ def search_articles_command_callback(
         # Log any exceptions that occur and inform the user
         logger.error("Error processing the search command.", exc_info=True)
         respond(
-            f"An error occurred while processing your request.\n{e}\nPlease try again."
+            f"An error occurred while processing your request.\n{e}\nMost likely the search gave no results.\nPlease try again, expanding your query, or the starting date."
         )
 
 

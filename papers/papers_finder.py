@@ -43,18 +43,22 @@ class PapersFinder:
         self.sheet_name: str = sheet_name
         self.today: date = date.today()
         self.today_str: str = self.today.strftime("%Y-%m-%d")
-        self.yesterday: date = self.today - timedelta(days=2)
+        self.yesterday: date = self.today - timedelta(days=3)
         self.yesterday_str: str = self.yesterday.strftime("%Y-%m-%d")
         self.until: date = self.today
         self.since: date = self.yesterday if since is None else parse_date(since)
-        self.limit: int = 300
-        self.limit_per_database: int = 100
+        self.limit: int = 1200
+        self.limit_per_database: int = 400
         self.databases = ["biorxiv", "arxiv", "pubmed"]
         self.google_credentials_json = os.environ.get("GOOGLE_CRED_PATH")
-        self.query_file: str = os.path.join(root_dir, "query.txt")
+        self.query_file_biorxiv: str = os.path.join(root_dir, "query_biorxiv.txt")
+        self.query_file_pub_arx: str = os.path.join(root_dir, "query_pubmed_arxiv.txt")
         self.query: str = query
         self.channeld_id: str = channel_id
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
+        self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
+        self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
+
         self.interactive_filtering: bool = interactive
         self.slack_publisher = SlackPaperPublisher(
             WebClient(os.environ.get("SLACK_BOT_TOKEN")),
@@ -70,25 +74,51 @@ class PapersFinder:
             pd.DataFrame: A DataFrame containing processed articles.
         """
 
-        with open(self.query_file, "r") as f:
-            input_query = f.read().strip()
-
+        with open(self.query_file_pub_arx, "r") as f:
+            input_query_pub_arx = f.read().strip()
+        with open(self.query_file_biorxiv, "r") as f:
+            input_query_biorxiv = f.read().strip()
+    
         if self.query:
             input_query = self.query
-
-        findpapers.search(
-            self.search_file,
-            input_query,
-            self.since,
-            self.until,
-            self.limit,
-            self.limit_per_database,
-            self.databases,
-            verbose=False,
-        )
-
-        with open(self.search_file, "r") as papers_file:
-            articles: Dict[str, Any] = json.load(papers_file)["papers"]
+            findpapers.search(
+                self.search_file,
+                input_query,
+                self.since,
+                self.until,
+                self.limit,
+                self.limit_per_database,
+                self.databases,
+                verbose=False,
+            )
+            with open(self.search_file, "r") as papers_file:
+                articles: Dict[str, Any] = json.load(papers_file)["papers"]
+        else:
+            findpapers.search(
+                self.search_file_pub_arx,
+                input_query_pub_arx,
+                self.since,
+                self.until,
+                self.limit,
+                self.limit_per_database,
+                self.databases[1:],
+                verbose=False,
+            )
+            findpapers.search(
+                self.search_file_biorxiv,
+                input_query_biorxiv,
+                self.since,
+                self.until,
+                self.limit,
+                self.limit_per_database,
+                [self.databases[0]],
+                verbose=False,
+            )
+            with open(self.search_file_pub_arx, "r") as papers_file:
+                articles_pub_arx: Dict[str, Any] = json.load(papers_file)["papers"]
+            with open(self.search_file_biorxiv, "r") as papers_file:
+                articles_biorxiv: Dict[str, Any] = json.load(papers_file)["papers"]
+            articles = articles_pub_arx + articles_biorxiv
 
         doi_extractor = PubMedClient()
         for article in articles:
@@ -158,6 +188,18 @@ class PapersFinder:
             print(f"Deleted yesterday's file: {yesterday_file}")
         else:
             print(f"File not found, no deletion needed for: {yesterday_file}")
+        yesterday_file_biorxiv = os.path.join(self.root_dir, f"{self.yesterday_str}_biorxiv.json")
+        if os.path.exists(yesterday_file_biorxiv):
+            os.remove(yesterday_file_biorxiv)
+            print(f"Deleted yesterday's file: {yesterday_file_biorxiv}")
+        else:
+            print(f"File not found, no deletion needed for: {yesterday_file_biorxiv}")
+        yesterday_file_pub_arx = os.path.join(self.root_dir, f"{self.yesterday_str}_pub_arx.json")
+        if os.path.exists(yesterday_file_pub_arx):
+            os.remove(yesterday_file_pub_arx)
+            print(f"Deleted yesterday's file: {yesterday_file_pub_arx}")
+        else:
+            print(f"File not found, no deletion needed for: {yesterday_file_pub_arx}")
 
     def run_daily(self) -> Tuple[pd.DataFrame, Any]:
         """
