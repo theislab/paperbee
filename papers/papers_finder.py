@@ -2,15 +2,27 @@ from datetime import date, timedelta, datetime
 import os
 import json
 from typing import List, Dict, Any, Tuple
+from logging import Logger
+
+import findpapers
+import pandas as pd
+from slack_sdk import WebClient
+from tqdm import tqdm
+
 from .google_sheet import GoogleSheetsUpdater
 from .utils import PubMedClient, ArticlesProcessor, parse_date
 from .slack_papers_formatter import SlackPaperPublisher
 from .cli import InteractiveCLIFilter
+from . import config
+
+from .telegram_papers_formatter import TelegramPaperPublisher
+from .llm_filtering import LLMFilter
+
 import pandas as pd
 from logging import Logger
 from slack_sdk import WebClient
 import findpapers
-
+from . import config
 
 class PapersFinder:
     """
@@ -34,9 +46,13 @@ class PapersFinder:
         spreadsheet_id: str,
         sheet_name: str,
         interactive: bool = False,
+        llm_filtering: bool = False,
         query: str = None,
-        channel_id: str = "C04V4NQTBB8",  # papers channel id
         since: str = None,
+        slack_bot_token: str = config.SLACK_BOT_TOKEN,
+        slack_channel_id: str = config.SLACK_CHANNEL_ID,
+        telegram_bot_token: str = config.SLACK_BOT_TOKEN,
+        telegram_channel_id: str = config.SLACK_BOT_TOKEN,
     ) -> None:
         self.root_dir: str = root_dir
         self.spreadsheet_id: str = spreadsheet_id
@@ -50,21 +66,27 @@ class PapersFinder:
         self.limit: int = 1200
         self.limit_per_database: int = 400
         self.databases = ["biorxiv", "arxiv", "pubmed"]
-        self.google_credentials_json = os.environ.get("GOOGLE_CRED_PATH")
+        self.google_credentials_json = config.GOOGLE_CREDENTIALS_JSON
         self.query_file_biorxiv: str = os.path.join(root_dir, "query_biorxiv.txt")
         self.query_file_pub_arx: str = os.path.join(root_dir, "query_pubmed_arxiv.txt")
         self.query: str = query
-        self.channeld_id: str = channel_id
+
+        self.channeld_id: str = config.SLACK_CHANNEL_ID        
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
         self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
 
         self.interactive_filtering: bool = interactive
-        self.slack_publisher = SlackPaperPublisher(
-            WebClient(os.environ.get("SLACK_BOT_TOKEN")),
-            Logger("SlackPaperPublisher"),
-            channel_id=self.channeld_id,
-        )
+        self.llm_filtering: bool = llm_filtering
+
+        self.slack_bot_token: str = slack_bot_token
+        self.slack_channel_id: str = slack_channel_id
+        self.slack_publisher = None
+
+        self.telegram_publisher = None
+        self.telegram_bot_token: str = telegram_bot_token
+        self.telegram_channel_id: str = telegram_channel_id
+        self.logger = Logger("PapersFinder")
 
     def find_and_process_papers(self) -> pd.DataFrame:
         """
@@ -121,9 +143,9 @@ class PapersFinder:
             articles = articles_pub_arx + articles_biorxiv
 
         doi_extractor = PubMedClient()
-        for article in articles:
+        for article in tqdm(articles):            
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"])
+                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
@@ -133,9 +155,17 @@ class PapersFinder:
         articles = [article for article in articles if article.get("url") is not None]
         processor = ArticlesProcessor(articles, self.today_str)
         processed_articles = processor.articles
+        self.logger.info(f"Found {len(processed_articles)} articles.")
+        
+        if self.llm_filtering:
+            llm_filter = LLMFilter(processed_articles)
+            processed_articles = llm_filter.filter_articles()
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
+
         if self.interactive_filtering:
             cli = InteractiveCLIFilter(processed_articles)
             processed_articles = cli.filter_articles()
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles manually.")
 
         return processed_articles
 
@@ -176,8 +206,31 @@ class PapersFinder:
         Args:
             papers (List[str]): List of papers to post to Slack.
         """
+        self.slack_publisher = SlackPaperPublisher(
+            WebClient(self.slack_bot_token),
+            Logger("SlackPaperPublisher"),
+            channel_id=self.channeld_id,
+        )
         papers, preprints = self.slack_publisher.format_papers_for_slack(papers)
         response = self.slack_publisher.publish_papers_to_slack(
+            papers, preprints, self.today_str, self.spreadsheet_id
+        )
+        return response
+
+    async def post_paper_to_telegram(self, papers: List[List[str]]) -> None:
+        """
+        Posts the papers to Telegram.
+        Args:
+            papers (List[str]): List of papers to post to Telegram.
+        """
+        self.telegram_publisher = TelegramPaperPublisher(
+            Logger("TelegramPaperPublisher"),
+            channel_id=self.telegram_channel_id,
+            bot_token=self.telegram_bot_token,
+        )
+
+        papers, preprints = self.telegram_publisher.format_papers(papers)
+        response = await self.telegram_publisher.publish_papers(
             papers, preprints, self.today_str, self.spreadsheet_id
         )
         return response
@@ -205,14 +258,21 @@ class PapersFinder:
         else:
             print(f"File not found, no deletion needed for: {yesterday_file_pub_arx}")
 
-    def run_daily(self) -> Tuple[pd.DataFrame, Any]:
+    async def run_daily(self, post_to_slack=True, post_to_telegram=False) -> Tuple[pd.DataFrame, Any]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
         """
         processed_articles = self.find_and_process_papers()
         papers = self.update_google_sheet(processed_articles)
         response = self.post_paper_to_slack(papers)
+        if post_to_slack:
+            response = self.post_paper_to_slack(papers)
+
+        if post_to_telegram:
+            response = await self.post_paper_to_telegram(papers)
+
         self.cleanup_files()
+
         return papers, response
 
     def send_csv(self, user_id: str, user_query: str) -> Tuple[pd.DataFrame, Any]:
