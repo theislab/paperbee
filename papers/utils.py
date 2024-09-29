@@ -2,8 +2,8 @@ from typing import List, Optional, Union
 import pandas as pd
 import requests
 import xml.etree.ElementTree as ET
-from datetime import date, timedelta, datetime
-
+from datetime import date, datetime
+from time import sleep
 
 class ArticlesProcessor:
     """
@@ -91,7 +91,7 @@ class PubMedClient:
     """
 
     @staticmethod
-    def get_doi_from_title(title: str) -> Union[str, None]:
+    def get_doi_from_title(title: str, seconds_to_wait=1/10, ncbi_api_key=None) -> Union[str, None]:
         """
         Retrieve the DOI (Digital Object Identifier) of a publication given its title by querying PubMed's database.
 
@@ -101,10 +101,20 @@ class PubMedClient:
         Returns:
         - str or None: The DOI of the publication if found, otherwise None.
         """
+        if ncbi_api_key:
+            api_key = f"&api_key={ncbi_api_key}"
+        else:
+            api_key = ""
+
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-        search_url = f"{base_url}esearch.fcgi?db=pubmed&term={title}&retmode=json"
+        search_url = f"{base_url}esearch.fcgi?db=pubmed&term={title}&retmode=json{api_key}"
         search_response = requests.get(search_url)
         search_data = search_response.json()
+
+        # NCBI does not allow more than 3 requests per second (10 with an API key)
+        if seconds_to_wait:
+            sleep(seconds_to_wait)
+
 
         pubmed_id = (
             search_data["esearchresult"]["idlist"][0]
@@ -114,6 +124,8 @@ class PubMedClient:
         if not pubmed_id:
             return None
 
+        if seconds_to_wait:
+            sleep(seconds_to_wait)
         fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
         fetch_response = requests.get(fetch_url)
         root = ET.fromstring(fetch_response.content)
