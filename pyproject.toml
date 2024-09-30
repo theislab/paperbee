@@ -1,0 +1,113 @@
+[tool.poetry]
+name = "PapersBee"
+version = "0.0.1"
+description = ""
+authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov"] #TODO: add Vladimir's email
+repository = "https://github.com/theislab/papersbee"
+documentation = "https://theislab.github.io/papersbee"
+readme = "README.md"
+packages = [{ include = "PapersBee", from = "src" }]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+gspread = "6.0.2"
+slack-bolt = "1.18.1"
+slack_sdk = "3.27.1"
+python-telegram-bot = "21.1.1"
+findpapers = "0.6.7"
+oauth2client = "4.1.3"
+pandas = "2.2.3"
+openai = "1.50.2"
+defusedxml = "^0.7.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+mypy = "^1.5.1"
+pre-commit = "^3.4.0"
+types-toml = "^0.10.8.20240310"
+types-pyyaml = "^6.0.12.20240808"
+types-requests = "^2.32.0.20240914"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.4.2"
+mkdocs-material = "^9.2.7"
+mkdocstrings = {extras = ["python"], version = "^0.23.0"}
+griffe = "^1.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "cython"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = ["src/PapersBee"]
+exclude = ['src/PapersBee/listeners', 'src/PapersBee/app.py']
+ignore_missing_imports = true
+disallow_untyped_defs = true
+disallow_untyped_calls = true
+disallow_any_unimported = false
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+allow_untyped_globals = false
+allow_redefinition = false
+
+[tool.poetry.scripts]
+papersbee = "papersbee.run:cli" #TODO: update once done
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py37"
+line-length = 120
+fix = true
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+    # Generator
+    "S311"
+
+]
+
+[tool.ruff.format]
+preview = true
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]
