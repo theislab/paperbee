@@ -64,6 +64,13 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 2. Set the variable `OPENAI_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key you got.
 3. Put some money on your account. For the query in this repo, it takes less than $0.01 per day to run. 
 
+### Setup query and filtering prompt.
+
+1. Create a query – list of keywords to search papers. You can use this [template](files/query.txt). For syntax instructions, refer to [findpapers documentation](https://github.com/jonatasgrosman/findpapers).
+2. Set the variable `LOCAL_QUERY_PATH` in the [papers/config.py](papers/config.py) file or in environment to the path to the query you created.
+3. Create a filtering prompt. It is a text file with the instructions in natural language for the LLM to filter out irrelevant papers. You can use this [template](files/filtering_prompt.txt).
+4. Set the variable `LOCAL_FILTERING_PROMPT_PATH` in the [papers/config.py](papers/config.py) file or in environment to the path to the filtering prompt you created.
+
 ## Project Structure
 
 ### `manifest.json`
