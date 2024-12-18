@@ -39,6 +39,14 @@ pip install -r requirements.txt
 6. Open your apps configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. Store this in [papers/config.py](papers/config.py) or in environment as `SLACK_BOT_TOKEN`.
 7. Click ***Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Store this token in [papers/config.py](papers/config.py) or in environment as `SLACK_APP_TOKEN`.
 
+### Setup Telegram (optional)
+
+1. Create a Telegram bot. Follow the instructions [here](https://core.telegram.org/bots/#how-do-i-create-a-bot).
+2. Set the variable `TELEGRAM_BOT_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key of the bot you created.
+3. Create a Telegram channel or a group and add the bot to the channel as an administrator with the write permissions.
+4. Set the variable `TELEGRAM_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel.
+- To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
+
 ## Project Structure
 
 ### `manifest.json`
