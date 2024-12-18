@@ -1,7 +1,6 @@
 # SlackPapers
 
 SlackPapers is a Python package designed to post new papers of the day on a Slack channel. 
-Created with [https://github.com/slack-samples/bolt-python-starter-template.git](bolt-python template)
 
 ## Installation
 
@@ -114,3 +113,5 @@ Navigate to **OAuth & Permissions** in your app configuration and click **Add a 
 ```
 https://3cb89939.ngrok.io/slack/oauth_redirect
 ```
+
+Created with [bolt-python template](https://github.com/slack-samples/bolt-python-starter-template.git)
