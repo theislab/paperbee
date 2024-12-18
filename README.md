@@ -45,6 +45,7 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 5. Click *Install to Workspace* and *Allow* on the screen that follows. You'll then be redirected to the App Configuration dashboard.
 6. Open your apps configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. Store this in [papers/config.py](papers/config.py) or in environment as `SLACK_BOT_TOKEN`.
 7. Click ***Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Store this token in [papers/config.py](papers/config.py) or in environment as `SLACK_APP_TOKEN`.
+8. Set the variable `SLACK_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel you want to post to. It can be found in the settings of the channel.
 
 ### Setup Telegram (optional)
 
