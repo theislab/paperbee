@@ -71,6 +71,24 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 3. Create a filtering prompt. It is a text file with the instructions in natural language for the LLM to filter out irrelevant papers. You can use this [template](files/filtering_prompt.txt).
 4. Set the variable `LOCAL_FILTERING_PROMPT_PATH` in the [papers/config.py](papers/config.py) file or in environment to the path to the filtering prompt you created.
 
+### Running tests (optional)
+
+If you enjoyed setting up, you can enjoy a bit more by creating additional test channels for slack and/or telegram. Or you can run the tests in the actual channels. In any case, set the following variables in the [papers/config.py](papers/config.py) file or in environment:
+- `TELEGRAM_TEST_CHANNEL_ID` – ID of the slack channel to post to.
+- `SLACK_TEST_CHANNEL_ID` – ID of the telegram channel to post to.
+
+Then simply run the tests with:
+
+```zsh
+pytest
+```
+
+Make sure that you run it in the correct environment. If everything works, you should see success messages in the terminal, and some messages with and without papers in the test channels.
+
+## Running the bot
+
+
+
 ## Project Structure
 
 ### `manifest.json`
