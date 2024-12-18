@@ -125,15 +125,6 @@ The code for the interactive part, manages interaction between the users in slac
 
 Every incoming request is routed to a "listener". Inside this directory, we group each listener based on the Slack Platform feature used, so `/listeners/shortcuts` handles incoming [Shortcuts](https://api.slack.com/interactivity/shortcuts) requests, `/listeners/views` handles [View submissions](https://api.slack.com/reference/interaction-payloads/views#view_submission) and so on.
 
-
-### Daily posting
-
-The code for the automated daily posting manages the scheduled daily posting.
-
-#### `daily_posting.py`
-
-Main entry point to start the daily posting routine. If used with schedulers such as cron for linux to automate the posting, set `interactive=False` when initialising the `PapersFinder` class.
-
 #### `/papers`
 
 Classes to fetch the papers, format them, and post them on slack along with updating the papers google sheet.
@@ -145,32 +136,5 @@ Classes to fetch the papers, format them, and post them on slack along with upda
 `/papers/slack_papers_formatter/` Format the papers and publish them on slack. Select the channel the papers will be published from here.
 
 `/papers/papers_finder/` is tha main wrapper class.
-
-
-
-
-## App Distribution / OAuth
-
-Only implement OAuth if you plan to distribute your application across multiple workspaces. A separate `app_oauth.py` file can be found with relevant OAuth settings.
-
-When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
-
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth. 
-
-```
-ngrok http 3000
-```
-
-This output should include a forwarding address for `http` and `https` (we'll use `https`). It should look something like the following:
-
-```
-Forwarding   https://3cb89939.ngrok.io -> http://localhost:3000
-```
-
-Navigate to **OAuth & Permissions** in your app configuration and click **Add a Redirect URL**. The redirect URL should be set to your `ngrok` forwarding address with the `slack/oauth_redirect` path appended. For example:
-
-```
-https://3cb89939.ngrok.io/slack/oauth_redirect
-```
 
 Created with [bolt-python template](https://github.com/slack-samples/bolt-python-starter-template.git)
