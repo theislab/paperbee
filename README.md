@@ -93,7 +93,19 @@ As the last bit of setup, go to the [daily_posting.py](daily_posting.py) file an
 
 ## Running the bot
 
+When everything is set up, you can simply run the bot with:
 
+```zsh
+python daily_posting.py
+```
+
+This will fetch the papers, filter them with the LLM if `llm_filtering` is set to `True` or manually if `interactive` is set to `True`, and post them to the channels you specified.
+
+To run the bot daily, you can use a cron job. For example, to run the bot every day at 10:00 AM, you can add the following to your crontab:
+
+```zsh
+0 10 * * * /usr/bin/python3 /path/to/your/daily_posting.py
+```
 
 ## Project Structure
 
