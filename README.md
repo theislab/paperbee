@@ -28,6 +28,13 @@ pip install -r requirements.txt
 > export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
 > ```
 
+### Get NCBI API key
+
+Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, but you need to get an API key
+
+1. Follow the instructions [here](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys) to get an API key.
+2. Set the variable `NCBI_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key you got.
+
 ### Setup Slack (optional)
 
 #### Create a Slack App
