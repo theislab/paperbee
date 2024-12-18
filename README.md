@@ -55,6 +55,15 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 4. Set the variable `TELEGRAM_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel.
 - To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
 
+### Setup OpenAI API key (optional, but highly recommended)
+
+GPT model is used to filter irrelevant papers. You can also do it manually, but LLM is much faster and allows to run bot fully automatically.
+
+0. Register an account on [OpenAI developer platform](https://platform.openai.com/signup)
+1. Follow the instructions [here](https://platform.openai.com/settings/organization/api-keys) to get an API key.
+2. Set the variable `OPENAI_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key you got.
+3. Put some money on your account. For the query in this repo, it takes less than $0.01 per day to run. 
+
 ## Project Structure
 
 ### `manifest.json`
