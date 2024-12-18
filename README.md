@@ -1,8 +1,34 @@
-# SlackPapers
+# Papersbee
 
-SlackPapers is a Python package designed to post new papers of the day on a Slack channel. 
+Papersbee is a Python application designed to daily look for new scientific papers and post them. Currently, the following channels are supported:
+- Slack
+- Google Sheets
+- Telegram
 
 ## Installation
+
+### Download the code and install the dependencies
+
+```zsh
+git clone <this repo link>
+# From the root directory of the repo
+pip install -r requirements.txt
+```
+
+### Setup Google Sheets
+
+1. Create a Google Service Account. Follow the oficial documentation [here](https://cloud.google.com/iam/docs/service-accounts-create). It is needed to put found papers in a Google Spreadsheet.
+2. Create a JSON key for the service account. Follow the oficial documentation [here](https://cloud.google.com/iam/docs/keys-create-delete) to create a key pair. Download the JSON file with the key and store it in a convenient location on your machine.
+3. Create a Google Spreadsheet. You can simply copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/), but if you prefer, you can create your own. It must have the following columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`.
+4. Set the variables `GOOGLE_CREDENTIALS_JSON` and `GOOGLE_SPREADSHEET_ID` in the [papers/config.py](papers/config.py) file to the path to the JSON key you created and the ID of the spreadsheet you created. ID of the spreadsheet can be found in the URL of the spreadsheet after `d/`. For example, in the template spreadsheet it is `13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw`.
+
+> 💡 **Alternative Setup**: Instead of using the config file, you can set these environment variables directly in your system:
+> ```bash
+> export GOOGLE_CREDENTIALS_JSON="/path/to/credentials.json"
+> export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
+> ```
+
+### Setup Slack (optional)
 
 #### Create a Slack App
 1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
