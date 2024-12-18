@@ -36,43 +36,8 @@ pip install -r requirements.txt
 3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click *Next*. The manifest can be modified any time.
 4. Review the configuration and click *Create*
 5. Click *Install to Workspace* and *Allow* on the screen that follows. You'll then be redirected to the App Configuration dashboard.
-
-#### Environment Variables
-Before you can run the app, you'll need to store some environment variables.
-
-1. Open your apps configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. You will store this in your environment as `SLACK_BOT_TOKEN`.
-2. Click ***Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Copy this token. You will store this in your environment as `SLACK_APP_TOKEN`.
-
-```zsh
-export SLACK_BOT_TOKEN=<your-bot-token>
-export SLACK_APP_TOKEN=<your-app-token>
-```
-
-### Setup Your Local Project
-```zsh
-
-# Setup conda environment
-
-conda create --name myenv python=3.10
-
-conda activate myenv
-
-# Install dependencies
-
-pip install -r requirements.txt
-
-# Start your local server
-python3 app.py
-```
-
-#### Linting
-```zsh
-# Run flake8 from root directory for linting
-flake8 *.py && flake8 listeners/
-
-# Run black from root directory for code formatting
-black .
-```
+6. Open your apps configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. Store this in [papers/config.py](papers/config.py) or in environment as `SLACK_BOT_TOKEN`.
+7. Click ***Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Store this token in [papers/config.py](papers/config.py) or in environment as `SLACK_APP_TOKEN`.
 
 ## Project Structure
 
