@@ -85,6 +85,12 @@ pytest
 
 Make sure that you run it in the correct environment. If everything works, you should see success messages in the terminal, and some messages with and without papers in the test channels.
 
+## Setting up daily posting
+
+As the last bit of setup, go to the [daily_posting.py](daily_posting.py) file and set the following variables in the object of `PapersFinder` class:
+- `llm_filtering` – set to `True` if you want to use the LLM to filter out irrelevant papers.
+- `interactive` – set to `True` if you want to run the bot in interactive mode (i.e. filtering papers manually with the command-line interface).
+
 ## Running the bot
 
 
