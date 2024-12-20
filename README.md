@@ -12,6 +12,8 @@ Papersbee is a Python application designed to daily look for new scientific pape
 
 ![papersbee_pipeline](images/papersbee_pipeline.svg)
 
+Papersbee queries scientific papers using keywords specified by user from PubMed and preprint services relying on [findpapers](https://github.com/jonatasgrosman/findpapers/) library. Papers are then filtered either manually via a command-line interface or automatically via an LLM. The filtered papers are then posted to a google sheet and, if desired, to slack or telegram channels.
+
 ## Installation
 
 ### Download the code and install the dependencies
