@@ -38,7 +38,7 @@ pip install -r requirements.txt
 > export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
 > ```
 
-5. Add the service account email to the spreadsheet. Go to the spreadsheet, click on the three dots in the top right corner, click on *Share*, paste the service account email into the *Add people* field, and give it the *Editor* role.
+6. Add the service account email to the spreadsheet. Go to the spreadsheet, click on the three dots in the top right corner, click on *Share*, paste the service account email into the *Add people* field, and give it the *Editor* role.
 
 ### Get NCBI API key
 
