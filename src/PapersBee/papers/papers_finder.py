@@ -111,7 +111,7 @@ class PapersFinder:
             )
             with open(self.search_file) as papers_file:
                 articles_dict: Dict[str, Any] = json.load(papers_file)["papers"]
-            articles = list(articles_dict.values())
+            articles = list(articles_dict)
         else:
             findpapers.search(
                 self.search_file_pub_arx,
@@ -137,7 +137,7 @@ class PapersFinder:
                 articles_pub_arx_dict: Dict[str, Any] = json.load(papers_file)["papers"]
             with open(self.search_file_biorxiv) as papers_file:
                 articles_biorxiv_dict: Dict[str, Any] = json.load(papers_file)["papers"]
-            articles = list(articles_pub_arx_dict.values()) + list(articles_biorxiv_dict.values())
+            articles = list(articles_pub_arx_dict) + list(articles_biorxiv_dict)
 
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
