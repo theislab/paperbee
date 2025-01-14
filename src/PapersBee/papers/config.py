@@ -21,5 +21,5 @@ LOCAL_FILTERING_PROMPT_PATH: str = (
     "/home/daniele/Code/github_synced/papersbee/files/filtering_prompt.txt"
 )
 OPENAI_API_KEY: str = os.environ["OPENAI_API_KEY"]
-
+OPEN_SOURCE_LLM: str = os.environ["OPEN_SOURCE_LLM"]
 NCBI_API_KEY: str = os.environ["NCBI_API_KEY"]
