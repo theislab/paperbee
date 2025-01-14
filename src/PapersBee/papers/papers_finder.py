@@ -27,12 +27,10 @@ class PapersFinder:
         root_dir (str): Directory path where files such as queries and search results are stored.
         spreadsheet_id (str): ID of the Google Spreadsheet to be updated.
         sheet_name (str): Name of the sheet within the Google Spreadsheet to be updated.
-        interactive (bool): Activate an interactive cli to filter out papers before posting.
-        query (str): a query string to override the query.txt file used in daily automated posting
-        channel_id (str): the slack channel id where to post
-        since (str): the date from which to start the search formatted as YYYY-mm-dd
         interactive (bool): Activate an interactive CLI to filter out papers before posting.
         llm_filtering (bool): Activate LLM-based filtering for the papers.
+        llm_service (Optional[str]): The LLM service to use for filtering.
+        model (Optional[str]): The model to use for LLM filtering.
         query (Optional[str]): A query string to override the query.txt file used in daily automated posting.
         since (Optional[str]): The date from which to start the search formatted as YYYY-mm-dd.
         slack_bot_token (str): The Slack bot token for posting to Slack.
@@ -42,11 +40,6 @@ class PapersFinder:
         zulip_prc (str): The Zulip personal realm configuration.
         zulip_stream (str): The Zulip stream name.
         zulip_topic (str): The Zulip topic name.
-            papers (List[List[str]]): List of papers to post to Slack.
-            Any: The response from the Slack API.
-            papers (List[List[str]]): List of papers to post to Telegram.
-            Any: The response from the Telegram API.
-        Paired with search_articles_command listener, send the articles' list as CSV file in the channel where it was requested.
     """
 
     def __init__(
@@ -56,6 +49,8 @@ class PapersFinder:
         sheet_name: str,
         interactive: bool = False,
         llm_filtering: bool = False,
+        llm_service: Optional[str] = None,
+        model: Optional[str] = None,
         query: Optional[str] = None,
         since: Optional[str] = None,
         slack_bot_token: str = config.SLACK_BOT_TOKEN,
@@ -89,6 +84,8 @@ class PapersFinder:
 
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
+        self.llm_service: Optional[str] = llm_service
+        self.model: Optional[str] = model
 
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
@@ -164,7 +161,7 @@ class PapersFinder:
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
+                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key="")#config.NCBI_API_KEY)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
@@ -177,7 +174,7 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
-            llm_filter = LLMFilter(processed_articles)
+            llm_filter = LLMFilter(processed_articles, llm_service=self.llm_service, model=self.model)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 

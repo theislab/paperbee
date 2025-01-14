@@ -18,10 +18,8 @@ GOOGLE_SPREADSHEET_ID: str = "1vhUam64Rir-dUsoRi-8-QdNSzT22hGGuJmScfgz_3dk"
 
 LOCAL_ROOT_DIR: str = "/home/daniele/Code/github_synced/papersbee/files/"
 LOCAL_FILTERING_PROMPT_PATH: str = (
-    "/Users/vladimir.shitov/Documents/programming/slack_papers_bot/files/filtering_prompt.txt"
+    "/home/daniele/Code/github_synced/papersbee/files/filtering_prompt.txt"
 )
 OPENAI_API_KEY: str = os.environ["OPENAI_API_KEY"]
-
-
 
 NCBI_API_KEY: str = os.environ["NCBI_API_KEY"]
