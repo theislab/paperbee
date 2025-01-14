@@ -16,6 +16,7 @@ from .llm_filtering import LLMFilter
 from .slack_papers_formatter import SlackPaperPublisher
 from .telegram_papers_formatter import TelegramPaperPublisher
 from .utils import ArticlesProcessor, PubMedClient, parse_date
+from .zulip_papers_formatter import ZulipPaperPublisher
 
 
 class PapersFinder:
@@ -30,7 +31,22 @@ class PapersFinder:
         query (str): a query string to override the query.txt file used in daily automated posting
         channel_id (str): the slack channel id where to post
         since (str): the date from which to start the search formatted as YYYY-mm-dd
-
+        interactive (bool): Activate an interactive CLI to filter out papers before posting.
+        llm_filtering (bool): Activate LLM-based filtering for the papers.
+        query (Optional[str]): A query string to override the query.txt file used in daily automated posting.
+        since (Optional[str]): The date from which to start the search formatted as YYYY-mm-dd.
+        slack_bot_token (str): The Slack bot token for posting to Slack.
+        slack_channel_id (str): The Slack channel ID where to post.
+        telegram_bot_token (str): The Telegram bot token for posting to Telegram.
+        telegram_channel_id (str): The Telegram channel ID where to post.
+        zulip_prc (str): The Zulip personal realm configuration.
+        zulip_stream (str): The Zulip stream name.
+        zulip_topic (str): The Zulip topic name.
+            papers (List[List[str]]): List of papers to post to Slack.
+            Any: The response from the Slack API.
+            papers (List[List[str]]): List of papers to post to Telegram.
+            Any: The response from the Telegram API.
+        Paired with search_articles_command listener, send the articles' list as CSV file in the channel where it was requested.
     """
 
     def __init__(
@@ -46,6 +62,9 @@ class PapersFinder:
         slack_channel_id: str = config.SLACK_CHANNEL_ID,
         telegram_bot_token: str = config.TELEGRAM_BOT_API_KEY,
         telegram_channel_id: str = config.TELEGRAM_CHANNEL_ID,
+        zulip_prc: str = config.ZULIP_PRC,
+        zulip_stream: str = config.ZULIP_STREAM,
+        zulip_topic: str = config.ZULIP_TOPIC,
     ) -> None:
         self.root_dir: str = root_dir
         self.spreadsheet_id: str = spreadsheet_id
@@ -75,7 +94,9 @@ class PapersFinder:
         self.slack_channel_id: str = slack_channel_id
         self.telegram_bot_token: str = telegram_bot_token
         self.telegram_channel_id: str = telegram_channel_id
-
+        self.zulip_prc: str = zulip_prc
+        self.zulip_stream: str = zulip_stream
+        self.zulip_topic: str = zulip_topic
         self.logger = Logger("PapersFinder")
 
         self.slack_publisher: SlackPaperPublisher = SlackPaperPublisher(
@@ -191,8 +212,8 @@ class PapersFinder:
 
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
-        if row_data:
-            gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
+        #if row_data:
+        #    gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
         return row_data
 
     def post_paper_to_slack(self, papers: List[List[str]]) -> Any:
@@ -225,6 +246,24 @@ class PapersFinder:
         response = await telegram_publisher.publish_papers(papers_pub, preprints, self.today_str, self.spreadsheet_id)
         return response
 
+    async def post_paper_to_zulip(self, papers: List[List[str]]) -> Any:
+        """
+        Posts the papers to Zulip.
+
+        Args:
+            papers (List[str]): List of papers to post to Telegram.
+        """
+        zulip_publisher = ZulipPaperPublisher(
+            Logger("ZulipPaperPublisher"),
+            prc=self.zulip_prc,
+            stream_name=self.zulip_stream,
+            topic_name=self.zulip_topic,
+        )
+
+        papers_pub, preprints = zulip_publisher.format_papers_for_zulip(papers)
+        response = await zulip_publisher.publish_papers_to_zulip(papers_pub, preprints, self.today_str, self.spreadsheet_id)
+        return response
+
     def cleanup_files(self) -> None:
         """
         Deletes the search result files from the previous day to keep the directory clean.
@@ -249,7 +288,7 @@ class PapersFinder:
             print(f"File not found, no deletion needed for: {yesterday_file_pub_arx}")
 
     async def run_daily(
-        self, post_to_slack: bool = True, post_to_telegram: bool = False
+        self, post_to_slack: bool = True, post_to_telegram: bool = False, post_to_zulip: bool = False
     ) -> Tuple[List[List[Any]], Any]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
@@ -257,6 +296,7 @@ class PapersFinder:
         Args:
             post_to_slack (bool): Whether to post the papers to Slack.
             post_to_telegram (bool): Whether to post the papers to Telegram.
+            post_to_zulip (bool): Whether to post the papers to Zulip.
 
         Returns:
             Tuple[List[List[Any]], Any]: The papers posted and the response from the posting method.
@@ -264,11 +304,15 @@ class PapersFinder:
         processed_articles = self.find_and_process_papers()
         papers = self.update_google_sheet(processed_articles)
         response = None
+
         if post_to_slack:
             response = self.post_paper_to_slack(papers)
 
         if post_to_telegram:
             response = await self.post_paper_to_telegram(papers)
+
+        if post_to_zulip:
+            response = await self.post_paper_to_zulip(papers)
 
         self.cleanup_files()
 

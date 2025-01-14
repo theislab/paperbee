@@ -21,6 +21,8 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         slack_channel_id=config.SLACK_CHANNEL_ID,
         telegram_bot_token=config.TELEGRAM_BOT_API_KEY,
         telegram_channel_id=config.TELEGRAM_CHANNEL_ID,
+        zulip_prc=config.ZULIP_PRC,
+        zulip_stream=config.ZULIP_STREAM,
     )
     papers, response = await finder.run_daily(post_to_slack=False, post_to_telegram=True)
     return papers, response

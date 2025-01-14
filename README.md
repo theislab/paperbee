@@ -68,6 +68,13 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 4. Set the variable `TELEGRAM_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel.
 - To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
 
+### Setup Zulip (optional)
+
+1. Create a Zulip bot and download the `zuliprc` file. Follow the instructions [here](https://zulip.com/help/add-a-bot-or-integration).
+2. Set the variable `ZULIP_PRC` in your environment to point to the downloaded zuliprc file path.
+3. Create a stream (if needed), and suscribe the bot to the stream you want the bot to post papers in.
+4. Set `ZULIP_STREAM` and `ZULIP_TOPIC` in your environment.
+
 ### Setup OpenAI API key (optional, but highly recommended)
 
 GPT model is used to filter irrelevant papers. You can also do it manually, but LLM is much faster and allows to run bot fully automatically.
