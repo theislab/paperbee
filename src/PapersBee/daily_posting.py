@@ -15,7 +15,7 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         root_dir=config.LOCAL_ROOT_DIR,
         spreadsheet_id=config.GOOGLE_SPREADSHEET_ID,
         sheet_name="Papers",
-        llm_filtering=True,
+        llm_filtering=False,
         interactive=False,
         slack_bot_token=config.SLACK_BOT_TOKEN,
         slack_channel_id=config.SLACK_CHANNEL_ID,
@@ -23,8 +23,9 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         telegram_channel_id=config.TELEGRAM_CHANNEL_ID,
         zulip_prc=config.ZULIP_PRC,
         zulip_stream=config.ZULIP_STREAM,
+        zulip_topic=config.ZULIP_TOPIC,
     )
-    papers, response = await finder.run_daily(post_to_slack=False, post_to_telegram=True)
+    papers, response = await finder.run_daily(post_to_slack=False, post_to_telegram=False, post_to_zulip=True)
     return papers, response
 
 

@@ -212,8 +212,8 @@ class PapersFinder:
 
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
-        #if row_data:
-        #    gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
+        if row_data:
+            gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
         return row_data
 
     def post_paper_to_slack(self, papers: List[List[str]]) -> Any:

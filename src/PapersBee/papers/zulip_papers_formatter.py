@@ -62,7 +62,7 @@ class ZulipPaperPublisher:
 
         return papers, preprints
 
-    def publish_papers_to_zulip(
+    async def publish_papers_to_zulip(
         self,
         papers: List[str],
         preprints: List[str],
