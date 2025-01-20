@@ -2,7 +2,7 @@
 name = "PapersBee"
 version = "0.0.1"
 description = ""
-authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov"] #TODO: add Vladimir's email
+authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
 repository = "https://github.com/theislab/papersbee"
 documentation = "https://theislab.github.io/papersbee"
 readme = "README.md"
