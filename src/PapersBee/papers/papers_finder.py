@@ -161,7 +161,7 @@ class PapersFinder:
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key="")#config.NCBI_API_KEY)
+doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
