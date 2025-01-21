@@ -77,7 +77,6 @@ class LLMFilter:
                 messages=[{"role": "system", "content": filtering_prompt}, {"role": "user", "content": message}],
             )
             content = response['message']['content']
-            print(response)
             print(content)
         else:
             # Use OpenAI API
