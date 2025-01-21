@@ -16,6 +16,7 @@ from .llm_filtering import LLMFilter
 from .slack_papers_formatter import SlackPaperPublisher
 from .telegram_papers_formatter import TelegramPaperPublisher
 from .utils import ArticlesProcessor, PubMedClient, parse_date
+from .zulip_papers_formatter import ZulipPaperPublisher
 
 
 class PapersFinder:
@@ -26,11 +27,19 @@ class PapersFinder:
         root_dir (str): Directory path where files such as queries and search results are stored.
         spreadsheet_id (str): ID of the Google Spreadsheet to be updated.
         sheet_name (str): Name of the sheet within the Google Spreadsheet to be updated.
-        interactive (bool): Activate an interactive cli to filter out papers before posting.
-        query (str): a query string to override the query.txt file used in daily automated posting
-        channel_id (str): the slack channel id where to post
-        since (str): the date from which to start the search formatted as YYYY-mm-dd
-
+        interactive (bool): Activate an interactive CLI to filter out papers before posting.
+        llm_filtering (bool): Activate LLM-based filtering for the papers.
+        llm_provider (Optional[str]): The LLM service to use for filtering.
+        model (Optional[str]): The model to use for LLM filtering.
+        query (Optional[str]): A query string to override the query.txt file used in daily automated posting.
+        since (Optional[str]): The date from which to start the search formatted as YYYY-mm-dd.
+        slack_bot_token (str): The Slack bot token for posting to Slack.
+        slack_channel_id (str): The Slack channel ID where to post.
+        telegram_bot_token (str): The Telegram bot token for posting to Telegram.
+        telegram_channel_id (str): The Telegram channel ID where to post.
+        zulip_prc (str): The Zulip personal realm configuration.
+        zulip_stream (str): The Zulip stream name.
+        zulip_topic (str): The Zulip topic name.
     """
 
     def __init__(
@@ -40,12 +49,17 @@ class PapersFinder:
         sheet_name: str,
         interactive: bool = False,
         llm_filtering: bool = False,
+        llm_provider: Optional[str] = None,
+        model: Optional[str] = None,
         query: Optional[str] = None,
         since: Optional[str] = None,
         slack_bot_token: str = config.SLACK_BOT_TOKEN,
         slack_channel_id: str = config.SLACK_CHANNEL_ID,
         telegram_bot_token: str = config.TELEGRAM_BOT_API_KEY,
         telegram_channel_id: str = config.TELEGRAM_CHANNEL_ID,
+        zulip_prc: str = config.ZULIP_PRC,
+        zulip_stream: str = config.ZULIP_STREAM,
+        zulip_topic: str = config.ZULIP_TOPIC,
     ) -> None:
         self.root_dir: str = root_dir
         self.spreadsheet_id: str = spreadsheet_id
@@ -70,12 +84,16 @@ class PapersFinder:
 
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
+        self.llm_provider: Optional[str] = llm_provider
+        self.model: Optional[str] = model
 
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
         self.telegram_bot_token: str = telegram_bot_token
         self.telegram_channel_id: str = telegram_channel_id
-
+        self.zulip_prc: str = zulip_prc
+        self.zulip_stream: str = zulip_stream
+        self.zulip_topic: str = zulip_topic
         self.logger = Logger("PapersFinder")
 
 
@@ -138,7 +156,7 @@ class PapersFinder:
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
+doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
@@ -151,7 +169,7 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
-            llm_filter = LLMFilter(processed_articles)
+            llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 
@@ -225,6 +243,24 @@ class PapersFinder:
         response = await telegram_publisher.publish_papers(papers_pub, preprints, self.today_str, self.spreadsheet_id)
         return response
 
+    async def post_paper_to_zulip(self, papers: List[List[str]]) -> Any:
+        """
+        Posts the papers to Zulip.
+
+        Args:
+            papers (List[str]): List of papers to post to Telegram.
+        """
+        zulip_publisher = ZulipPaperPublisher(
+            Logger("ZulipPaperPublisher"),
+            prc=self.zulip_prc,
+            stream_name=self.zulip_stream,
+            topic_name=self.zulip_topic,
+        )
+
+        papers_pub, preprints = zulip_publisher.format_papers_for_zulip(papers)
+        response = await zulip_publisher.publish_papers_to_zulip(papers_pub, preprints, self.today_str, self.spreadsheet_id)
+        return response
+
     def cleanup_files(self) -> None:
         """
         Deletes the search result files from the previous day to keep the directory clean.
@@ -249,7 +285,7 @@ class PapersFinder:
             print(f"File not found, no deletion needed for: {yesterday_file_pub_arx}")
 
     async def run_daily(
-        self, post_to_slack: bool = True, post_to_telegram: bool = False
+        self, post_to_slack: bool = True, post_to_telegram: bool = False, post_to_zulip: bool = False
     ) -> Tuple[List[List[Any]], Any]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
@@ -257,6 +293,7 @@ class PapersFinder:
         Args:
             post_to_slack (bool): Whether to post the papers to Slack.
             post_to_telegram (bool): Whether to post the papers to Telegram.
+            post_to_zulip (bool): Whether to post the papers to Zulip.
 
         Returns:
             Tuple[List[List[Any]], Any]: The papers posted and the response from the posting method.
@@ -264,11 +301,15 @@ class PapersFinder:
         processed_articles = self.find_and_process_papers()
         papers = self.update_google_sheet(processed_articles)
         response = None
+
         if post_to_slack:
             response = self.post_paper_to_slack(papers)
 
         if post_to_telegram:
             response = await self.post_paper_to_telegram(papers)
+
+        if post_to_zulip:
+            response = await self.post_paper_to_zulip(papers)
 
         self.cleanup_files()
 
