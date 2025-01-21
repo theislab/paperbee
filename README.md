@@ -84,7 +84,7 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 2. Set the variable `OPENAI_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key you got.
 3. Put some money on your account. For the query in this repo, it takes less than $0.01 per day to run. 
 
-### Setup Ollama (optional, but highly recommended)
+### Setup Ollama (a free alternative to using an OpenAI model)
 
 Open source LLMs can also be used to filter irrelevant papers.
 
