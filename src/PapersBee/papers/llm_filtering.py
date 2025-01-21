@@ -17,7 +17,7 @@ class LLMFilter:
         filtering_prompt (str): The prompt content for filtering the articles.
     """
 
-    def __init__(self, df: pd.DataFrame, llm_service: str = "openai", model: str = "gpt-3.5-turbo") -> None:
+    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo") -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
 
@@ -27,12 +27,12 @@ class LLMFilter:
             model (str): The model to use for filtering. Defaults to "gpt-3.5-turbo".
         """
         self.df: pd.DataFrame = df
-        self.llm_service: str = llm_service.lower()
+        self.llm_provider: str = llm_provider.lower()
         self.model: str = model
 
-        if self.llm_service == "openai":
+        if self.llm_provider == "openai":
             self.client = OpenAI(api_key=config.OPENAI_API_KEY)
-        elif self.llm_service == "ollama":
+        elif self.llm_provider == "ollama":
             self.client = Client(
                 host='http://localhost:11434',
                 headers={'x-some-header': 'some-value'}

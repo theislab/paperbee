@@ -16,7 +16,7 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         spreadsheet_id=config.GOOGLE_SPREADSHEET_ID,
         sheet_name="Papers",
         llm_filtering=False,
-        llm_service = None,
+        llm_provider = config.LLM_PROVIDER,
         model = config.LANGUAGE_MODEL,
         interactive=False,
         slack_bot_token=config.SLACK_BOT_TOKEN,

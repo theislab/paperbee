@@ -20,6 +20,8 @@ LOCAL_ROOT_DIR: str = "/home/daniele/Code/github_synced/papersbee/files/"
 LOCAL_FILTERING_PROMPT_PATH: str = (
     "/home/daniele/Code/github_synced/papersbee/files/filtering_prompt.txt"
 )
+
+LLM_PROVIDER: str = os.environ["LLM_PROVIDER"]
 OPENAI_API_KEY: str = os.environ["OPENAI_API_KEY"]
 LANGUAGE_MODEL: str = os.environ["LANGUAGE_MODEL"]
 NCBI_API_KEY: str = os.environ["NCBI_API_KEY"]

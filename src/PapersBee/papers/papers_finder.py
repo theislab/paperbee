@@ -29,7 +29,7 @@ class PapersFinder:
         sheet_name (str): Name of the sheet within the Google Spreadsheet to be updated.
         interactive (bool): Activate an interactive CLI to filter out papers before posting.
         llm_filtering (bool): Activate LLM-based filtering for the papers.
-        llm_service (Optional[str]): The LLM service to use for filtering.
+        llm_provider (Optional[str]): The LLM service to use for filtering.
         model (Optional[str]): The model to use for LLM filtering.
         query (Optional[str]): A query string to override the query.txt file used in daily automated posting.
         since (Optional[str]): The date from which to start the search formatted as YYYY-mm-dd.
@@ -49,7 +49,7 @@ class PapersFinder:
         sheet_name: str,
         interactive: bool = False,
         llm_filtering: bool = False,
-        llm_service: Optional[str] = None,
+        llm_provider: Optional[str] = None,
         model: Optional[str] = None,
         query: Optional[str] = None,
         since: Optional[str] = None,
@@ -84,7 +84,7 @@ class PapersFinder:
 
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
-        self.llm_service: Optional[str] = llm_service
+        self.llm_provider: Optional[str] = llm_provider
         self.model: Optional[str] = model
 
         self.slack_bot_token: str = slack_bot_token
@@ -174,7 +174,7 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
-            llm_filter = LLMFilter(processed_articles, llm_service=self.llm_service, model=self.model)
+            llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 
