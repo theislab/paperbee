@@ -17,7 +17,7 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         sheet_name="Papers",
         llm_filtering=False,
         llm_service = None,
-        model = config.OPEN_SOURCE_LLM,
+        model = config.LANGUAGE_MODEL,
         interactive=False,
         slack_bot_token=config.SLACK_BOT_TOKEN,
         slack_channel_id=config.SLACK_CHANNEL_ID,
