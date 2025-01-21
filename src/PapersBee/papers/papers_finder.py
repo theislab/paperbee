@@ -78,11 +78,6 @@ class PapersFinder:
 
         self.logger = Logger("PapersFinder")
 
-        self.slack_publisher: SlackPaperPublisher = SlackPaperPublisher(
-            WebClient(self.slack_bot_token),
-            Logger("SlackPaperPublisher"),
-            channel_id=self.slack_channel_id,
-        )
 
     def find_and_process_papers(self) -> pd.DataFrame:
         """
@@ -202,6 +197,11 @@ class PapersFinder:
         Args:
             papers (List[str]): List of papers to post to Slack.
         """
+        self.slack_publisher: SlackPaperPublisher = SlackPaperPublisher(
+            WebClient(self.slack_bot_token),
+            Logger("SlackPaperPublisher"),
+            channel_id=self.slack_channel_id,
+        )
         papers_pub, preprints = self.slack_publisher.format_papers_for_slack(papers)
         response = self.slack_publisher.publish_papers_to_slack(
             papers_pub, preprints, self.today_str, self.spreadsheet_id
