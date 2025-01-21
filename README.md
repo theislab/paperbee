@@ -50,6 +50,7 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 ### Setup Slack (optional)
 
 #### Create a Slack App
+
 1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
 2. Choose the workspace you want to install the application to
 3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click *Next*. The manifest can be modified any time.
@@ -67,6 +68,13 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 4. Set the variable `TELEGRAM_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel.
 - To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
 
+### Setup Zulip (optional)
+
+1. Create a Zulip bot and download the `zuliprc` file. Follow the instructions [here](https://zulip.com/help/add-a-bot-or-integration).
+2. Set the variable `ZULIP_PRC` in your environment to point to the downloaded zuliprc file path.
+3. Create a stream (if needed), and suscribe the bot to the stream you want the bot to post papers in.
+4. Set `ZULIP_STREAM` and `ZULIP_TOPIC` in your environment.
+
 ### Setup OpenAI API key (optional, but highly recommended)
 
 GPT model is used to filter irrelevant papers. You can also do it manually, but LLM is much faster and allows to run bot fully automatically.
@@ -75,6 +83,14 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 1. Follow the instructions [here](https://platform.openai.com/settings/organization/api-keys) to get an API key.
 2. Set the variable `OPENAI_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key you got.
 3. Put some money on your account. For the query in this repo, it takes less than $0.01 per day to run. 
+
+### Setup Ollama (a free alternative to using an OpenAI model)
+
+Open source LLMs can also be used to filter irrelevant papers.
+
+0. Download Ollama on your system [OpenAI developer platform](https://ollama.com/download/)
+1. Decide which LLM to use out of the [available ones](https://ollama.com/search), on a terminal run ollama pull <model_name>. We find `llama3.2` to be a good compromise in terms of hardware requirement and performances, but feel free to use your favourite LLM.
+2. Set the variable `LANGUAGE_MODEL` with the model name in the environment.
 
 ### Setup query and filtering prompt.
 
@@ -155,7 +171,7 @@ Only implement OAuth if you plan to distribute your application across multiple 
 
 When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
 
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth. 
+Start `ngrok` to access the app on an external network and create a redirect URL for OAuth.
 
 ```
 ngrok http 3000

@@ -1,0 +1,55 @@
+site_name: papersbee
+repo_url: "https://github.com/theislab/papersbee"
+site_url: https://theislab.github.io/papersbee
+site_description: papersbee
+site_author: Daniele Lucarelli
+edit_uri: edit/main/docs/
+repo_name: theislab/papersbee
+copyright: Maintained by <a href="https://Saur-Lab.com"></a>.
+
+nav:
+  - Home: index.md
+  - Modules: modules.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          setup_commands:
+            - import sys
+            - sys.path.append('../')
+          docstring_style: google
+theme:
+  name: material
+  feature:
+    tabs: true
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Saur-Lab/pycat
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/pycat
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
