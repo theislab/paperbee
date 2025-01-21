@@ -89,7 +89,7 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 Open source LLMs can also be used to filter irrelevant papers.
 
 0. Download Ollama on your system [OpenAI developer platform](https://ollama.com/download/)
-1. Decide which LLM to use out of the [available ones](https://ollama.com/search), on a terminal run ollama pull <model_name>
+1. Decide which LLM to use out of the [available ones](https://ollama.com/search), on a terminal run ollama pull <model_name>. We find LLama 3.2 to be a good compromise in terms of hardware requirement and performances, but feel free to use your favourite LLM.
 2. Set the variable `OPEN_SOURCE_LLM` with the model name in the environment.
 
 ### Setup query and filtering prompt.
