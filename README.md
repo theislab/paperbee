@@ -3,10 +3,12 @@
 <img src="images/papersbee_logo.png" width="200" height="auto" alt="logo"/>
 
 Papersbee is a Python application designed to daily look for new scientific papers and post them. Currently, the following channels are supported:
+
 - Slack
 - Google Sheets
 - Telegram
-
+- Zulip
+- Telegram
 
 ## How does it work?
 
@@ -33,6 +35,7 @@ pip install -r requirements.txt
 5. Set the variables `GOOGLE_CREDENTIALS_JSON` and `GOOGLE_SPREADSHEET_ID` in the [papers/config.py](papers/config.py) file to the path to the JSON key you created and the ID of the spreadsheet you created. ID of the spreadsheet can be found in the URL of the spreadsheet after `d/`. For example, in the template spreadsheet it is `13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw`.
 
 > 💡 **Alternative Setup**: Instead of using the config file, you can set these environment variables directly in your system:
+
 > ```bash
 > export GOOGLE_CREDENTIALS_JSON="/path/to/credentials.json"
 > export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
@@ -66,6 +69,7 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 2. Set the variable `TELEGRAM_BOT_API_KEY` in the [papers/config.py](papers/config.py) file or in environment to the API key of the bot you created.
 3. Create a Telegram channel or a group and add the bot to the channel as an administrator with the write permissions.
 4. Set the variable `TELEGRAM_CHANNEL_ID` in the [papers/config.py](papers/config.py) file or in environment to the ID of the channel.
+
 - To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
 
 ### Setup Zulip (optional)
@@ -92,7 +96,7 @@ Open source LLMs can also be used to filter irrelevant papers.
 1. Decide which LLM to use out of the [available ones](https://ollama.com/search), on a terminal run ollama pull <model_name>. We find `llama3.2` to be a good compromise in terms of hardware requirement and performances, but feel free to use your favourite LLM.
 2. Set the variable `LANGUAGE_MODEL` with the model name in the environment.
 
-### Setup query and filtering prompt.
+### Setup query and filtering prompt
 
 1. Create a query – list of keywords to search papers. You can use this [template](files/query.txt). For syntax instructions, refer to [findpapers documentation](https://github.com/jonatasgrosman/findpapers).
 2. Set the variable `LOCAL_QUERY_PATH` in the [papers/config.py](papers/config.py) file or in environment to the path to the query you created.
@@ -102,6 +106,7 @@ Open source LLMs can also be used to filter irrelevant papers.
 ### Running tests (optional)
 
 If you enjoyed setting up, you can enjoy a bit more by creating additional test channels for slack and/or telegram. Or you can run the tests in the actual channels. In any case, set the following variables in the [papers/config.py](papers/config.py) file or in environment:
+
 - `TELEGRAM_TEST_CHANNEL_ID` – ID of the slack channel to post to.
 - `SLACK_TEST_CHANNEL_ID` – ID of the telegram channel to post to.
 
@@ -116,6 +121,7 @@ Make sure that you run it in the correct environment. If everything works, you s
 ## Setting up daily posting
 
 As the last bit of setup, go to the [daily_posting.py](daily_posting.py) file and set the following variables in the object of `PapersFinder` class:
+
 - `llm_filtering` – set to `True` if you want to use the LLM to filter out irrelevant papers.
 - `interactive` – set to `True` if you want to run the bot in interactive mode (i.e. filtering papers manually with the command-line interface).
 
@@ -141,54 +147,24 @@ To run the bot daily, you can use a cron job. For example, to run the bot every 
 
 `manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
 
-### Interactive
-
-The code for the interactive part, manages interaction between the users in slack and the app.
-
-#### `app.py`
-
-`app.py` is the entry point for the application and is the file you'll run to start the server. This project aims to keep this file as thin as possible, primarily using it as a way to route inbound requests.
-
-#### `/listeners`
-
-Every incoming request is routed to a "listener". Inside this directory, we group each listener based on the Slack Platform feature used, so `/listeners/shortcuts` handles incoming [Shortcuts](https://api.slack.com/interactivity/shortcuts) requests, `/listeners/views` handles [View submissions](https://api.slack.com/reference/interaction-payloads/views#view_submission) and so on.
-
-#### `/papers`
+#### `src/PapersBee/papers`
 
 Classes to fetch the papers, format them, and post them on slack along with updating the papers google sheet.
 
-`/papers/utils/` Preprocessor for `findpapers` output, and to extract DOIs from pubmed.
+`src/PapersBee/papers/utils.py` Preprocessor for `findpapers` output, and to extract DOIs from pubmed.
 
-`/papers/google_sheet/` Class to check and update the papers google sheet.
+`src/PapersBee/papers/google_sheet.py` Class to check and update the papers google sheet.
 
-`/papers/slack_papers_formatter/` Format the papers and publish them on slack. Select the channel the papers will be published from here.
+`src/PapersBee/papers/llm_filtering.py` Class to filter paper with LLMs
 
-`/papers/papers_finder/` is tha main wrapper class.
+`src/PapersBee/papers/cli.py` Class to filter paper with interactively in the CLI
 
-## App Distribution / OAuth
+`src/PapersBee/papers/slack_papers_formatter.py` Format the papers and publish them on slack.
 
-Only implement OAuth if you plan to distribute your application across multiple workspaces. A separate `app_oauth.py` file can be found with relevant OAuth settings.
+`src/PapersBee/papers/zulip_papers_formatter.py` Format the papers and publish them on zulip.
 
-When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
+`src/PapersBee/papers/telegram_papers_formatter.py` Format the papers and publish them on telegram.
 
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth.
+`src/PapersBee/papers/papers_finder.py` is tha main wrapper class.
 
-```
-ngrok http 3000
-```
-
-This output should include a forwarding address for `http` and `https` (we'll use `https`). It should look something like the following:
-
-```
-Forwarding   https://3cb89939.ngrok.io -> http://localhost:3000
-```
-
-Navigate to **OAuth & Permissions** in your app configuration and click **Add a Redirect URL**. The redirect URL should be set to your `ngrok` forwarding address with the `slack/oauth_redirect` path appended. For example:
-
-```
-https://3cb89939.ngrok.io/slack/oauth_redirect
-```
-
-
-Created with [bolt-python template](https://github.com/slack-samples/bolt-python-starter-template.git)
-
+`src/PapersBee/daily_posting.py` is tha entry point for the CLI command.
