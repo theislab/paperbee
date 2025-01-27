@@ -1,11 +1,12 @@
+import argparse
+import asyncio
 import os
 from typing import Any, Dict, List, Optional, Tuple
 
-from papers import config
-from papers.papers_finder import PapersFinder
+from PapersBee.papers import PapersFinder, config
 
 
-async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
+async def daily_papers_search(interactive: bool = False, since: Optional[int] = None) -> Tuple[List[Dict[str, Any]], Any]:  # Modified to accept CLI arguments
     """
     Searches for daily papers and posts them to Telegram.
 
@@ -14,7 +15,11 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
     """
     root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration()
     post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
-    llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL = validate_llm_args(root_dir)
+    if interactive:
+        #override LLM if interactive is activated
+        llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL = None, None, None
+    else:
+        llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL = validate_llm_args(root_dir)
     validate_ncbi_api_key()
 
     finder = PapersFinder(
@@ -22,7 +27,7 @@ async def daily_papers_search() -> Tuple[List[Dict[str, Any]], Any]:
         spreadsheet_id=config.GOOGLE_SPREADSHEET_ID,
         google_credentials_json=config.GOOGLE_CREDENTIALS_JSON,
         sheet_name="Papers",
-        since=None,
+        since=since,
         query_file=query_file,
         query_file_biorxiv=query_file_biorxiv,
         query_file_pubmed_arxiv=query_file_pubmed_arxiv,
@@ -128,9 +133,33 @@ def validate_ncbi_api_key() -> None:
     return None
 
 
-if __name__ == "__main__":
-    import asyncio
+def main() -> None:
+    """
+    CLI entry point for PapersBee, supporting subcommands like 'post'.
+    """
+    parser = argparse.ArgumentParser(description="PapersBee CLI")
+    subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
 
-    papers, response = asyncio.run(daily_papers_search())
-    print(papers)
-    print(response)
+    # Subcommand: post
+    post_parser = subparsers.add_parser("post", help="Post daily papers")
+    post_parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="Activate interactive filtering, override LLM settings.",
+    )
+    post_parser.add_argument(
+        "--since",
+        type=str,
+        help="Filter out papers if published before the specified number of days ago.",
+    )
+
+    args = parser.parse_args()
+
+    # Dispatch to the appropriate subcommand
+    if args.command == "post":
+        papers, response = asyncio.run(daily_papers_search(interactive=args.interactive, since=args.since))
+        print("Papers found:")
+        print(papers)
+        print("Response:")
+        print(response)
+

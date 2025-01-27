@@ -57,7 +57,7 @@ allow_untyped_globals = false
 allow_redefinition = false
 
 [tool.poetry.scripts]
-papersbee = "papersbee.run:cli" #TODO: update once done
+papersbee = "PapersBee.daily_posting:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

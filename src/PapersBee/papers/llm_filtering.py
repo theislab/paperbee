@@ -3,7 +3,8 @@ from typing import List, Optional, Union
 import pandas as pd
 from ollama import Client
 from openai import OpenAI
-from papers import config
+
+from . import config
 
 
 class LLMFilter:
