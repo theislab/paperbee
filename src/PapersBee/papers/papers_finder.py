@@ -15,7 +15,7 @@ from .google_sheet import GoogleSheetsUpdater
 from .llm_filtering import LLMFilter
 from .slack_papers_formatter import SlackPaperPublisher
 from .telegram_papers_formatter import TelegramPaperPublisher
-from .utils import ArticlesProcessor, PubMedClient, parse_date
+from .utils import ArticlesProcessor, PubMedClient
 from .zulip_papers_formatter import ZulipPaperPublisher
 
 
@@ -41,52 +41,57 @@ class PapersFinder:
         zulip_stream (str): The Zulip stream name.
         zulip_topic (str): The Zulip topic name.
     """
-
     def __init__(
         self,
         root_dir: str,
         spreadsheet_id: str,
+        google_credentials_json: str,
         sheet_name: str,
+        since: Optional[int] = None,
+        query_file: Optional[str] = None,
+        query_file_biorxiv: Optional[str] = None,
+        query_file_pubmed_arxiv: Optional[str] = None,
         interactive: bool = False,
         llm_filtering: bool = False,
         llm_provider: Optional[str] = None,
         model: Optional[str] = None,
-        query: Optional[str] = None,
-        since: Optional[str] = None,
-        slack_bot_token: str = config.SLACK_BOT_TOKEN,
-        slack_channel_id: str = config.SLACK_CHANNEL_ID,
-        telegram_bot_token: str = config.TELEGRAM_BOT_API_KEY,
-        telegram_channel_id: str = config.TELEGRAM_CHANNEL_ID,
-        zulip_prc: str = config.ZULIP_PRC,
-        zulip_stream: str = config.ZULIP_STREAM,
-        zulip_topic: str = config.ZULIP_TOPIC,
+        slack_bot_token: str = "",
+        slack_channel_id: str = "",
+        telegram_bot_token: str = "",
+        telegram_channel_id: str = "",
+        zulip_prc: str = "",
+        zulip_stream: str = "",
+        zulip_topic: str = "",
     ) -> None:
         self.root_dir: str = root_dir
-        self.spreadsheet_id: str = spreadsheet_id
-        self.sheet_name: str = sheet_name
+        #dates
         self.today: date = date.today()
         self.today_str: str = self.today.strftime("%Y-%m-%d")
-        self.yesterday: date = self.today - timedelta(days=3)
+        self.yesterday: date = self.today - timedelta(days=since if since is not None else 1)
         self.yesterday_str: str = self.yesterday.strftime("%Y-%m-%d")
         self.until: date = self.today
-        self.since: date = self.yesterday if since is None else parse_date(since)
+        self.since: date = self.yesterday
+        #search args
         self.limit: int = 1200
         self.limit_per_database: int = 400
         self.databases = ["biorxiv", "arxiv", "pubmed"]
-        self.google_credentials_json = config.GOOGLE_CREDENTIALS_JSON
-        self.query_file_biorxiv: str = os.path.join(root_dir, "query_biorxiv.txt")
-        self.query_file_pub_arx: str = os.path.join(root_dir, "query_pubmed_arxiv.txt")
-        self.query: Optional[str] = query
-
+        #Google Sheets
+        self.google_credentials_json = google_credentials_json
+        self.spreadsheet_id: str = spreadsheet_id
+        self.sheet_name: str = sheet_name
+        #Query and search files
+        self.query_file_biorxiv: Optional[str] = query_file_biorxiv if query_file_biorxiv else None
+        self.query_file_pub_arx: Optional[str] = query_file_pubmed_arxiv
+        self.query_file: Optional[str] = query_file if query_file else None
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
         self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
-
+        #Filter
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
         self.llm_provider: Optional[str] = llm_provider
         self.model: Optional[str] = model
-
+        #Slack, Telegram, Zulip
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
         self.telegram_bot_token: str = telegram_bot_token
@@ -94,6 +99,7 @@ class PapersFinder:
         self.zulip_prc: str = zulip_prc
         self.zulip_stream: str = zulip_stream
         self.zulip_topic: str = zulip_topic
+        #Logger
         self.logger = Logger("PapersFinder")
 
 
@@ -105,14 +111,11 @@ class PapersFinder:
             pd.DataFrame: A DataFrame containing processed articles.
         """
 
-        with open(self.query_file_pub_arx) as f:
-            input_query_pub_arx = f.read().strip()
-        with open(self.query_file_biorxiv) as f:
-            input_query_biorxiv = f.read().strip()
         articles: List[Dict[str, Any]] = []
 
-        if self.query:
-            input_query = self.query
+        if self.query_file:
+            with open(self.query_file) as f:
+                input_query = f.read().strip()
             findpapers.search(
                 self.search_file,
                 input_query,
@@ -127,6 +130,15 @@ class PapersFinder:
                 articles_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             articles = list(articles_dict)
         else:
+            if not self.query_file_biorxiv or not self.query_file_pub_arx:
+                e = "Both query_file_biorxiv and query_file_pub_arx must be provided if query_file is not provided."
+                raise ValueError(e)
+            if self.query_file_pub_arx:
+                with open(self.query_file_pub_arx) as f:
+                    input_query_pub_arx = f.read().strip()
+            if self.query_file_biorxiv:
+                with open(self.query_file_biorxiv) as f:
+                    input_query_biorxiv = f.read().strip()
             findpapers.search(
                 self.search_file_pub_arx,
                 input_query_pub_arx,
@@ -169,6 +181,9 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
+            if not self.llm_provider or not self.model:
+                e = "Both llm_provider and model must be provided if llm_filtering is True."
+                raise ValueError(e)
             llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")

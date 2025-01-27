@@ -1,10 +1,10 @@
 from typing import List, Optional, Union
 
 import pandas as pd
-from openai import OpenAI
 from ollama import Client
-
+from openai import OpenAI
 from papers import config
+
 
 class LLMFilter:
     """
