@@ -1,9 +1,9 @@
-([single-cell] OR [single cell] OR [single nuclei] OR [sc] OR [single-cell analysis] OR [single nucleus] OR [spatial] OR [spatial analysis] OR [spatial profiling])
+([single-cell transcriptomics] OR [spatial transcriptomics])
 
 AND
 
-([transcriptomics] OR [proteomics] OR [epigenomics] OR [genomics] OR [multiomics] OR [DNA] OR [RNA] OR [protein] OR [ATAC] OR [transcription])
+([data analysis])
 
-AND
+AND NOT
 
-([trajectory] OR [trajectories] OR [fate] OR [velocity] OR [velocities] OR [perturbation] OR [AI] OR [artificial intelligence] OR [machine learning] OR [ML] OR [deep learning] OR [DL] OR [neural networks] OR [NN] OR [computational] OR [computational biology] OR [computational modeling] OR [modeling] OR [optimal transport] OR [transformer] OR [former] OR [GNN] OR [graph neural networks] OR [graph] OR [statistical learning] OR [differential equation] OR [data science] OR [computational frameworks] OR [algorithm] OR [database])
+([proteomics])
