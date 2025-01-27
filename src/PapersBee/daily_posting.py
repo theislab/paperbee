@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from PapersBee.papers import PapersFinder, config
 
 
-async def daily_papers_search(interactive: bool = False, since: Optional[int] = None) -> Tuple[List[Dict[str, Any]], Any]:  # Modified to accept CLI arguments
+async def daily_papers_search(interactive: bool = False, since: Optional[int] = None) -> Tuple[List[List[Any]], Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
@@ -17,9 +17,9 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
     if interactive:
         #override LLM if interactive is activated
-        llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL = None, None, None
+        llm_filtering, llm_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = False, None, None, None, None
     else:
-        llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL = validate_llm_args(root_dir)
+        llm_filtering, llm_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
     validate_ncbi_api_key()
 
     finder = PapersFinder(
@@ -33,8 +33,10 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         query_file_pubmed_arxiv=query_file_pubmed_arxiv,
         interactive=False,
         llm_filtering=llm_filtering,
+        llm_prompt = llm_prompt,
         llm_provider=LLM_PROVIDER,
         model=LANGUAGE_MODEL,
+        OPENAI_API_KEY=OPENAI_API_KEY,
         slack_bot_token=SLACK_BOT_TOKEN,
         slack_channel_id=SLACK_CHANNEL_ID,
         telegram_bot_token=TELEGRAM_BOT_API_KEY,
@@ -98,12 +100,17 @@ def validate_posting_args() -> Tuple[bool, bool, bool, str, str, str, str, str, 
     return post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN or "", SLACK_CHANNEL_ID or "", TELEGRAM_BOT_API_KEY or "", TELEGRAM_CHANNEL_ID or "", ZULIP_PRC or "", ZULIP_STREAM or "", ZULIP_TOPIC or ""
 
 
-def validate_llm_args(root_dir: str) -> Tuple[bool, str, str]:
+def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
     if config.LLM_PROVIDER:
         LLM_PROVIDER = config.LLM_PROVIDER
-        if LLM_PROVIDER == "openai" and not config.OPENAI_API_KEY:
-            e = "OpenAI API key is not set."
-            raise ValueError(e)
+        OPENAI_API_KEY = ""
+        if LLM_PROVIDER == "openai":
+            if not config.OPENAI_API_KEY:
+                e = "OpenAI API key is not set."
+                raise ValueError(e)
+            else:
+                OPENAI_API_KEY = config.OPENAI_API_KEY
+
         if not config.LANGUAGE_MODEL:
             e = "Language model is not set."
             raise ValueError(e)
@@ -114,16 +121,21 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str]:
         if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
             e = "filtering_prompt.txt does not exist in the specified root_dir."
             raise FileNotFoundError(e)
+        else:
+            with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
+                filtering_prompt = f.read()
         llm_filtering = True
     elif config.LANGUAGE_MODEL and not config.LLM_PROVIDER:
         e = "Set up LLM provider."
         raise ValueError(e)
     else:
         llm_filtering = False
-        LLM_PROVIDER = None
-        LANGUAGE_MODEL = None
+        filtering_prompt = ""
+        LLM_PROVIDER = ""
+        LANGUAGE_MODEL = ""
+        OPENAI_API_KEY = ""
 
-    return llm_filtering, LLM_PROVIDER, LANGUAGE_MODEL
+    return llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY
 
 
 def validate_ncbi_api_key() -> None:
