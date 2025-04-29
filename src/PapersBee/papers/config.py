@@ -18,6 +18,7 @@ GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_CRED_PATH", "")
 
 LOCAL_ROOT_DIR: str = os.getenv("LOCAL_ROOT_DIR", "")
 
+llm_filtering: bool = os.getenv("LLM_FILTERING", "False")
 LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 LANGUAGE_MODEL: str = os.getenv("LANGUAGE_MODEL", "")

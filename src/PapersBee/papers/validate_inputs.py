@@ -70,7 +70,6 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
                 raise ValueError(e)
             else:
                 OPENAI_API_KEY = config.OPENAI_API_KEY
-
         if not config.LANGUAGE_MODEL:
             e = "Language model is not set."
             raise ValueError(e)
@@ -84,18 +83,13 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
         else:
             with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
                 filtering_prompt = f.read()
-        llm_filtering = True
     elif config.LANGUAGE_MODEL and not config.LLM_PROVIDER:
         e = "Set up LLM provider."
         raise ValueError(e)
     else:
-        llm_filtering = False
-        filtering_prompt = ""
-        LLM_PROVIDER = ""
-        LANGUAGE_MODEL = ""
-        OPENAI_API_KEY = ""
+        e = 'LLM filtering is set to True but LLM_PROVIDER and LANGUAGE_MODEL are not set.'
 
-    return llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY
+    return filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY
 
 
 def validate_ncbi_api_key() -> None:

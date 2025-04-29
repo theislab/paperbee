@@ -22,7 +22,9 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     """
     root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration()
     post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
-    llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
+    llm_filtering = config.llm_filtering
+    if llm_filtering:
+        filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
     validate_ncbi_api_key()
 
     finder = PapersFinder(
