@@ -185,14 +185,6 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
-            if not self.llm_provider or not self.model:
-                e = "Both llm_provider and model must be provided if llm_filtering is True."
-                raise ValueError(e)
-            if not self.filtering_prompt:
-                e = "filtering_prompt must be provided if llm_filtering is True."
-                raise ValueError(e)
-            if not self.OPENAI_API_KEY and self.llm_provider == "openai":
-                e = "OPENAI_API_KEY must be provided if llm_filtering is True."
             llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model, filtering_prompt=self.filtering_prompt, OPENAI_API_KEY=self.OPENAI_API_KEY)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
