@@ -22,11 +22,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     """
     root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration()
     post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
-    if interactive:
-        #override LLM if interactive is activated
-        llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = False, None, None, None, None
-    else:
-        llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
+    llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
     validate_ncbi_api_key()
 
     finder = PapersFinder(
@@ -38,7 +34,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         query_file=query_file,
         query_file_biorxiv=query_file_biorxiv,
         query_file_pubmed_arxiv=query_file_pubmed_arxiv,
-        interactive=False,
+        interactive=interactive,
         llm_filtering=llm_filtering,
         filtering_prompt = filtering_prompt,
         llm_provider=LLM_PROVIDER,
@@ -68,7 +64,7 @@ def main() -> None:
     post_parser.add_argument(
         "--interactive",
         action="store_true",
-        help="Activate interactive filtering, override LLM settings.",
+        help="Activate interactive filtering",
     )
     post_parser.add_argument(
         "--since",

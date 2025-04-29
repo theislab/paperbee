@@ -68,7 +68,7 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
             e = "Language model is not set."
             raise ValueError(e)
         if LLM_PROVIDER not in ["openai", "ollama"]:
-            e = f"Invalid LLM provider {LLM_PROVIDER}."
+            e = f"Invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
             raise ValueError(e)
         LANGUAGE_MODEL = config.LANGUAGE_MODEL
         if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
