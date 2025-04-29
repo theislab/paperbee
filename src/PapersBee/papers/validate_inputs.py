@@ -2,6 +2,7 @@ import os
 from typing import Optional, Tuple
 
 from PapersBee.papers import config
+from PapersBee.papers.posting_required_params import SOCIAL_REQUIRED_PARAMS
 
 
 def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optional[str]]:
@@ -32,25 +33,31 @@ def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optiona
     return root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv
 
 def validate_posting_args() -> Tuple[bool, bool, bool, str, str, str, str, str, str, str]:
-    post_to_slack, post_to_zulip, post_to_telegram = False, False, False
-    SLACK_APP_TOKEN, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID = "", "", ""
-    ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = "", "", ""
-    TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID = "", ""
+    def _posting_params_set(social: str) -> bool:
+        required = SOCIAL_REQUIRED_PARAMS[social]
+        return all(getattr(config, param, None) for param in required)
 
-    if config.SLACK_BOT_TOKEN and config.SLACK_CHANNEL_ID and config.SLACK_APP_TOKEN:
-        post_to_slack = True
-        SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, SLACK_APP_TOKEN = config.SLACK_BOT_TOKEN, config.SLACK_CHANNEL_ID, config.SLACK_APP_TOKEN
-    if config.ZULIP_PRC and config.ZULIP_STREAM and config.ZULIP_TOPIC:
-        post_to_zulip = True
-        ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = config.ZULIP_PRC, config.ZULIP_STREAM, config.ZULIP_TOPIC
-    if config.TELEGRAM_BOT_API_KEY and config.TELEGRAM_CHANNEL_ID:
-        post_to_telegram = True
-        TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID = config.TELEGRAM_BOT_API_KEY, config.TELEGRAM_CHANNEL_ID
-    if not post_to_slack and not post_to_zulip and not post_to_telegram:
-        e = "Set up at least one of the following: Slack, Zulip, Telegram."
-        raise ValueError(e)
+    post_to_slack = _posting_params_set('slack')
+    post_to_zulip = _posting_params_set('zulip')
+    post_to_telegram = _posting_params_set('telegram')
 
-    return post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN or "", SLACK_CHANNEL_ID or "", TELEGRAM_BOT_API_KEY or "", TELEGRAM_CHANNEL_ID or "", ZULIP_PRC or "", ZULIP_STREAM or "", ZULIP_TOPIC or ""
+    # Slack
+    SLACK_BOT_TOKEN = config.SLACK_BOT_TOKEN if post_to_slack else ""
+    SLACK_CHANNEL_ID = config.SLACK_CHANNEL_ID if post_to_slack else ""
+    # Zulip
+    ZULIP_PRC = config.ZULIP_PRC if post_to_zulip else ""
+    ZULIP_STREAM = config.ZULIP_STREAM if post_to_zulip else ""
+    ZULIP_TOPIC = config.ZULIP_TOPIC if post_to_zulip else ""
+    # Telegram
+    TELEGRAM_BOT_API_KEY = config.TELEGRAM_BOT_API_KEY if post_to_telegram else ""
+    TELEGRAM_CHANNEL_ID = config.TELEGRAM_CHANNEL_ID if post_to_telegram else ""
+
+    return (
+        post_to_slack, post_to_zulip, post_to_telegram,
+        SLACK_BOT_TOKEN, SLACK_CHANNEL_ID,
+        TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID,
+        ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC
+    )
 
 
 def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
