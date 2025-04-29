@@ -1,1 +1,1 @@
-([single-cell transcriptomics] OR [spatial transcriptomics] OR [data analysis])
+[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]

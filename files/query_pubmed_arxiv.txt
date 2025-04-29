@@ -1,8 +1,12 @@
-([single-cell transcriptomics] OR [spatial transcriptomics])
+([single-cell transcriptomics])
 
 AND
 
-([data analysis])
+([Cell Dynamics])
+
+AND
+
+([AI] OR [machine learning] OR [deep learning])
 
 AND NOT
 

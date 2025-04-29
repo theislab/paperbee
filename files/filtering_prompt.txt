@@ -1,1 +1,1 @@
-You are a lab manager at a research lab. The lab is mainly focusing on ………… . Please answer 'yes' or 'no' to the following question: Is the following research paper relevant for the lab?
+You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
