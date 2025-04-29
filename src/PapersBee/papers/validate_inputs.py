@@ -23,12 +23,9 @@ def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optiona
             raise FileNotFoundError(e)
         query_file = None
 
-    if not config.GOOGLE_SPREADSHEET_ID:
-        e = "Google Spreadsheet ID is not set."
-        raise ValueError(e)
-    if not config.GOOGLE_CREDENTIALS_JSON:
-        e = "Google credentials JSON is not set."
-        raise ValueError(e)
+    validate_config_variable("GOOGLE_SPREADSHEET_ID")
+    validate_config_variable("GOOGLE_CREDENTIALS_JSON")
+    validate_config_variable('NCBI_API_KEY')
 
     return root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv
 
@@ -55,39 +52,33 @@ def validate_posting_args() -> Tuple[str, str, str, str, str, str, str]:
 
 
 def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
-    if config.LLM_PROVIDER:
-        LLM_PROVIDER = config.LLM_PROVIDER
-        OPENAI_API_KEY = ""
-        if LLM_PROVIDER == "openai":
-            if not config.OPENAI_API_KEY:
-                e = "OpenAI API key is not set."
-                raise ValueError(e)
-            else:
-                OPENAI_API_KEY = config.OPENAI_API_KEY
-        if not config.LANGUAGE_MODEL:
-            e = "Language model is not set."
-            raise ValueError(e)
-        if LLM_PROVIDER not in ["openai", "ollama"]:
-            e = f"Invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
-            raise ValueError(e)
-        LANGUAGE_MODEL = config.LANGUAGE_MODEL
-        if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
-            e = "filtering_prompt.txt does not exist in the specified root_dir."
-            raise FileNotFoundError(e)
-        else:
-            with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
-                filtering_prompt = f.read()
-    elif config.LANGUAGE_MODEL and not config.LLM_PROVIDER:
-        e = "Set up LLM provider."
+    validate_config_variable('LLM_PROVIDER')
+    validate_config_variable('LANGUAGE_MODEL')
+
+    LLM_PROVIDER = config.LLM_PROVIDER
+    OPENAI_API_KEY = ""
+    if LLM_PROVIDER == "openai":
+        validate_config_variable("OPENAI_API_KEY")
+        OPENAI_API_KEY = config.OPENAI_API_KEY
+
+    if LLM_PROVIDER not in ["openai", "ollama"]:
+        e = f"Invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
         raise ValueError(e)
+    LANGUAGE_MODEL = config.LANGUAGE_MODEL
+
+    if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
+        e = "filtering_prompt.txt does not exist in the specified root_dir."
+        raise FileNotFoundError(e)
     else:
-        e = 'LLM filtering is set to True but LLM_PROVIDER and LANGUAGE_MODEL are not set.'
+        with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
+            filtering_prompt = f.read()
 
     return filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY
 
 
-def validate_ncbi_api_key() -> None:
-    if not config.NCBI_API_KEY:
-        e = "NCBI API key is not set."
+def validate_config_variable(var_name):
+    value = getattr(config, var_name, None)
+    if value is None or value == "":
+        e = f"{var_name} is not set. Please export {var_name} in your ENV."
         raise ValueError(e)
-    return None
+

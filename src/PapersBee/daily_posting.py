@@ -25,7 +25,6 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     llm_filtering = config.llm_filtering
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
-    validate_ncbi_api_key()
 
     finder = PapersFinder(
         root_dir=root_dir,
