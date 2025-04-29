@@ -324,20 +324,23 @@ class PapersFinder:
         """
         processed_articles = self.find_and_process_papers()
         papers = self.update_google_sheet(processed_articles)
-        response = None
+
+        response_slack = None
+        response_telegram = None
+        response_zulip = None
 
         if post_to_slack:
-            response = self.post_paper_to_slack(papers)
+            response_slack = self.post_paper_to_slack(papers)
 
         if post_to_telegram:
-            response = await self.post_paper_to_telegram(papers)
+            response_telegram = await self.post_paper_to_telegram(papers)
 
         if post_to_zulip:
-            response = await self.post_paper_to_zulip(papers)
+            response_zulip = await self.post_paper_to_zulip(papers)
 
         self.cleanup_files()
 
-        return papers, response
+        return papers, response_slack, response_telegram, response_zulip
 
     def send_csv(self, user_id: str, user_query: str) -> Tuple[pd.DataFrame, Any]:
         """

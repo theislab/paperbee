@@ -50,9 +50,9 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         zulip_stream=ZULIP_STREAM,
         zulip_topic=ZULIP_TOPIC,
     )
-    papers, response = await finder.run_daily(post_to_slack=post_to_slack, post_to_telegram=post_to_telegram, post_to_zulip=post_to_zulip)
+    papers, response_slack, response_telegram, response_zulip = await finder.run_daily(post_to_slack=post_to_slack, post_to_telegram=post_to_telegram, post_to_zulip=post_to_zulip)
 
-    return papers, response
+    return papers, response_slack, response_telegram, response_zulip
 
 def main() -> None:
     """
@@ -78,9 +78,7 @@ def main() -> None:
 
     # Dispatch to the appropriate subcommand
     if args.command == "post":
-        papers, response = asyncio.run(daily_papers_search(interactive=args.interactive, since=args.since))
+        papers, response_slack, response_telegram, response_zulip = asyncio.run(daily_papers_search(interactive=args.interactive, since=args.since))
         print("Papers found:")
         print(papers)
-        print("Response:")
-        print(response)
 

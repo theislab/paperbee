@@ -32,31 +32,25 @@ def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optiona
 
     return root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv
 
-def validate_posting_args() -> Tuple[bool, bool, bool, str, str, str, str, str, str, str]:
-    def _posting_params_set(social: str) -> bool:
-        required = SOCIAL_REQUIRED_PARAMS[social]
-        return all(getattr(config, param, None) for param in required)
+def validate_posting_args() -> Tuple[str, str, str, str, str, str, str]:
+    enabled_platforms = [
+        ('slack', config.POST_TO_SLACK),
+        ('zulip', config.POST_TO_ZULIP),
+        ('telegram', config.POST_TO_TELEGRAM),
+    ]
 
-    post_to_slack = _posting_params_set('slack')
-    post_to_zulip = _posting_params_set('zulip')
-    post_to_telegram = _posting_params_set('telegram')
-
-    # Slack
-    SLACK_BOT_TOKEN = config.SLACK_BOT_TOKEN if post_to_slack else ""
-    SLACK_CHANNEL_ID = config.SLACK_CHANNEL_ID if post_to_slack else ""
-    # Zulip
-    ZULIP_PRC = config.ZULIP_PRC if post_to_zulip else ""
-    ZULIP_STREAM = config.ZULIP_STREAM if post_to_zulip else ""
-    ZULIP_TOPIC = config.ZULIP_TOPIC if post_to_zulip else ""
-    # Telegram
-    TELEGRAM_BOT_API_KEY = config.TELEGRAM_BOT_API_KEY if post_to_telegram else ""
-    TELEGRAM_CHANNEL_ID = config.TELEGRAM_CHANNEL_ID if post_to_telegram else ""
+    for social, enabled in enabled_platforms:
+        if enabled:
+            required = SOCIAL_REQUIRED_PARAMS[social]
+            missing = [param for param in required if not getattr(config, param, None)]
+            if missing:
+                e = f"Missing required config params for {social}: {', '.join(missing)}"
+                raise ValueError(e)
 
     return (
-        post_to_slack, post_to_zulip, post_to_telegram,
-        SLACK_BOT_TOKEN, SLACK_CHANNEL_ID,
-        TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID,
-        ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC
+        config.SLACK_BOT_TOKEN or "", config.SLACK_CHANNEL_ID or "",
+        config.TELEGRAM_BOT_API_KEY or "", config.TELEGRAM_CHANNEL_ID or "",
+        config.ZULIP_PRC or "", config.ZULIP_STREAM or "", config.ZULIP_TOPIC or ""
     )
 
 

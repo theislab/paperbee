@@ -1,5 +1,9 @@
 import os
 
+POST_TO_SLACK: bool = os.getenv("POST_TO_SLACK", "False").lower() == "true"
+POST_TO_ZULIP: bool = os.getenv("POST_TO_ZULIP", "False").lower() == "true"
+POST_TO_TELEGRAM: bool = os.getenv("POST_TO_TELEGRAM", "False").lower() == "true"
+
 SLACK_CHANNEL_ID: str = os.getenv("SLACK_CHANNEL_ID", "")
 SLACK_TEST_CHANNEL_ID: str = os.getenv("SLACK_TEST_CHANNEL_ID", "")
 SLACK_BOT_TOKEN: str = os.getenv("SLACK_BOT_TOKEN", "")
@@ -18,9 +22,11 @@ GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_CRED_PATH", "")
 
 LOCAL_ROOT_DIR: str = os.getenv("LOCAL_ROOT_DIR", "")
 
-llm_filtering: bool = os.getenv("LLM_FILTERING", "False")
+llm_filtering: bool = os.getenv("LLM_FILTERING", "False").lower() == "true"
 LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 LANGUAGE_MODEL: str = os.getenv("LANGUAGE_MODEL", "")
 NCBI_API_KEY: str = os.getenv("NCBI_API_KEY", "")
+
+
 
