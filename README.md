@@ -140,9 +140,10 @@ Open source LLMs can also be used to filter irrelevant papers.
 2. Create a query – list of keywords to search papers. You can use this [template](files/query.txt). For syntax instructions, refer to [findpapers documentation](https://github.com/jonatasgrosman/findpapers). Since biorxiv only allows for `OR` boolean operator while pubmed and arxiv also allow for `AND` and `AND NOT` if you want to fine tune your query create two separate files:
    1. `query_biorxiv.txt` for the biorxiv quey where only `OR` is used
    2. `query_pubmed_arxiv.txt` where the other boolean operators can be used.
-3. If using LLM filtering, create a `filtering_prompt.txt` file. Use this [template](files/filtering_prompt.txt)
-4. Store the files in the directory you created.
-5. Set the variable `LOCAL_ROOT_DIR` in the in the environment pointing to the directory you created.
+3. Else only use `query.txt`
+4. If using LLM filtering, create a `filtering_prompt.txt` file. Use this [template](files/filtering_prompt.txt)
+5. Store the files in the directory you created.
+6. Set the variable `LOCAL_ROOT_DIR` in the in the environment pointing to the directory you created.
 
 <div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
 If query.txt is not present both query_biorxiv.txt and query_pubmed_arxiv.txt must be present

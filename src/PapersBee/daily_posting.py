@@ -8,7 +8,6 @@ from PapersBee.papers import (
     config,
     validate_configuration,
     validate_llm_args,
-    validate_ncbi_api_key,
     validate_posting_args,
 )
 
