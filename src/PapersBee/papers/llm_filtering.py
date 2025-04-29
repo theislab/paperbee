@@ -18,7 +18,7 @@ class LLMFilter:
         filtering_prompt (str): The prompt content for filtering the articles.
     """
 
-    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo", llm_prompt: str = "", OPENAI_API_KEY: Optional[str] = "") -> None:
+    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo", filtering_prompt: str = "", OPENAI_API_KEY: Optional[str] = "") -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
 
@@ -30,7 +30,7 @@ class LLMFilter:
         self.df: pd.DataFrame = df
         self.llm_provider: str = llm_provider.lower()
         self.model: str = model
-        self.llm_prompt: str = llm_prompt
+        self.filtering_prompt: str = filtering_prompt
         if self.llm_provider == "openai":
             self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
@@ -45,7 +45,7 @@ class LLMFilter:
     def is_relevant(
         self,
         client: Union[OpenAI, Client],
-        llm_prompt: str,
+        filtering_prompt: str,
         title: str,
         keywords: Optional[List[str]] = None,
         model: str = "gpt-3.5-turbo",
@@ -55,7 +55,7 @@ class LLMFilter:
 
         Args:
             client (Union[OpenAI, Client]): The client used to interact with the API (OpenAI or Client (Ollama)).
-            llm_prompt (str): The prompt used to instruct the LLM on relevance filtering.
+            filtering_prompt (str): The prompt used to instruct the LLM on relevance filtering.
             title (str): The title of the publication.
             keywords (Optional[List[str]]): A list of keywords associated with the publication. Defaults to None.
             model (str): The model to use for the API call. Defaults to "gpt-3.5-turbo".
@@ -73,14 +73,14 @@ class LLMFilter:
             # Use Ollama
             response = client.chat(
                 model=model,
-                messages=[{"role": "system", "content": llm_prompt}, {"role": "user", "content": message}],
+                messages=[{"role": "system", "content": filtering_prompt}, {"role": "user", "content": message}],
             )
             content = response['message']['content']
         else:
             # Use OpenAI API
             response = client.chat.completions.create(
                 model=model,
-                messages=[{"role": "system", "content": llm_prompt}, {"role": "user", "content": message}]
+                messages=[{"role": "system", "content": filtering_prompt}, {"role": "user", "content": message}]
             )
             content = response.choices[0].message.content
 
@@ -101,7 +101,7 @@ class LLMFilter:
         for index, article in self.df.iterrows():
             if self.is_relevant(
                 client=self.client,
-                llm_prompt=self.llm_prompt,
+                filtering_prompt=self.filtering_prompt,
                 title=article["Title"],
                 keywords=article.get("Keywords"),
                 model=self.model,

@@ -53,7 +53,7 @@ class PapersFinder:
         query_file_pubmed_arxiv: Optional[str] = None,
         interactive: bool = False,
         llm_filtering: bool = False,
-        llm_prompt : Optional[str] = "",
+        filtering_prompt : Optional[str] = "",
         llm_provider: Optional[str] = "",
         model: Optional[str] = "",
         OPENAI_API_KEY: Optional[str] = "",
@@ -93,7 +93,7 @@ class PapersFinder:
         self.llm_filtering: bool = llm_filtering
         self.llm_provider: Optional[str] = llm_provider
         self.model: Optional[str] = model
-        self.llm_prompt: Optional[str] = llm_prompt
+        self.filtering_prompt: Optional[str] = filtering_prompt
         self.OPENAI_API_KEY: Optional[str] = OPENAI_API_KEY
         #Slack, Telegram, Zulip
         self.slack_bot_token: str = slack_bot_token
@@ -188,12 +188,12 @@ class PapersFinder:
             if not self.llm_provider or not self.model:
                 e = "Both llm_provider and model must be provided if llm_filtering is True."
                 raise ValueError(e)
-            if not self.llm_prompt:
-                e = "llm_prompt must be provided if llm_filtering is True."
+            if not self.filtering_prompt:
+                e = "filtering_prompt must be provided if llm_filtering is True."
                 raise ValueError(e)
             if not self.OPENAI_API_KEY and self.llm_provider == "openai":
                 e = "OPENAI_API_KEY must be provided if llm_filtering is True."
-            llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model, llm_prompt=self.llm_prompt, OPENAI_API_KEY=self.OPENAI_API_KEY)
+            llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model, filtering_prompt=self.filtering_prompt, OPENAI_API_KEY=self.OPENAI_API_KEY)
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 

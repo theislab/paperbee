@@ -17,9 +17,9 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
     if interactive:
         #override LLM if interactive is activated
-        llm_filtering, llm_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = False, None, None, None, None
+        llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = False, None, None, None, None
     else:
-        llm_filtering, llm_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
+        llm_filtering, filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
     validate_ncbi_api_key()
 
     finder = PapersFinder(
@@ -33,7 +33,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         query_file_pubmed_arxiv=query_file_pubmed_arxiv,
         interactive=False,
         llm_filtering=llm_filtering,
-        llm_prompt = llm_prompt,
+        filtering_prompt = filtering_prompt,
         llm_provider=LLM_PROVIDER,
         model=LANGUAGE_MODEL,
         OPENAI_API_KEY=OPENAI_API_KEY,
