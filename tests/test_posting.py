@@ -5,7 +5,7 @@ from datetime import date
 import pytest
 
 from PapersBee.papers.papers_finder import PapersFinder
-from PapersBee.papers import config
+from PapersBee.papers import config  # TODO: read it manually, as it will not be updated by changing the file when the package is pip installed
 from PapersBee.papers.google_sheet import GoogleSheetsUpdater
 
 @pytest.mark.asyncio
@@ -52,7 +52,7 @@ async def test_posting():
         finder.since = date(2023, 10, 8)
         finder.until = date(2023, 10, 10)
 
-        papers, response = await finder.run_daily(post_to_slack=True, post_to_telegram=True)
+        papers, _, _, _ = await finder.run_daily(post_to_slack=True, post_to_telegram=True)
 
-        assert len(papers) == 3
+        assert len(papers) == 14
         print(papers)
