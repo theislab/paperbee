@@ -35,26 +35,21 @@ def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optiona
 
     return root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv
 
-def validate_posting_args() -> Tuple[str, str, str, str, str, str, str]:
-    enabled_platforms = [
-        ('slack', config.POST_TO_SLACK),
-        ('zulip', config.POST_TO_ZULIP),
-        ('telegram', config.POST_TO_TELEGRAM),
-    ]
+def validate_platform_args(platform: str) -> Tuple[str, ...]:
+    """Check that all required platform arguments are set if the posting is enabled."""
 
-    for social, enabled in enabled_platforms:
-        if enabled:
-            required = SOCIAL_REQUIRED_PARAMS[social]
-            missing = [param for param in required if not getattr(config, param, None)]
-            if missing:
-                e = f"Missing required config params for {social}: {', '.join(missing)}"
-                raise ValueError(e)
+    platform_args = getattr(config, platform, None)
 
-    return (
-        config.SLACK_BOT_TOKEN or "", config.SLACK_CHANNEL_ID or "",
-        config.TELEGRAM_BOT_API_KEY or "", config.TELEGRAM_CHANNEL_ID or "",
-        config.ZULIP_PRC or "", config.ZULIP_STREAM or "", config.ZULIP_TOPIC or ""
-    )
+    if not platform_args:
+        raise ValueError(f"Platform {platform} is not enabled.")
+
+    if platform_args["is_posting_on"]:
+        empty_args = [param for param in platform_args if not platform_args[param]]
+        if empty_args:
+            e = f"Missing required config params for {platform}: {', '.join(empty_args)}"
+            raise ValueError(e)
+        
+    return platform_args
 
 
 def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:

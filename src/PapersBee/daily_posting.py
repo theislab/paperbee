@@ -8,7 +8,7 @@ from PapersBee.papers import (
     config,
     validate_configuration,
     validate_llm_args,
-    validate_posting_args,
+    validate_platform_args,
 )
 
 
@@ -20,7 +20,11 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         Tuple[List[Dict[str, Any]], Any]: A tuple containing the list of papers and a response object.
     """
     root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration()
-    post_to_slack, post_to_zulip, post_to_telegram, SLACK_BOT_TOKEN, SLACK_CHANNEL_ID, TELEGRAM_BOT_API_KEY, TELEGRAM_CHANNEL_ID, ZULIP_PRC, ZULIP_STREAM, ZULIP_TOPIC = validate_posting_args()
+
+    slack_args = validate_platform_args("SLACK")
+    zulip_args = validate_platform_args("ZULIP")
+    telegram_args = validate_platform_args("TELEGRAM")
+
     llm_filtering = config.llm_filtering
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
@@ -40,15 +44,19 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         llm_provider=LLM_PROVIDER,
         model=LANGUAGE_MODEL,
         OPENAI_API_KEY=OPENAI_API_KEY,
-        slack_bot_token=SLACK_BOT_TOKEN,
-        slack_channel_id=SLACK_CHANNEL_ID,
-        telegram_bot_token=TELEGRAM_BOT_API_KEY,
-        telegram_channel_id=TELEGRAM_CHANNEL_ID,
-        zulip_prc=ZULIP_PRC,
-        zulip_stream=ZULIP_STREAM,
-        zulip_topic=ZULIP_TOPIC,
+        slack_bot_token=slack_args["bot_token"],
+        slack_channel_id=slack_args["channel_id"],
+        telegram_bot_token=telegram_args["bot_token"],
+        telegram_channel_id=telegram_args["channel_id"],
+        zulip_prc=zulip_args["prc"],
+        zulip_stream=zulip_args["stream"],
+        zulip_topic=zulip_args["topic"],
     )
-    papers, response_slack, response_telegram, response_zulip = await finder.run_daily(post_to_slack=post_to_slack, post_to_telegram=post_to_telegram, post_to_zulip=post_to_zulip)
+    papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
+        post_to_slack=slack_args["is_posting_on"],
+        post_to_telegram=telegram_args["is_posting_on"],
+        post_to_zulip=zulip_args["is_posting_on"]
+    )
 
     return papers, response_slack, response_telegram, response_zulip
 

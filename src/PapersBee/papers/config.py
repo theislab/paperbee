@@ -1,21 +1,26 @@
 import os
 
-POST_TO_SLACK: bool = os.getenv("POST_TO_SLACK", "False").lower() == "true"
-POST_TO_ZULIP: bool = os.getenv("POST_TO_ZULIP", "False").lower() == "true"
-POST_TO_TELEGRAM: bool = os.getenv("POST_TO_TELEGRAM", "False").lower() == "true"
+SLACK: dict = {
+    "is_posting_on": os.getenv("POST_TO_SLACK", "False").lower() == "true",
+    "channel_id": os.getenv("SLACK_CHANNEL_ID", ""),
+    "bot_token": os.getenv("SLACK_BOT_TOKEN", ""),
+    "app_token": os.getenv("SLACK_APP_TOKEN", ""),
+}
+SLACK_TEST_CHANNEL_ID: str = os.getenv("SLACK_TEST_CHANNEL_ID", "")  # not required so left outside of dictionary
 
-SLACK_CHANNEL_ID: str = os.getenv("SLACK_CHANNEL_ID", "")
-SLACK_TEST_CHANNEL_ID: str = os.getenv("SLACK_TEST_CHANNEL_ID", "")
-SLACK_BOT_TOKEN: str = os.getenv("SLACK_BOT_TOKEN", "")
-SLACK_APP_TOKEN: str = os.getenv("SLACK_APP_TOKEN", "")
+TELEGRAM: dict = {
+    "is_posting_on": os.getenv("POST_TO_TELEGRAM", "False").lower() == "true",
+    "bot_token": os.getenv("TELEGRAM_BOT_API_KEY", ""),
+    "channel_id": os.getenv("TELEGRAM_CHANNEL_ID", ""),
+}
+TELEGRAM_TEST_CHANNEL_ID: str = os.getenv("TELEGRAM_TEST_CHANNEL_ID", "") # not required so left outside of dictionary
 
-TELEGRAM_BOT_API_KEY: str = os.getenv("TELEGRAM_BOT_API_KEY", "")
-TELEGRAM_CHANNEL_ID: str = os.getenv("TELEGRAM_CHANNEL_ID", "")
-TELEGRAM_TEST_CHANNEL_ID: str = os.getenv("TELEGRAM_TEST_CHANNEL_ID", "")
-
-ZULIP_PRC: str = os.getenv("ZULIP_PRC", "")
-ZULIP_STREAM: str = os.getenv("ZULIP_STREAM", "")
-ZULIP_TOPIC: str = os.getenv("ZULIP_TOPIC", "")
+ZULIP: dict = {
+    "is_posting_on": os.getenv("POST_TO_ZULIP", "False").lower() == "true",
+    "prc": os.getenv("ZULIP_PRC", ""),
+    "stream": os.getenv("ZULIP_STREAM", ""),
+    "topic": os.getenv("ZULIP_TOPIC", ""),
+}
 
 GOOGLE_CREDENTIALS_JSON: str = os.getenv("GOOGLE_CRED_PATH", "")
 GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_CRED_PATH", "")
