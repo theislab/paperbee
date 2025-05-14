@@ -213,6 +213,18 @@ If you enjoyed setting up, you can enjoy a bit more by creating additional test 
 
 - `TELEGRAM_TEST_CHANNEL_ID` – ID of the slack channel to post to.
 - `SLACK_TEST_CHANNEL_ID` – ID of the telegram channel to post to.
+- `GOOGLE_TEST_SPREADSHEET_ID` – ID of the test spreadsheet. Don't set a spreadsheet used in production, it will be emptied! 
+
+Install extra dependencies:
+```
+pip install pytest-asyncio
+```
+
+Or with:
+```
+poetry install --with dev
+```
+
 
 Then simply run the tests with:
 
