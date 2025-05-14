@@ -1,4 +1,5 @@
 from typing import List, Optional, Union
+import time
 
 import pandas as pd
 from ollama import Client
@@ -107,6 +108,8 @@ class LLMFilter:
                 model=self.model,
             ):
                 retained_indices.append(index)
+            
+            time.sleep(0.2)  # 100ms delay between requests to not exceed the rate limit
 
         # Return a DataFrame containing only the retained articles
         return self.df.loc[retained_indices]
