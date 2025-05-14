@@ -25,7 +25,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
     zulip_args = validate_platform_args("ZULIP")
     telegram_args = validate_platform_args("TELEGRAM")
 
-    llm_filtering = config.llm_filtering
+    llm_filtering = config.LLM_FILTERING
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
 

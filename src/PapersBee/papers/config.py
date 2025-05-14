@@ -28,7 +28,7 @@ GOOGLE_TEST_SPREADSHEET_ID: str = os.getenv("GOOGLE_TEST_SPREADSHEET_ID", "")
 
 LOCAL_ROOT_DIR: str = os.getenv("LOCAL_ROOT_DIR", "")
 
-llm_filtering: bool = os.getenv("LLM_FILTERING", "False").lower() == "true"
+LLM_FILTERING: bool = os.getenv("LLM_FILTERING", "False").lower() == "true"
 LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 LANGUAGE_MODEL: str = os.getenv("LANGUAGE_MODEL", "")
