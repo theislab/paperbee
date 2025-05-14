@@ -23,7 +23,8 @@ ZULIP: dict = {
 }
 
 GOOGLE_CREDENTIALS_JSON: str = os.getenv("GOOGLE_CRED_PATH", "")
-GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_CRED_PATH", "")
+GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_SPREADSHEET_ID", "")
+GOOGLE_TEST_SPREADSHEET_ID: str = os.getenv("GOOGLE_TEST_SPREADSHEET_ID", "")
 
 LOCAL_ROOT_DIR: str = os.getenv("LOCAL_ROOT_DIR", "")
 
