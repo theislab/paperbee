@@ -191,9 +191,9 @@ Classes to fetch the papers, format them, and post them on slack along with upda
 
 `src/PapersBee/papers/telegram_papers_formatter.py` Format the papers and publish them on telegram.
 
-`src/PapersBee/papers/papers_finder.py` is tha main wrapper class.
+`src/PapersBee/papers/papers_finder.py` is the main wrapper class.
 
-`src/PapersBee/daily_posting.py` is tha entry point for the CLI command.
+`src/PapersBee/daily_posting.py` is the entry point for the CLI command.
 
 ### Running tests (optional)
 
