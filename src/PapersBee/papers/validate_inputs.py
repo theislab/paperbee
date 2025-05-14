@@ -2,7 +2,6 @@ import os
 from typing import Optional, Tuple
 
 from PapersBee.papers import config
-from PapersBee.papers.posting_required_params import SOCIAL_REQUIRED_PARAMS
 
 
 def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optional[str]]:
