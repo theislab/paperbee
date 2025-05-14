@@ -50,6 +50,8 @@ Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, bu
 > export NCBI_API_KEY="ncbi key"
 > ```
 
+Or, alternatively, set `NCBI_API_KEY` variable in [config.py](src/PapersBee/papers/config.py).
+
 ### Setup Posting channels
 
 <div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
@@ -73,6 +75,8 @@ Setup at least one of the three.
 > export SLACK_BOT_TOKEN="the bot token"
 > ```
 
+Or, alternatively, fill out the `SLACK` dictionary in [config.py](src/PapersBee/papers/config.py).
+
 #### Setup Telegram (optional)
 
 1. Create a Telegram bot. Follow the instructions [here](https://core.telegram.org/bots/#how-do-i-create-a-bot).
@@ -87,6 +91,8 @@ Setup at least one of the three.
 > export TELEGRAM_CHANNEL_ID="telegram channel id where to post"
 > ```
 
+Or, alternatively, fill out the `TELEGRAM` dictionary in [config.py](src/PapersBee/papers/config.py).
+
 #### Setup Zulip (optional)
 
 1. Create a Zulip bot and download the `zuliprc` file. Follow the instructions [here](https://zulip.com/help/add-a-bot-or-integration).
@@ -99,6 +105,8 @@ Setup at least one of the three.
 > export ZULIP_STREAM="zulip stream where to post"
 > export ZULIP_TOPIC="zulip topic where to post"
 > ```
+
+Or, alternatively, fill out the `ZULIP` dictionary in [config.py](src/PapersBee/papers/config.py).
 
 ### Setup LLM for automated filtering (optional, but highly recommended)
 
@@ -121,6 +129,8 @@ GPT model is used to filter irrelevant papers. You can also do it manually, but 
 > export LANGUAGE_MODEL="your favorite gpt model"
 > ```
 
+Or, alternatively, set these variables in [config.py](src/PapersBee/papers/config.py).
+
 #### Setup Ollama
 
 Open source LLMs can also be used to filter irrelevant papers.
@@ -133,6 +143,8 @@ Open source LLMs can also be used to filter irrelevant papers.
 > export LLM_PROVIDER="ollama"
 > export LANGUAGE_MODEL="your favorite LLM model"
 > ```
+
+Or, alternatively, set these variables in [config.py](src/PapersBee/papers/config.py).
 
 ### Setup query and LLM filtering prompt
 
@@ -154,6 +166,8 @@ Make sure that you run it in the correct environment. If everything works, you s
 > ```bash
 > export LOCAL_ROOT_DIR="path to the folder where queries and llm prompts are stored"
 > ```
+
+Or, alternatively, set the `LOCAL_ROOT_DIR` variable in [config.py](src/PapersBee/papers/config.py).
 
 ## Running the bot
 
