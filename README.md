@@ -177,23 +177,15 @@ When everything is set up, you can simply run the bot with:
 
 Classes to fetch the papers, format them, and post them on slack along with updating the papers google sheet.
 
-`src/PapersBee/papers/utils.py` Preprocessor for `findpapers` output, and to extract DOIs from pubmed.
-
-`src/PapersBee/papers/google_sheet.py` Class to check and update the papers google sheet.
-
-`src/PapersBee/papers/llm_filtering.py` Class to filter paper with LLMs
-
-`src/PapersBee/papers/cli.py` Class to filter paper with interactively in the CLI
-
-`src/PapersBee/papers/slack_papers_formatter.py` Format the papers and publish them on slack.
-
-`src/PapersBee/papers/zulip_papers_formatter.py` Format the papers and publish them on zulip.
-
-`src/PapersBee/papers/telegram_papers_formatter.py` Format the papers and publish them on telegram.
-
-`src/PapersBee/papers/papers_finder.py` is the main wrapper class.
-
-`src/PapersBee/daily_posting.py` is the entry point for the CLI command.
+- `src/PapersBee/papers/utils.py` Preprocessor for `findpapers` output, and to extract DOIs from pubmed.
+- `src/PapersBee/papers/google_sheet.py` Class to check and update the papers google sheet.
+- `src/PapersBee/papers/llm_filtering.py` Class to filter paper with LLMs
+- `src/PapersBee/papers/cli.py` Class to filter paper with interactively in the CLI
+- `src/PapersBee/papers/slack_papers_formatter.py` Format the papers and publish them on slack.
+- `src/PapersBee/papers/zulip_papers_formatter.py` Format the papers and publish them on zulip.
+- `src/PapersBee/papers/telegram_papers_formatter.py` Format the papers and publish them on telegram.
+- `src/PapersBee/papers/papers_finder.py` is the main wrapper class.
+- `src/PapersBee/daily_posting.py` is the entry point for the CLI command.
 
 ### Running tests (optional)
 
