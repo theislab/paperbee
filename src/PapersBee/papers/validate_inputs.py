@@ -6,6 +6,12 @@ from PapersBee.papers.posting_required_params import SOCIAL_REQUIRED_PARAMS
 
 
 def validate_configuration() -> Tuple[str, Optional[str], Optional[str], Optional[str]]:
+    """
+    Validate the root directory, google and NCBI credentials, and the query files.
+
+    Returns:
+        Tuple[str, Optional[str], Optional[str], Optional[str]]: A tuple containing the root directory, query file, query file for BioRxiv, and query file for Pubmed and Arxiv.
+    """
     root_dir: str = config.LOCAL_ROOT_DIR
     if not os.path.exists(root_dir):
         e = f"Root directory {root_dir} does not exist."
@@ -77,6 +83,7 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
 
 
 def validate_config_variable(var_name):
+    """Check if a variable is set in python or in the environment."""
     value = getattr(config, var_name, None)
     if value is None or value == "":
         e = f"{var_name} is not set. Please export {var_name} in your ENV."
