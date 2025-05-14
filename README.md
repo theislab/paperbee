@@ -37,7 +37,13 @@ Papersbee queries scientific papers using keywords specified by user from PubMed
 > export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
 > ```
 
-1. Add the service account email to the spreadsheet. Go to the spreadsheet, click on the three dots in the top right corner, click on *Share*, paste the service account email into the *Add people* field, and give it the *Editor* role.
+Alternatively, you can simply set these variables in [config](src/PapersBee/papers/config.py).
+
+<div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
+<b>Important!</b> When setting up variables in config, don't share it with anyone online (e.g. add it to .`gitignore` to not commit accidentally). Loosing your tokens might lead to other people using them for their purposes.
+</div>
+
+6. Add the service account email to the spreadsheet. Go to the spreadsheet, click on the three dots in the top right corner, click on *Share*, paste the service account email into the *Add people* field, and give it the *Editor* role.
 
 ### Get NCBI API key
 
