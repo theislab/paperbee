@@ -90,7 +90,7 @@ class PubMedClient:
 
     @staticmethod
     def get_doi_from_title(
-        title: str, seconds_to_wait: float = 1 / 10, ncbi_api_key: Optional[str] = None
+        title: str, seconds_to_wait: float = 1 / 10, ncbi_api_key: Optional[str] = None, n_retries: int = 3
     ) -> Optional[str]:
         """
         Retrieve the DOI (Digital Object Identifier) of a publication given its title by querying PubMed's database.
@@ -106,16 +106,30 @@ class PubMedClient:
         api_key = f"&api_key={ncbi_api_key}" if ncbi_api_key else ""
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
         search_url = f"{base_url}esearch.fcgi?db=pubmed&term={title}&retmode=json{api_key}"
-        search_response = requests.get(search_url, timeout=10)  # Added timeout
-        search_data = search_response.json()
 
-        # NCBI does not allow more than 3 requests per second (10 with an API key)
-        if seconds_to_wait:
-            sleep(seconds_to_wait)
+        for _ in range(n_retries):
+            try:
+                search_response = requests.get(search_url, timeout=10)  # Added timeout
+                search_data = search_response.json()
 
-        pubmed_id = search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
-        if not pubmed_id:
-            return None
+                # NCBI does not allow more than 3 requests per second (10 with an API key)
+                if seconds_to_wait:
+                    sleep(seconds_to_wait)
+
+                pubmed_id = search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
+                if not pubmed_id:
+                    return None
+                else:
+                    break
+            except Exception as e:
+                print(f"Error fetching DOI from PubMed: {e}")
+                print(f"Increasing timeout and retrying...")
+                seconds_to_wait *= 2
+                
+                if seconds_to_wait:
+                    sleep(seconds_to_wait)
+                
+                continue
 
         if seconds_to_wait:
             sleep(seconds_to_wait)
