@@ -62,7 +62,7 @@ def validate_llm_args(root_dir: str) -> Tuple[bool, str, str, str, str]:
         OPENAI_API_KEY = config.OPENAI_API_KEY
 
     if LLM_PROVIDER not in ["openai", "ollama"]:
-        e = f"Invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
+        e = f"{LLM_PROVIDER} is an invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
         raise ValueError(e)
     LANGUAGE_MODEL = config.LANGUAGE_MODEL
 
