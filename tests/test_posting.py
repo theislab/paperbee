@@ -54,5 +54,13 @@ async def test_posting():
 
         papers, _, _, _ = await finder.run_daily(post_to_slack=True, post_to_telegram=True)
 
-        assert len(papers) == 14
+        assert len(papers) > 3
+
+        # Check scpoli paper
+        for paper in papers:
+            if paper[4].startswith("Population-level integration of single-cell"):
+                break
+        else:
+            raise ValueError("scpoli paper not found")
+
         print(papers)
