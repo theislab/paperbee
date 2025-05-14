@@ -33,6 +33,3 @@ LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 LANGUAGE_MODEL: str = os.getenv("LANGUAGE_MODEL", "")
 NCBI_API_KEY: str = os.getenv("NCBI_API_KEY", "")
-
-
-

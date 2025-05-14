@@ -41,4 +41,3 @@ async def test_publish_many_papers(publisher, papers):
     message = await publisher.publish_papers(papers, preprints, today=None, spreadsheet_id=None)
 
     assert message.message_id is not None
-
