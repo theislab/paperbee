@@ -1,10 +1,12 @@
 from typing import List, Optional, Union
+import time
 
 import pandas as pd
-from openai import OpenAI
 from ollama import Client
+from openai import OpenAI
 
-from papers import config
+from . import config
+
 
 class LLMFilter:
     """
@@ -17,7 +19,7 @@ class LLMFilter:
         filtering_prompt (str): The prompt content for filtering the articles.
     """
 
-    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo") -> None:
+    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo", filtering_prompt: str = "", OPENAI_API_KEY: Optional[str] = "") -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
 
@@ -29,19 +31,17 @@ class LLMFilter:
         self.df: pd.DataFrame = df
         self.llm_provider: str = llm_provider.lower()
         self.model: str = model
-
+        self.filtering_prompt: str = filtering_prompt
         if self.llm_provider == "openai":
-            self.client = OpenAI(api_key=config.OPENAI_API_KEY)
+            self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
             self.client = Client(
                 host='http://localhost:11434',
                 headers={'x-some-header': 'some-value'}
                 )
         else:
-            raise ValueError("Invalid client_type. Choose 'openai' or 'ollama'.")
-
-        with open(config.LOCAL_FILTERING_PROMPT_PATH) as f:
-            self.filtering_prompt: str = f.read()
+            e = "Invalid client_type. Choose 'openai' or 'ollama'."
+            raise ValueError(e)
 
     def is_relevant(
         self,
@@ -108,6 +108,8 @@ class LLMFilter:
                 model=self.model,
             ):
                 retained_indices.append(index)
+            
+            time.sleep(0.2)  # 100ms delay between requests to not exceed the rate limit
 
         # Return a DataFrame containing only the retained articles
         return self.df.loc[retained_indices]

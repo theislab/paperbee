@@ -1,27 +1,35 @@
 import os
 
-SLACK_CHANNEL_ID: str = "C05AGQ467HQ"
-SLACK_TEST_CHANNEL_ID: str = "C07045SPWE7"
-SLACK_BOT_TOKEN: str = os.environ["SLACK_BOT_TOKEN"]
-SLACK_APP_TOKEN: str = os.environ["SLACK_APP_TOKEN"]
+SLACK: dict = {
+    "is_posting_on": os.getenv("POST_TO_SLACK", "False").lower() == "true",
+    "channel_id": os.getenv("SLACK_CHANNEL_ID", ""),
+    "bot_token": os.getenv("SLACK_BOT_TOKEN", ""),
+    "app_token": os.getenv("SLACK_APP_TOKEN", ""),
+}
+SLACK_TEST_CHANNEL_ID: str = os.getenv("SLACK_TEST_CHANNEL_ID", "")  # not required so left outside of dictionary
 
-TELEGRAM_BOT_API_KEY: str = os.environ["TELEGRAM_BOT_API_KEY"]
-TELEGRAM_CHANNEL_ID: str = os.environ["TELEGRAM_CHANNEL_ID"]
-TELEGRAM_TEST_CHANNEL_ID: str = os.environ["TELEGRAM_TEST_CHANNEL_ID"]
+TELEGRAM: dict = {
+    "is_posting_on": os.getenv("POST_TO_TELEGRAM", "False").lower() == "true",
+    "bot_token": os.getenv("TELEGRAM_BOT_API_KEY", ""),
+    "channel_id": os.getenv("TELEGRAM_CHANNEL_ID", ""),
+}
+TELEGRAM_TEST_CHANNEL_ID: str = os.getenv("TELEGRAM_TEST_CHANNEL_ID", "") # not required so left outside of dictionary
 
-ZULIP_PRC: str = os.environ["ZULIP_PRC"]
-ZULIP_STREAM: str = os.environ["ZULIP_STREAM"]
-ZULIP_TOPIC: str = os.environ["ZULIP_TOPIC"]
+ZULIP: dict = {
+    "is_posting_on": os.getenv("POST_TO_ZULIP", "False").lower() == "true",
+    "prc": os.getenv("ZULIP_PRC", ""),
+    "stream": os.getenv("ZULIP_STREAM", ""),
+    "topic": os.getenv("ZULIP_TOPIC", ""),
+}
 
-GOOGLE_CREDENTIALS_JSON: str = os.environ["GOOGLE_CRED_PATH"]
-GOOGLE_SPREADSHEET_ID: str = "1vhUam64Rir-dUsoRi-8-QdNSzT22hGGuJmScfgz_3dk"
+GOOGLE_CREDENTIALS_JSON: str = os.getenv("GOOGLE_CRED_PATH", "")
+GOOGLE_SPREADSHEET_ID: str = os.getenv("GOOGLE_SPREADSHEET_ID", "")
+GOOGLE_TEST_SPREADSHEET_ID: str = os.getenv("GOOGLE_TEST_SPREADSHEET_ID", "")
 
-LOCAL_ROOT_DIR: str = "/home/daniele/Code/github_synced/papersbee/files/"
-LOCAL_FILTERING_PROMPT_PATH: str = (
-    "/home/daniele/Code/github_synced/papersbee/files/filtering_prompt.txt"
-)
+LOCAL_ROOT_DIR: str = os.getenv("LOCAL_ROOT_DIR", "")
 
-LLM_PROVIDER: str = os.environ["LLM_PROVIDER"]
-OPENAI_API_KEY: str = os.environ["OPENAI_API_KEY"]
-LANGUAGE_MODEL: str = os.environ["LANGUAGE_MODEL"]
-NCBI_API_KEY: str = os.environ["NCBI_API_KEY"]
+LLM_FILTERING: bool = os.getenv("LLM_FILTERING", "False").lower() == "true"
+LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "")
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+LANGUAGE_MODEL: str = os.getenv("LANGUAGE_MODEL", "")
+NCBI_API_KEY: str = os.getenv("NCBI_API_KEY", "")
