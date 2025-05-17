@@ -1,0 +1,41 @@
+GOOGLE_SPREADSHEET_ID: "your-google-spreadsheet-id"
+GOOGLE_CREDENTIALS_JSON: "/path/to/your/google-credentials.json"
+NCBI_API_KEY: "your-ncbi-api-key"
+
+# path to the local root directory where query prompts and files are stored
+LOCAL_ROOT_DIR: "/path/to/local/root/dir"
+
+# LLM Filtering (optional)
+LLM_FILTERING: true
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gpt-3.5-turbo"
+OPENAI_API_KEY: "your-openai-api-key"
+FILTERING_PROMPT: "/path/to/filtering_prompt.txt"
+
+# Slack configuration
+SLACK:
+  is_posting_on: true
+  bot_token: "your-slack-bot-token"
+  channel_id: "your-slack-channel-id"
+  app_token: "your-slack-app-token"
+
+# Telegram configuration
+TELEGRAM:
+  is_posting_on: true
+  bot_token: "your-telegram-bot-token"
+  channel_id: "your-telegram-channel-id"
+
+# Zulip configuration
+ZULIP:
+  is_posting_on: false
+  prc: "path-to-your-zulip-prc"
+  stream: "your-zulip-stream"
+  topic: "your-zulip-topic"
+
+
+
+
+SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so left outside of dictionary
+
