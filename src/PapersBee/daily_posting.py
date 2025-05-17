@@ -3,36 +3,44 @@ import asyncio
 import os
 from typing import Any, List, Optional, Tuple
 
+import yaml
+
 from PapersBee.papers import (
     PapersFinder,
-    config,
     validate_configuration,
     validate_llm_args,
     validate_platform_args,
 )
 
 
-async def daily_papers_search(interactive: bool = False, since: Optional[int] = None) -> Tuple[List[List[Any]], Any]:
+def load_config(config_path: str) -> dict:
+    with open(config_path) as f:
+        return yaml.safe_load(f)
+
+
+async def daily_papers_search(config: dict, interactive: bool = False, since: Optional[int] = None) -> Tuple[List[List[Any]], Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
     Returns:
         Tuple[List[Dict[str, Any]], Any]: A tuple containing the list of papers and a response object.
     """
-    root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration()
+    root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration(config)
 
-    slack_args = validate_platform_args("SLACK")
-    zulip_args = validate_platform_args("ZULIP")
-    telegram_args = validate_platform_args("TELEGRAM")
+    slack_args = validate_platform_args(config, "SLACK")
+    zulip_args = validate_platform_args(config, "ZULIP")
+    telegram_args = validate_platform_args(config, "TELEGRAM")
 
-    llm_filtering = config.LLM_FILTERING
+    llm_filtering = config.get('LLM_FILTERING', False)
     if llm_filtering:
-        filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(root_dir)
+        filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(config, root_dir)
+    else:
+        filtering_prompt = LLM_PROVIDER = LANGUAGE_MODEL = OPENAI_API_KEY = None
 
     finder = PapersFinder(
         root_dir=root_dir,
-        spreadsheet_id=config.GOOGLE_SPREADSHEET_ID,
-        google_credentials_json=config.GOOGLE_CREDENTIALS_JSON,
+        spreadsheet_id=config.get('GOOGLE_SPREADSHEET_ID', ''),
+        google_credentials_json=config.get('GOOGLE_CREDENTIALS_JSON', ''),
         sheet_name="Papers",
         since=since,
         query_file=query_file,
@@ -40,7 +48,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
         query_file_pubmed_arxiv=query_file_pubmed_arxiv,
         interactive=interactive,
         llm_filtering=llm_filtering,
-        filtering_prompt = filtering_prompt,
+        filtering_prompt=filtering_prompt,
         llm_provider=LLM_PROVIDER,
         model=LANGUAGE_MODEL,
         OPENAI_API_KEY=OPENAI_API_KEY,
@@ -60,6 +68,7 @@ async def daily_papers_search(interactive: bool = False, since: Optional[int] = 
 
     return papers, response_slack, response_telegram, response_zulip
 
+
 def main() -> None:
     """
     CLI entry point for PapersBee, supporting subcommands like 'post'.
@@ -69,6 +78,12 @@ def main() -> None:
 
     # Subcommand: post
     post_parser = subparsers.add_parser("post", help="Post daily papers")
+    post_parser.add_argument(
+        "--config",
+        type=str,
+        required=True,
+        help="Path to YAML configuration file.",
+    )
     post_parser.add_argument(
         "--interactive",
         action="store_true",
@@ -84,7 +99,10 @@ def main() -> None:
 
     # Dispatch to the appropriate subcommand
     if args.command == "post":
-        papers, response_slack, response_telegram, response_zulip = asyncio.run(daily_papers_search(interactive=args.interactive, since=args.since))
+        config = load_config(args.config)
+        papers, response_slack, response_telegram, response_zulip = asyncio.run(
+            daily_papers_search(config, interactive=args.interactive, since=args.since)
+        )
         print("Papers found:")
         print(papers)
 

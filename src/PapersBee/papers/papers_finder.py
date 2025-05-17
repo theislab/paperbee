@@ -9,7 +9,6 @@ import pandas as pd
 from slack_sdk import WebClient
 from tqdm import tqdm
 
-from . import config
 from .cli import InteractiveCLIFilter
 from .google_sheet import GoogleSheetsUpdater
 from .llm_filtering import LLMFilter
@@ -64,6 +63,7 @@ class PapersFinder:
         zulip_prc: str = "",
         zulip_stream: str = "",
         zulip_topic: str = "",
+        ncbi_api_key: str = ""
     ) -> None:
         self.root_dir: str = root_dir
         #dates
@@ -105,6 +105,8 @@ class PapersFinder:
         self.zulip_topic: str = zulip_topic
         #Logger
         self.logger = Logger("PapersFinder")
+        #NCBI API
+        self.ncbi_api_key: str = ncbi_api_key
 
 
     def find_and_process_papers(self) -> pd.DataFrame:
@@ -172,7 +174,7 @@ class PapersFinder:
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
+                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=self.ncbi_api_key)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
