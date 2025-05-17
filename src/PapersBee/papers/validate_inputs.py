@@ -11,8 +11,8 @@ def validate_configuration(config: dict) -> Tuple[str, Optional[str], Optional[s
     """
     root_dir: str = config.get('LOCAL_ROOT_DIR', '')
     if not os.path.exists(root_dir):
-        raise FileNotFoundError
-
+        e = f"Root directory {root_dir} does not exist."
+        raise FileNotFoundError(e)
     if os.path.exists(os.path.join(root_dir, "query.txt")):
         query_file = os.path.join(root_dir, "query.txt")
         query_file_biorxiv = None
@@ -21,7 +21,8 @@ def validate_configuration(config: dict) -> Tuple[str, Optional[str], Optional[s
         query_file_biorxiv = os.path.join(root_dir, "query_biorxiv.txt")
         query_file_pubmed_arxiv = os.path.join(root_dir, "query_pubmed_arxiv.txt")
         if not (os.path.exists(query_file_biorxiv) and os.path.exists(query_file_pubmed_arxiv)):
-            raise FileNotFoundError
+            e = "Neither query.txt nor both query_biorxiv.txt and query_pubmed_arxiv.txt exist."
+            raise FileNotFoundError(e)
         query_file = None
 
     validate_config_variable(config, "GOOGLE_SPREADSHEET_ID")
@@ -34,7 +35,8 @@ def validate_platform_args(config: dict, platform: str) -> dict:
     """Check that all required platform arguments are set if the posting is enabled."""
     platform_args = config.get(platform)
     if not platform_args:
-        raise ValueError
+        e = f"Platform {platform} is not enabled."
+        raise ValueError(e)
 
     if platform_args.get("is_posting_on", False):
         empty_args = [param for param in platform_args if not platform_args[param]]
@@ -54,11 +56,13 @@ def validate_llm_args(config: dict, root_dir: str) -> Tuple[str, str, str, str]:
         OPENAI_API_KEY = config.get('OPENAI_API_KEY')
 
     if LLM_PROVIDER not in ["openai", "ollama"]:
-        raise ValueError
+        e = f"{LLM_PROVIDER} is an invalid LLM provider {LLM_PROVIDER}. Please select one of ('openai', 'ollama')."
+        raise ValueError(e)
     LANGUAGE_MODEL = config.get('LANGUAGE_MODEL')
 
     if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
-        raise FileNotFoundError
+        e = "filtering_prompt.txt does not exist in the specified root_dir."
+        raise FileNotFoundError(e)
     else:
         with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
             filtering_prompt = f.read()
@@ -70,5 +74,5 @@ def validate_config_variable(config: dict, var_name):
     """Check if a variable is set in the config dict."""
     value = config.get(var_name)
     if value is None or value == "":
-        raise ValueError
-
+        e = f"{var_name} is not set. Please export {var_name} in your ENV."
+        raise ValueError(e)
