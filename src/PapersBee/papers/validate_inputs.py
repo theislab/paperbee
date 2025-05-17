@@ -41,8 +41,9 @@ def validate_platform_args(config: dict, platform: str) -> dict:
     if platform_args.get("is_posting_on", False):
         empty_args = [param for param in platform_args if not platform_args[param]]
         if empty_args:
-            raise ValueError
-    return platform_args
+            e = f"Missing required config params for {platform}: {', '.join(empty_args)}"
+            raise ValueError(e)
+        return platform_args
 
 
 def validate_llm_args(config: dict, root_dir: str) -> Tuple[str, str, str, str]:
