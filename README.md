@@ -180,37 +180,38 @@ GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so 
 
 ### 📄 Example Query and Prompt Files
 
-#### `query.txt`
+#### `query`
+
+You can simply fit one query for all databases. But then make sure it fits requirements for all of them! Simple list of keywords separated by OR will do the job for sure:
 
 ```text
 [AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
 ```
 
-#### `query_biorxiv.txt`
+#### `query_biorxiv`
 
+This database has more requirements, so if your query is complex, you have to set a separate simple query for biorxiv, and a complex query for everything else. See [findpapers documentation](https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction) for more details. TLDR:
+- Only **1-level grouping** is supported: no round brackets inside round brackets
+- **Only OR connectors between parenthesis** are allowed, no `() AND ()`!
+- **NOT is not allowed**
+- All connectors must be either OR or AND. **No mixing**!
+
+Here's an example of a valid query:
 ```text
 [AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
 ```
 
 #### `query_pubmed_arxiv.txt`
 
+Pubmed and Arxiv don't have such requirements, so query can be more complex:
+
 ```text
-([single-cell transcriptomics])
-
-AND
-
-([Cell Dynamics])
-
-AND
-
-([AI] OR [machine learning] OR [deep learning])
-
-AND NOT
-
-([proteomics])
+([single-cell transcriptomics]) AND ([Cell Dynamics]) AND ([AI] OR [machine learning] OR [deep learning]) AND NOT ([proteomics])
 ```
 
-#### `filtering_prompt.txt`
+#### `filtering_prompt`
+
+Simply describe your lab interests, which type of papers you want to see and which you don't. The more details, the better! But always leave the last sentence with the question as is. Here is an example:
 
 ```text
 You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
@@ -229,6 +230,8 @@ papersbee post --config /path/to/config.yml --interactive --since 10
 - `--config` : Path to your YAML configuration file.
 - `--interactive` : (Optional) Use CLI for manual filtering.
 - `--since` : (Optional) How many days back to search for papers (default: last 24h).
+
+See [daily_posting.py](src/PapersBee/daily_posting.py) for an example of running search from Python.
 
 ---
 
