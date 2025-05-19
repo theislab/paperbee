@@ -8,7 +8,7 @@ Currently supported platforms:
 - 🟣 Slack
 - 🟢 Zulip
 - 🔵 Telegram
-
+  
 ---
 
 ## 🚀 How Does It Work?
@@ -114,22 +114,6 @@ Update the **LLM** variables in the `config.yml` file. (LLM_PROVIDER, LANGUAGE_M
 
 ---
 
-### 5. 🔍 Setup Query and LLM Filtering Prompt
-
-1. Create a directory for query and prompt files.
-2. Create your query files:
-   - `query_biorxiv.txt` (only `OR` allowed)
-   - `query_pubmed_arxiv.txt` (supports `AND`, `AND NOT`)
-   - Or just `query.txt` for a single query.
-3. If using LLM filtering, create a `filtering_prompt.txt`.
-4. Store all files in your chosen directory.
-
-> **If `query.txt` is not present, both `query_biorxiv.txt` and `query_pubmed_arxiv.txt` must be present.**
-
-Check out examples in the Configuration section below.
-
----
-
 ## ⚙️ Configuration
 
 PapersBee uses a YAML configuration file to specify all arguments.  
@@ -142,25 +126,35 @@ GOOGLE_SPREADSHEET_ID: "your-google-spreadsheet-id"
 GOOGLE_CREDENTIALS_JSON: "/path/to/your/google-credentials.json"
 NCBI_API_KEY: "your-ncbi-api-key"
 
-# Path to the local root directory where query and LLM prompts are stored
+# path to the local root directory where query prompts and files are stored
 LOCAL_ROOT_DIR: "/path/to/local/root/dir"
+
+# Queries. You can set either only "query" to use in all databases or query_biorxiv and query_pubmed_arxiv.
+# Note that biorxiv only accept OR boolean operator while pubmed and arxiv also accept AND and AND NOT, this is why tje two queries are separated.
+# More info: https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction
+query: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_biorxiv: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_pubmed_arxiv: "([single-cell transcriptomics]) AND ([Cell Dynamics]) AND ([AI] OR [machine learning] OR [deep learning]) AND NOT ([proteomics])"
 
 # LLM Filtering (optional)
 LLM_FILTERING: true
-LLM_PROVIDER: "openai" # openai | ollama
-LANGUAGE_MODEL: "gpt-3.5-turbo"
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gpt-4o-mini"
 OPENAI_API_KEY: "your-openai-api-key"
+# Describe what are your interests and what kind of papers are relevant to your lab.
+# Change lab focus and interests to your own. Feel free to add more details and examples, but leave the last sentence as is.
+FILTERING_PROMPT: "You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"
 
 # Slack configuration
 SLACK:
-  is_posting_on: false
+  is_posting_on: true
   bot_token: "your-slack-bot-token"
   channel_id: "your-slack-channel-id"
   app_token: "your-slack-app-token"
 
 # Telegram configuration
 TELEGRAM:
-  is_posting_on: false
+  is_posting_on: true
   bot_token: "your-telegram-bot-token"
   channel_id: "your-telegram-channel-id"
 
@@ -171,29 +165,36 @@ ZULIP:
   stream: "your-zulip-stream"
   topic: "your-zulip-topic"
 
+
+
+
 SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
 TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
 GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so left outside of dictionary
+
 ```
 
 ---
 
-### 📄 Example Query and Prompt Files
+### 📄 Example Query and Prompt
 
 #### `query`
 
-You can simply fit one query for all databases. But then make sure it fits requirements for all of them! Simple list of keywords separated by OR will do the job for sure:
+If specifying a list of keyword is enough, you can simply fit one query for all databases. Example:
 
 ```text
 [AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
 ```
+
+Both Arxiv and Pubmed allow for more refined queries.
+If you want to fine-tune the queries for pubmed and arxiv which allow for both AND and AND NOT boolean operators, then you will need to split the queries in two (read below).
 
 #### `query_biorxiv`
 
 This database has more requirements, so if your query is complex, you have to set a separate simple query for biorxiv, and a complex query for everything else. See [findpapers documentation](https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction) for more details. TLDR:
 - Only **1-level grouping** is supported: no round brackets inside round brackets
 - **Only OR connectors between parenthesis** are allowed, no `() AND ()`!
-- **NOT is not allowed**
+- **AND NOT is not allowed**
 - All connectors must be either OR or AND. **No mixing**!
 
 Here's an example of a valid query:
