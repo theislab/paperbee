@@ -1,3 +1,7 @@
+# Project-specific
+# To not commit the config file with secrets
+files/config.yml
+
 # General things to ignore
 build/
 dist/
