@@ -1,231 +1,291 @@
-# Papersbee
+# 🐝 PapersBee
 
 <img src="images/papersbee_logo.png" width="200" height="auto" alt="logo"/>
 
-Papersbee is a Python application designed to daily look for new scientific papers and post them. Currently, the following channels are supported:
+PapersBee is a Python application designed to **automatically search for new scientific papers and post them** to your favorite channels.  
+Currently supported platforms:
 
-- Slack
-- Zulip
-- Telegram
+- 🟣 Slack
+- 🟢 Zulip
+- 🔵 Telegram
+  
+---
 
-## How does it work?
+## 🚀 How Does It Work?
 
 ![papersbee_pipeline](images/papersbee_pipeline.svg)
 
-Papersbee queries scientific papers using keywords specified by user from PubMed and preprint services relying on [findpapers](https://github.com/jonatasgrosman/findpapers/) library. Papers are then filtered either manually via a command-line interface or automatically via an LLM. The filtered papers are then posted to a google sheet and, if desired, to slack or telegram channels.
+PapersBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.  
+Papers are then filtered either **manually via a command-line interface** or **automatically via an LLM**.  
+The filtered papers are posted to a Google Sheet and, if desired, to Slack, Telegram, or Zulip channels.
+PapersBee is easy to setup and configure with a simple `yml` file.
 
-## Installation
+---
 
-### Download the code and install the dependencies
+## 📦 Installation
 
-> ```bash
-> pip install PapersBee
-> ```
+### 1. Download the Code and Install Dependencies
 
-### Setup Google Sheets
+```bash
+pip install PapersBee
+```
 
-1. Create a Google Service Account. Follow the oficial documentation [here](https://cloud.google.com/iam/docs/service-accounts-create). It is needed to put found papers in a Google Spreadsheet.
-2. Create a JSON key for the service account. Follow the oficial documentation [here](https://cloud.google.com/iam/docs/keys-create-delete) to create a key pair. Download the JSON file with the key and store it in a convenient location on your machine. Also copy the email of the service account somewhere, you'll need it on the step 5.
-3. Enable the Google Sheets API for the service account. Go to the [Google Cloud Console](https://console.cloud.google.com/), click on "APIs and Services" and enable the Google Sheets API.
-4. Create a Google Spreadsheet. You can simply copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/), but if you prefer, you can create your own. It must have the following columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`. The sheet name must be `Papers`.
-5. Set the variables `GOOGLE_CREDENTIALS_JSON` and `GOOGLE_SPREADSHEET_ID` in your `.bashrc` file with the path to the JSON key you created and the ID of the spreadsheet you created. ID of the spreadsheet can be found in the URL of the spreadsheet after `d/`. For example, in the template spreadsheet it is `13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw`.
+---
 
-> ```bash
-> export GOOGLE_CREDENTIALS_JSON="/path/to/credentials.json"
-> export GOOGLE_SPREADSHEET_ID="your-spreadsheet-id"
-> ```
+## 📝 Setup Guide
 
-Alternatively, you can simply set these variables in [config](src/PapersBee/papers/config.py).
+### 1. Google Sheets Integration
 
-<div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
-<b>Important!</b> When setting up variables in config, don't share it with anyone online (e.g. add it to .`gitignore` to not commit accidentally). Loosing your tokens might lead to other people using them for their purposes.
-</div>
+1. **Create a Google Service Account:**  
+   [Official guide](https://cloud.google.com/iam/docs/service-accounts-create)  
+   Needed to write found papers to a Google Spreadsheet.
+2. **Create a JSON Key:**  
+   [Official guide](https://cloud.google.com/iam/docs/keys-create-delete)  
+   Download and store the JSON file securely.
+3. **Enable Google Sheets API:**  
+   In [Google Cloud Console](https://console.cloud.google.com/), enable the Google Sheets API for your service account.
+4. **Create a Google Spreadsheet:**  
+   You can copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/).  
+   The sheet must have columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`.  
+   The sheet name must be `Papers`.
+5. **Share the Spreadsheet:**  
+   Add the service account email as an *Editor*.
 
-6. Add the service account email to the spreadsheet. Go to the spreadsheet, click on the three dots in the top right corner, click on *Share*, paste the service account email into the *Add people* field, and give it the *Editor* role.
+---
 
-### Get NCBI API key
+### 2. 🔑 Get NCBI API Key
 
-Code relies on NCBI API to fetch papers and get DOIs from PubMed. It is free, but you need to get an API key
+PapersBee uses the NCBI API to fetch papers and DOIs from PubMed.  
+[Get your free API key here.](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys)
 
-1. Follow the instructions [here](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys) to get an API key.
-2. Set the variable `NCBI_API_KEY` in the in the environment file.
+---
 
-> ```bash
-> export NCBI_API_KEY="ncbi key"
-> ```
+### 3. 📢 Setup Posting Channels
 
-Or, alternatively, set `NCBI_API_KEY` variable in [config.py](src/PapersBee/papers/config.py).
+> **You must set up at least one of the three platforms below.**
 
-### Setup Posting channels
+#### 🟣 Slack (optional)
 
-<div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
-Setup at least one of the three.
-</div>
+1. [Create a Slack App](https://api.slack.com/apps/new) (choose "From an app manifest").
+2. Choose your workspace.
+3. Copy the contents of `manifest.json` into the manifest box.
+4. Review and create the app.
+5. Install to Workspace and allow permissions.
+6. In **OAuth & Permissions**, copy the Bot User OAuth Token.
+7. In **Basic Information**, create an app-level token with `connections:write` scope.
+8. Set `SLACK_CHANNEL_ID` to your desired channel's ID.
 
-#### Setup Slack (optional)
+Update the **SLACK** variables in the `config.yml` file.
 
-1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
-2. Choose the workspace you want to install the application to
-3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click *Next*. The manifest can be modified any time.
-4. Review the configuration and click *Create*
-5. Click *Install to Workspace* and *Allow* on the screen that follows. You'll then be redirected to the App Configuration dashboard.
-6. Open your apps configuration page from this list, click **OAuth & Permissions** in the left hand menu, then copy the Bot User OAuth Token. Store this in the environment as `SLACK_BOT_TOKEN`.
-7. Click ***Basic Information** from the left hand menu and follow the steps in the App-Level Tokens section to create an app-level token with the `connections:write` scope. Store this token in the environment as `SLACK_APP_TOKEN`.
-8. Set the variable `SLACK_CHANNEL_ID` in the environment to the ID of the channel you want to post to. It can be found in the settings of the channel.
+#### 🔵 Telegram (optional)
 
-> ```bash
-> export SLACK_CHANNEL_ID="slack channel id where to post"
-> export SLACK_APP_TOKEN="the app token"
-> export SLACK_BOT_TOKEN="the bot token"
-> ```
+1. Create a Telegram bot [Follow the instructions here](https://core.telegram.org/bots/#how-do-i-create-a-bot).
+2. Create a channel or group, add the bot as admin.
+3. Use [@myidbot](https://t.me/myidbot) to get the channel ID.
 
-Or, alternatively, fill out the `SLACK` dictionary in [config.py](src/PapersBee/papers/config.py).
+Update the **TELEGRAM** variables in the `config.yml` file.
 
-#### Setup Telegram (optional)
+#### 🟢 Zulip (optional)
 
-1. Create a Telegram bot. Follow the instructions [here](https://core.telegram.org/bots/#how-do-i-create-a-bot).
-2. Set the variable `TELEGRAM_BOT_API_KEY` in the environment file.
-3. Create a Telegram channel or a group and add the bot to the channel as an administrator with the write permissions.
-4. Set the variable `TELEGRAM_CHANNEL_ID` in the environment file.
+1. [Create a Zulip bot](https://zulip.com/help/add-a-bot-or-integration) and download the `zuliprc` file.
+2. Create a stream and subscribe the bot.
 
-- To get the ID of the channel, you can use the [@myidbot](https://t.me/myidbot) bot. Just share a message from the channel with the bot and it will reply with the ID of the channel.
+Update the **ZULIP** variables in the `config.yml` file.
 
-> ```bash
-> export TELEGRAM_BOT_API_KEY="the bot api key"
-> export TELEGRAM_CHANNEL_ID="telegram channel id where to post"
-> ```
+---
 
-Or, alternatively, fill out the `TELEGRAM` dictionary in [config.py](src/PapersBee/papers/config.py).
+### 4. 🤖 Setup LLM for Automated Filtering (optional, but recommended)
 
-#### Setup Zulip (optional)
+> If you want to use LLM filtering, remember to add a `filtering_prompt.txt` file.  
+> See [Setup Query and LLM Filtering Prompt](#setup-query-and-llm-filtering-prompt).
 
-1. Create a Zulip bot and download the `zuliprc` file. Follow the instructions [here](https://zulip.com/help/add-a-bot-or-integration).
-2. Set the variable `ZULIP_PRC` in your environment to point to the downloaded zuliprc file path.
-3. Create a stream (if needed), and suscribe the bot to the stream you want the bot to post papers in.
-4. Set `ZULIP_STREAM` and `ZULIP_TOPIC` in your environment.
+#### OpenAI API
 
-> ```bash
-> export ZULIP_PRC="path to zuliprc"
-> export ZULIP_STREAM="zulip stream where to post"
-> export ZULIP_TOPIC="zulip topic where to post"
-> ```
+- [Sign up for OpenAI](https://platform.openai.com/signup)
+- [Get your API key](https://platform.openai.com/settings/organization/api-api-keys)
+- Add credits to your account.
 
-Or, alternatively, fill out the `ZULIP` dictionary in [config.py](src/PapersBee/papers/config.py).
+#### Ollama (Open Source LLMs)
 
-### Setup LLM for automated filtering (optional, but highly recommended)
+- [Download Ollama](https://ollama.com/download/)
+- Pull your preferred model (e.g., `ollama pull llama3.2`).
 
-<div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
-If you want to use LLM filtering remember to add a filtering_prompt.txt file. See <a href="#setup-query-and-llm-filtering-prompt">Setup query and LLM filtering prompt</a>.
-</div>
+Update the **LLM** variables in the `config.yml` file. (LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY)
 
-#### Setup OpenAI API key
+---
 
-GPT model is used to filter irrelevant papers. You can also do it manually, but LLM is much faster and allows to run bot fully automatically.
+## ⚙️ Configuration
 
-0. Register an account on [OpenAI developer platform](https://platform.openai.com/signup)
-1. Follow the instructions [here](https://platform.openai.com/settings/organization/api-keys) to get an API key.
-2. Set the variable `OPENAI_API_KEY` in in the environment file.
-3. Put some money on your account. For the query in this repo, it takes less than $0.01 per day to run.
+PapersBee uses a YAML configuration file to specify all arguments.  
+Copy and customize the template below as `config.yml`:
 
-> ```bash
-> export LLM_PROVIDER="openai"
-> export OPENAI_API_KEY="api key"
-> export LANGUAGE_MODEL="your favorite gpt model"
-> ```
+### Example `config.yml`
 
-Or, alternatively, set these variables in [config.py](src/PapersBee/papers/config.py).
+```yaml
+GOOGLE_SPREADSHEET_ID: "your-google-spreadsheet-id"
+GOOGLE_CREDENTIALS_JSON: "/path/to/your/google-credentials.json"
+NCBI_API_KEY: "your-ncbi-api-key"
 
-#### Setup Ollama
+# path to the local root directory where query prompts and files are stored
+LOCAL_ROOT_DIR: "/path/to/local/root/dir"
 
-Open source LLMs can also be used to filter irrelevant papers.
+# Queries. You can set either only "query" to use in all databases or query_biorxiv and query_pubmed_arxiv.
+# Note that biorxiv only accept OR boolean operator while pubmed and arxiv also accept AND and AND NOT, this is why tje two queries are separated.
+# More info: https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction
+query: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_biorxiv: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_pubmed_arxiv: "([single-cell transcriptomics]) AND ([Cell Dynamics]) AND ([AI] OR [machine learning] OR [deep learning]) AND NOT ([proteomics])"
 
-0. Download Ollama on your system [OpenAI developer platform](https://ollama.com/download/)
-1. Decide which LLM to use out of the [available ones](https://ollama.com/search), on a terminal run ollama pull <model_name>. We find `llama3.2` to be a good compromise in terms of hardware requirement and performances, but feel free to use your favourite LLM.
-2. Set the variable `LANGUAGE_MODEL` with the model name in the environment.
+# LLM Filtering (optional)
+LLM_FILTERING: true
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gpt-4o-mini"
+OPENAI_API_KEY: "your-openai-api-key"
+# Describe what are your interests and what kind of papers are relevant to your lab.
+# Change lab focus and interests to your own. Feel free to add more details and examples, but leave the last sentence as is.
+FILTERING_PROMPT: "You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"
 
-> ```bash
-> export LLM_PROVIDER="ollama"
-> export LANGUAGE_MODEL="your favorite LLM model"
-> ```
+# Slack configuration
+SLACK:
+  is_posting_on: true
+  bot_token: "your-slack-bot-token"
+  channel_id: "your-slack-channel-id"
+  app_token: "your-slack-app-token"
 
-Or, alternatively, set these variables in [config.py](src/PapersBee/papers/config.py).
+# Telegram configuration
+TELEGRAM:
+  is_posting_on: true
+  bot_token: "your-telegram-bot-token"
+  channel_id: "your-telegram-channel-id"
 
-### Setup query and LLM filtering prompt
+# Zulip configuration
+ZULIP:
+  is_posting_on: false
+  prc: "path-to-your-zulip-prc"
+  stream: "your-zulip-stream"
+  topic: "your-zulip-topic"
 
-1. Create an empty directory where to store the query files.
-2. Create a query – list of keywords to search papers. You can use this [template](files/query.txt). For syntax instructions, refer to [findpapers documentation](https://github.com/jonatasgrosman/findpapers). Since biorxiv only allows for `OR` boolean operator while pubmed and arxiv also allow for `AND` and `AND NOT` if you want to fine tune your query create two separate files:
-   1. `query_biorxiv.txt` for the biorxiv quey where only `OR` is used
-   2. `query_pubmed_arxiv.txt` where the other boolean operators can be used.
-3. Else only use `query.txt`
-4. If using LLM filtering, create a `filtering_prompt.txt` file. Use this [template](files/filtering_prompt.txt)
-5. Store the files in the directory you created.
-6. Set the variable `LOCAL_ROOT_DIR` in the in the environment pointing to the directory you created.
 
-<div style="background-color: salmon; padding: 10px; border: 1px solid black; border-radius: 5px;">
-If query.txt is not present both query_biorxiv.txt and query_pubmed_arxiv.txt must be present
-</div>
 
-Make sure that you run it in the correct environment. If everything works, you should see success messages in the terminal, and some messages with and without papers in the test channels.
 
-> ```bash
-> export LOCAL_ROOT_DIR="path to the folder where queries and llm prompts are stored"
-> ```
+SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so left outside of dictionary
 
-Or, alternatively, set the `LOCAL_ROOT_DIR` variable in [config.py](src/PapersBee/papers/config.py).
+```
 
-## Running the bot
+---
 
-When everything is set up, you can simply run the bot with:
+### 📄 Example Query and Prompt
 
-> ```bash
-> papersbee post --interactive --since 10
-> ```
+#### `query`
 
-`interactive` is optional, if it is set the LLM settings will be override and the filtering will instead be interactive through the CLI.
+If specifying a list of keyword is enough, you can simply fit one query for all databases. Example:
 
-`since` is optional, can be used to specify how many days back to search for papers. If not specified the bot will search for papers published in the last 24h.
+```text
+[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
+```
 
-## Project Structure
+Both Arxiv and Pubmed allow for more refined queries.
+If you want to fine-tune the queries for pubmed and arxiv which allow for both AND and AND NOT boolean operators, then you will need to split the queries in two (read below).
+
+#### `query_biorxiv`
+
+This database has more requirements, so if your query is complex, you have to set a separate simple query for biorxiv, and a complex query for everything else. See [findpapers documentation](https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction) for more details. TLDR:
+- Only **1-level grouping** is supported: no round brackets inside round brackets
+- **Only OR connectors between parenthesis** are allowed, no `() AND ()`!
+- **AND NOT is not allowed**
+- All connectors must be either OR or AND. **No mixing**!
+
+Here's an example of a valid query:
+```text
+[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
+```
+
+#### `query_pubmed_arxiv.txt`
+
+Pubmed and Arxiv don't have such requirements, so query can be more complex:
+
+```text
+([single-cell transcriptomics]) AND ([Cell Dynamics]) AND ([AI] OR [machine learning] OR [deep learning]) AND NOT ([proteomics])
+```
+
+#### `filtering_prompt`
+
+Simply describe your lab interests, which type of papers you want to see and which you don't. The more details, the better! But always leave the last sentence with the question as is. Here is an example:
+
+```text
+You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
+```
+
+---
+
+## ▶️ Running the Bot
+
+When everything is set up, run the bot with:
+
+```bash
+papersbee post --config /path/to/config.yml --interactive --since 10
+```
+
+- `--config` : Path to your YAML configuration file.
+- `--interactive` : (Optional) Use CLI for manual filtering.
+- `--since` : (Optional) How many days back to search for papers (default: last 24h).
+
+See [daily_posting.py](src/PapersBee/daily_posting.py) for an example of running search from Python.
+
+---
+
+## 🗂️ Project Structure
 
 ### `manifest.json`
 
-`manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
+Configuration for Slack apps.  
+With a manifest, you can create or adjust an app with a pre-defined configuration.
 
-#### `src/PapersBee/papers`
+### `src/PapersBee/papers`
 
-Classes to fetch the papers, format them, and post them on slack along with updating the papers google sheet.
+Classes to fetch, format, and post papers, and update the Google Sheet.
 
-- `src/PapersBee/papers/utils.py` Preprocessor for `findpapers` output, and to extract DOIs from pubmed.
-- `src/PapersBee/papers/google_sheet.py` Class to check and update the papers google sheet.
-- `src/PapersBee/papers/llm_filtering.py` Class to filter paper with LLMs
-- `src/PapersBee/papers/cli.py` Class to filter paper with interactively in the CLI
-- `src/PapersBee/papers/slack_papers_formatter.py` Format the papers and publish them on slack.
-- `src/PapersBee/papers/zulip_papers_formatter.py` Format the papers and publish them on zulip.
-- `src/PapersBee/papers/telegram_papers_formatter.py` Format the papers and publish them on telegram.
-- `src/PapersBee/papers/papers_finder.py` is the main wrapper class.
-- `src/PapersBee/daily_posting.py` is the entry point for the CLI command.
+- `utils.py` – Preprocess `findpapers` output, extract DOIs.
+- `google_sheet.py` – Update/check the Google Sheet.
+- `llm_filtering.py` – Filter papers with LLMs.
+- `cli.py` – Interactive CLI filtering.
+- `slack_papers_formatter.py` – Format and post to Slack.
+- `zulip_papers_formatter.py` – Format and post to Zulip.
+- `telegram_papers_formatter.py` – Format and post to Telegram.
+- `papers_finder.py` – Main wrapper class.
+- `daily_posting.py` – CLI entry point.
 
-### Running tests (optional)
+---
 
-If you enjoyed setting up, you can enjoy a bit more by creating additional test channels for slack and/or telegram. Or you can run the tests in the actual channels. In any case, set the following variables in the [papers/config.py](papers/config.py) file or in environment:
+## 🧪 Running Tests (Optional)
 
-- `TELEGRAM_TEST_CHANNEL_ID` – ID of the slack channel to post to.
-- `SLACK_TEST_CHANNEL_ID` – ID of the telegram channel to post to.
-- `GOOGLE_TEST_SPREADSHEET_ID` – ID of the test spreadsheet. Don't set a spreadsheet used in production, it will be emptied! 
+You can set up test channels for Slack/Telegram or run tests in production channels.  
+Set the following variables in your `config.yml`:
 
-Install extra dependencies:
-```
+- `TELEGRAM_TEST_CHANNEL_ID` – Telegram test channel ID.
+- `SLACK_TEST_CHANNEL_ID` – Slack test channel ID.
+- `GOOGLE_TEST_SPREADSHEET_ID` – Test spreadsheet ID. **Don't use a production spreadsheet!**
+
+**Install extra dependencies:**
+
+```bash
 pip install pytest-asyncio
 ```
 
-Or with:
-```
+or with Poetry:
+
+```bash
 poetry install --with dev
 ```
 
+**Run the tests:**
 
-Then simply run the tests with:
+```bash
+pytest
+```
 
-> ```zsh
-> pytest
-> ```
+---
+
+Enjoy using 🐝 **PapersBee**!

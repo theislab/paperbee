@@ -1,8 +1,8 @@
 from telegram import Bot
 import pytest
 from logging import Logger
+import yaml
 
-from PapersBee.papers import config
 from PapersBee.papers.telegram_papers_formatter import TelegramPaperPublisher
 
 async def send_message(token, chat_id, text):
@@ -19,12 +19,16 @@ def papers():
 
 @pytest.fixture
 def publisher():
-    return TelegramPaperPublisher(logger=Logger("TelegramTest"), bot_token=config.TELEGRAM["bot_token"], channel_id=config.TELEGRAM_TEST_CHANNEL_ID)
+    with open("files/config.yml") as f:
+        config = yaml.safe_load(f)
+    return TelegramPaperPublisher(logger=Logger("TelegramTest"), bot_token=config.get("TELEGRAM")["bot_token"], channel_id=config.get("TELEGRAM_TEST_CHANNEL_ID"))
 
 @pytest.mark.asyncio
 async def test_message_sending():
+    with open("files/config.yml") as f:
+        config = yaml.safe_load(f)
     message_text = "Bot is working!"
-    message = await send_message(config.TELEGRAM["bot_token"], config.TELEGRAM_TEST_CHANNEL_ID, message_text)
+    message = await send_message(config.get("TELEGRAM")["bot_token"], config.get("TELEGRAM_TEST_CHANNEL_ID"), message_text)
 
     assert message.message_id is not None
 

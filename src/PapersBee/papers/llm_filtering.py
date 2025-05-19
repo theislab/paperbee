@@ -5,8 +5,6 @@ import pandas as pd
 from ollama import Client
 from openai import OpenAI
 
-from . import config
-
 
 class LLMFilter:
     """
