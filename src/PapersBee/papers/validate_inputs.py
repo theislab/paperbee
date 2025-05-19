@@ -13,23 +13,28 @@ def validate_configuration(config: dict) -> Tuple[str, Optional[str], Optional[s
     if not os.path.exists(root_dir):
         e = f"Root directory {root_dir} does not exist."
         raise FileNotFoundError(e)
-    if os.path.exists(os.path.join(root_dir, "query.txt")):
-        query_file = os.path.join(root_dir, "query.txt")
-        query_file_biorxiv = None
-        query_file_pubmed_arxiv = None
+
+    query = config.get("query", "")
+    query_biorxiv = config.get("query_biorxiv", "")
+    query_pubmed_arxiv = config.get("query_pubmed_arxiv", "")
+
+    if query:
+        query_biorxiv = None
+        query_pubmed_arxiv = None
+
+    elif query_biorxiv and query_pubmed_arxiv:
+        query = None
+    
     else:
-        query_file_biorxiv = os.path.join(root_dir, "query_biorxiv.txt")
-        query_file_pubmed_arxiv = os.path.join(root_dir, "query_pubmed_arxiv.txt")
-        if not (os.path.exists(query_file_biorxiv) and os.path.exists(query_file_pubmed_arxiv)):
-            e = "Neither query.txt nor both query_biorxiv.txt and query_pubmed_arxiv.txt exist."
-            raise FileNotFoundError(e)
-        query_file = None
+        e = "No query is provided. Please set either 'query' or both 'query_biorxiv' and 'query_pubmed_arxiv' in the config file."
+        raise FileNotFoundError(e)
+        
 
     validate_config_variable(config, "GOOGLE_SPREADSHEET_ID")
     validate_config_variable(config, "GOOGLE_CREDENTIALS_JSON")
     validate_config_variable(config, 'NCBI_API_KEY')
 
-    return root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv
+    return root_dir, query, query_biorxiv, query_pubmed_arxiv
 
 def validate_platform_args(config: dict, platform: str) -> dict:
     """Check that all required platform arguments are set if the posting is enabled."""
@@ -61,12 +66,7 @@ def validate_llm_args(config: dict, root_dir: str) -> Tuple[str, str, str, str]:
         raise ValueError(e)
     LANGUAGE_MODEL = config.get('LANGUAGE_MODEL')
 
-    if not os.path.exists(os.path.join(root_dir, "filtering_prompt.txt")):
-        e = "filtering_prompt.txt does not exist in the specified root_dir."
-        raise FileNotFoundError(e)
-    else:
-        with open(os.path.join(root_dir, "filtering_prompt.txt")) as f:
-            filtering_prompt = f.read()
+    filtering_prompt = config.get('FILTERING_PROMPT')
 
     return filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY
 

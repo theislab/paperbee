@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import os
 from typing import Any, List, Optional, Tuple
 
 import yaml
@@ -25,7 +24,7 @@ async def daily_papers_search(config: dict, interactive: bool = False, since: Op
     Returns:
         Tuple[List[Dict[str, Any]], Any]: A tuple containing the list of papers and a response object.
     """
-    root_dir, query_file, query_file_biorxiv, query_file_pubmed_arxiv = validate_configuration(config)
+    root_dir, query, query_biorxiv, query_pubmed_arxiv = validate_configuration(config)
 
     slack_args = validate_platform_args(config, "SLACK")
     zulip_args = validate_platform_args(config, "ZULIP")
@@ -43,9 +42,9 @@ async def daily_papers_search(config: dict, interactive: bool = False, since: Op
         google_credentials_json=config.get('GOOGLE_CREDENTIALS_JSON', ''),
         sheet_name="Papers",
         since=since,
-        query_file=query_file,
-        query_file_biorxiv=query_file_biorxiv,
-        query_file_pubmed_arxiv=query_file_pubmed_arxiv,
+        query=query,
+        query_biorxiv=query_biorxiv,
+        query_pubmed_arxiv=query_pubmed_arxiv,
         interactive=interactive,
         llm_filtering=llm_filtering,
         filtering_prompt=filtering_prompt,
