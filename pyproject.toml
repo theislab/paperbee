@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PapersBee"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
 repository = "https://github.com/theislab/papersbee"
