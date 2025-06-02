@@ -46,7 +46,7 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 # Functionality
 
 Papersbee provides the following set of features for literature monitoring:
-- **Daily Retrieval**: Uses the [findpapers] package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
+- **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 - **Filtering**:
   - Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
   - Automated relevance filtering using LLMs (OpenAI GPT or open-source alternatives via Ollama) [@dennstaedt2024llm; @cai2025llm], customizable with domain-specific prompts.
@@ -82,9 +82,7 @@ Note that we deleted too broad keywords such as "machine learning" or "bioonform
 
 We recommend changing the middle part of the prompt to better select publications relevant for the laboratory. A more complicated example used by a team focusing on single-cell transcriptomics methods development and application looks as following:
 
-```
-You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
-```
+`You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?`
 
 3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github]. Briefly, the following parts are required:
 - Google Sheets document with a particular structure
