@@ -10,7 +10,7 @@ authors:
   - name: Daniele Lucarelli
     affiliation: "1,2,3,4"
   - name: Vladimir Shitov
-    affiliation: "1"
+    affiliation: "1,6"
   - name: Luke Zappia
     affiliation: "1"
   - name: Fabian Theis
@@ -28,6 +28,8 @@ affiliations:
     index: 4
   - name: "School of Computing, Information and Technology, Technical University of Munich, Munich, Germany."
     index: 5
+  - name: "Comprehensive Pneumology Center (CPC) with the CPC-M bioArchive and Institute of Lung Health and Immunity (LHI), Helmholtz Munich; Member of the German Center for Lung Research (DZL), Munich, Germany"
+    index: 6
 
 date: 10 June 2025
 bibliography: paper.bib
@@ -35,7 +37,7 @@ bibliography: paper.bib
 
 # Summary
 
-Staying current with the ever-expanding body of scientific literature is an increasing challenge for researchers. **Papersbee** is a lightweight, modular, and open-source Python package designed to streamline this process by automating the daily discovery, filtering, and dissemination of new scientific papers, tailored to individual or team research interests. By integrating structured keyword-based queries, access to preprint and PubMed databases via the `findpapers` package [@grosman:2020], and optional filtering powered by large language models (LLMs), Papersbee surfaces relevant papers with minimal manual effort. It further enhances research workflows by posting curated content to team communication platforms such as Slack, Zulip, Telegram, and by maintaining a structured archive in Google Sheets. Papersbee adapts to both interactive and fully automated use cases, enabling individual researchers, labs, and institutions to maintain awareness of cutting-edge developments across multiple domains.
+The number of scientific publications grows exponentially with an average rate estimated around 4% per year and doubling time of 17.3 years [@Bornmann2021]. In particularly popular fields, such as machine learning or single-cell transcriptomics it can be even faster, reaching doubling time of 23 months for papers [@Krenn2023] and 15 months for new authors [@Svensson2020] correspondingly. Staying current with the ever-expanding body of scientific literature is an increasing challenge for researchers. We developed **Papersbee** is a lightweight, modular, and open-source Python package designed to streamline this process by automating the daily discovery, filtering, and dissemination of new scientific papers, tailored to individual or team research interests. By integrating structured keyword-based queries, access to preprint databases and PubMed via the `findpapers` package [@grosman:2020], and optional filtering powered by large language models (LLMs), Papersbee surfaces relevant papers with minimal manual effort. It further enhances research workflows by posting curated content to team communication platforms such as Slack, Zulip, Telegram, and by maintaining a structured archive in Google Sheets. Papersbee adapts to both interactive and fully automated use cases, enabling individual researchers, labs, and institutions to maintain awareness of cutting-edge developments across multiple domains.
 
 # Statement of Need
 
