@@ -60,9 +60,7 @@ Papersbee provides the following set of features for literature monitoring (Figu
   * Filtering by LLMs based on a simple natural language description of the research interests of a team or individual researchers.
   * Simple YAML-based configuration with a template for easy setup.
 
-# Implementation
-
-Papersbee adopts a modular architecture that separates core responsibilities into pluggable components: query handling, paper retrieval, filtering, formatting, and publishing. Queries are managed with YAML files and passed to the `findpapers` engine, which searches scientific databases via correspondent Application Programming Interfaces (APIs). The retrieved articles undergo a two-stage filtering process—initially via CLI or fully automated LLM classification—based on user-defined prompts [@dennstaedt2024; @cai2025]. Filtered results are formatted into platform-specific message payloads and sent to designated messengers via their respective APIs. A centralized Google Sheet is used for cumulative archival and collaborative review. This design supports extensibility and interoperability, making it straightforward to plug in new data sources, filters, or output channels.
+ Modular of Papersbee enables extensibility and interoperability, making it straightforward to set up data sources, filters, or output channels for users, and add a new functionality for developers.
 
 # Deployment 
 
