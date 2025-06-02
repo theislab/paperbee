@@ -9,8 +9,10 @@ tags:
 authors:
   - name: Daniele Lucarelli
     affiliation: "1,2,3,4"
+    note: "Equal contribution"
   - name: Vladimir A. Shitov
     affiliation: "1,6"
+    note: "Equal contribution"
   - name: Luke Zappia
     affiliation: "1"
   - name: Fabian J. Theis
