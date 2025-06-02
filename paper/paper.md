@@ -53,7 +53,7 @@ Papersbee provides the following set of features for literature monitoring (Figu
 * **Filtering**:
   * Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
   * Automated relevance filtering using LLMs (OpenAI GPT [@openai2024gpt4o] or open-source alternatives via Ollama [@ollama2023]), customizable with domain-specific prompts.
-* **Multichannel Delivery**: Posts curated papers to Slack, Telegram, and Zulip.
+* **Multichannel Delivery**: Posts curated papers to Slack, Telegram, or Zulip.
 * **Archival**: Automatically logs daily selected papers into Google Sheets for tracking and avoiding sending the same paper twice.
 * **Configurability**:
   * Keywords-based papers search, familiar to researchers from querying databases for literature review.
