@@ -2,7 +2,7 @@
 
 <img src="images/papersbee_logo.png" width="200" height="auto" alt="logo"/>
 
-Papersbee is a Python application designed to daily look for new scientific papers and post them. Currently, the following channels are supported:
+Papersbee is a Python application for searching new scientific papers and posting them to your favorite channels:
 
 - Slack
 - Zulip
