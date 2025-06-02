@@ -88,7 +88,7 @@ We recommend changing the middle part of the prompt to better select publication
 * Google Sheets document with a particular structure
 * Google Service Account integrated with the Google Sheet
 * NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
-* Posting channels setup
+* Posting channels setup and API keys
 * OpenAI API key or a preferred model for Ollama 
 
 The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users do not have to run any code and can simply run a python script performing daily search of new publications. An experienced user, however, can leverage modular structure of PapersBee to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
