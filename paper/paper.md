@@ -9,11 +9,11 @@ tags:
 authors:
   - name: Daniele Lucarelli
     affiliation: "1,2,3,4"
-  - name: Vladimir Shitov
+  - name: Vladimir A. Shitov
     affiliation: "1,6"
   - name: Luke Zappia
     affiliation: "1"
-  - name: Fabian Theis
+  - name: Fabian J. Theis
     affiliation: "1,5"
     corresponding: true
 
@@ -97,6 +97,6 @@ The package contains unit and integration tests to make sure that the setup work
 
 # Acknowledgements
 
-We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee’s retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments. finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of Papersbee.
+We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee’s retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments. finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of Papersbee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
 
 # References
