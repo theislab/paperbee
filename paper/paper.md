@@ -45,7 +45,9 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 
 # Functionality
 
-Papersbee provides the following set of features for literature monitoring:
+![Papersbee pipeline](images/papersbee_pipeline.svg){label="fig:pipeline"}
+
+Papersbee provides the following set of features for literature monitoring (Figure \autoref{fig:pipeline}):
 - **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 - **Filtering**:
   - Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
@@ -59,9 +61,7 @@ Papersbee provides the following set of features for literature monitoring:
 
 # Implementation
 
-![Papersbee pipeline](images/papersbee_pipeline.svg){label="fig:pipeline"}
-
-Papersbee adopts a modular architecture (Figure \autoref{fig:pipeline}) that separates core responsibilities into pluggable components: query handling, paper retrieval, filtering, formatting, and publishing. Queries are managed as YAML files and passed to the `findpapers` engine, which searches scientific databases via correspondent APIs. The retrieved articles undergo a two-stage filtering process—initially via CLI or fully automated LLM classification—based on user-defined semantic relevance prompts [@dennstaedt2024llm; @cai2025llm]. Filtered results are formatted into platform-specific message payloads and sent to designated messengers via their respective APIs. A centralized Google Sheet is used for cumulative archival and collaborative review. This design supports extensibility and interoperability, making it straightforward to plug in new data sources, filters, or output channels.
+Papersbee adopts a modular architecture that separates core responsibilities into pluggable components: query handling, paper retrieval, filtering, formatting, and publishing. Queries are managed as YAML files and passed to the `findpapers` engine, which searches scientific databases via correspondent APIs. The retrieved articles undergo a two-stage filtering process—initially via CLI or fully automated LLM classification—based on user-defined semantic relevance prompts [@dennstaedt2024llm; @cai2025llm]. Filtered results are formatted into platform-specific message payloads and sent to designated messengers via their respective APIs. A centralized Google Sheet is used for cumulative archival and collaborative review. This design supports extensibility and interoperability, making it straightforward to plug in new data sources, filters, or output channels.
 
 # Deployment 
 
