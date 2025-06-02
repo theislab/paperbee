@@ -7,12 +7,10 @@ tags:
   - LLM
 
 authors:
-  - name: Daniele Lucarelli
+  - name: Daniele Lucarelli^[co-first author]
     affiliation: "1,2,3,4"
-    note: "Equal contribution"
-  - name: Vladimir A. Shitov
+  - name: Vladimir A. Shitov^[co-first author]
     affiliation: "1,6"
-    note: "Equal contribution"
   - name: Luke Zappia
     affiliation: "1"
   - name: Fabian J. Theis
