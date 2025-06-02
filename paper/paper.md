@@ -67,6 +67,7 @@ Papersbee adopts a modular architecture that separates core responsibilities int
 # Deployment 
 
 On GitHub, we provide comprehensive instructions for setting up the Papersbee [@papersbee_github], which were successfully tested by independent users in different laboratories. Briefly, users must:
+
 1. Set up a search query. This is identical to a query researchers normally use for finding papers for a literature review. We recommend making broader and including synonyms to not miss relevant papers, and splitting keywords into two parts: domain-based and methods-based. Here is an example query for a user interested in image-based cell profiling:
 
 `([image-based cell profiling] OR [cell imaging] OR [cell morphology] OR [phenotypic profiling] OR [high-content screening] OR [microscopy] OR [fluorescence imaging] OR [cellular phenotyping] OR [image analysis]) AND ([machine learning] OR [deep learning] OR [neural networks] OR [computer vision] OR [image segmentation] OR [feature extraction] OR [pattern recognition] OR [bioinformatics] OR [computational biology])`
