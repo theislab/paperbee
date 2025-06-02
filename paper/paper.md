@@ -52,7 +52,7 @@ Papersbee provides the following set of features for literature monitoring (Figu
 * **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 * **Filtering**:
   * Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
-  * Automated relevance filtering using LLMs (OpenAI GPT or open-source alternatives via Ollama) [@openai2024gpt4o; @ollama2023], customizable with domain-specific prompts.
+  * Automated relevance filtering using LLMs (OpenAI GPT [@openai2024gpt4o] or open-source alternatives via Ollama [@ollama2023]), customizable with domain-specific prompts.
 * **Multichannel Delivery**: Posts curated papers to Slack, Telegram, and Zulip.
 * **Archival**: Automatically logs daily selected papers into Google Sheets for tracking and avoiding sending the same paper twice.
 * **Configurability**:
