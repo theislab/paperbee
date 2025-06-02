@@ -86,7 +86,7 @@ We recommend changing the middle part of the prompt to better select publication
 
 3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github]. Briefly, the following parts are required:
 * Google Sheets document with a particular structure
-* Google Service Account integrated to the Google Sheets
+* Google Service Account integrated with the Google Sheet
 * NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
 * Posting channels setup
 * OpenAI API key or a preferred model for Ollama 
