@@ -86,7 +86,12 @@ We recommend changing the middle part of the prompt to better select publication
 You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
 ```
 
-3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github].
+3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github]. Briefly, the following parts are required:
+- Google Sheets document with a particular structure
+- Google Service Account integrated to the Google Sheets
+- NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
+- Posting channels setup
+- OpenAI API key or a preferred model for Ollama 
 
 The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users do not have to run any code and can simply run a python script performing daily search of new publications. An experienced user, however, can leverage modular structure of PapersBee to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
 
