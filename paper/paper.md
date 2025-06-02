@@ -48,16 +48,16 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 ![Papersbee pipeline](images/papersbee_pipeline.svg){label="fig:pipeline"}
 
 Papersbee provides the following set of features for literature monitoring (Figure \autoref{fig:pipeline}):
-- **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
-- **Filtering**:
-  - Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
-  - Automated relevance filtering using LLMs (OpenAI GPT or open-source alternatives via Ollama) [@dennstaedt2024llm; @cai2025llm], customizable with domain-specific prompts.
-- **Multichannel Delivery**: Posts curated papers to Slack, Telegram, and Zulip.
-- **Archival**: Automatically logs daily selected papers into Google Sheets for tracking and avoiding sending the same paper twice.
-- **Configurability**:
-  - Keywords-based papers search, familiar to researchers from querying databases for literature review.
-  - Filtering by LLMs based on a simple natural language description of the research interests of a team or individual researchers.
-  - Simple YAML-based configuration with a template for easy setup.
+* **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
+* **Filtering**:
+  * Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
+  * Automated relevance filtering using LLMs (OpenAI GPT or open-source alternatives via Ollama) [@dennstaedt2024llm; @cai2025llm], customizable with domain-specific prompts.
+* **Multichannel Delivery**: Posts curated papers to Slack, Telegram, and Zulip.
+* **Archival**: Automatically logs daily selected papers into Google Sheets for tracking and avoiding sending the same paper twice.
+* **Configurability**:
+  * Keywords-based papers search, familiar to researchers from querying databases for literature review.
+  * Filtering by LLMs based on a simple natural language description of the research interests of a team or individual researchers.
+  * Simple YAML-based configuration with a template for easy setup.
 
 # Implementation
 
@@ -85,16 +85,16 @@ We recommend changing the middle part of the prompt to better select publication
 `You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?`
 
 3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github]. Briefly, the following parts are required:
-- Google Sheets document with a particular structure
-- Google Service Account integrated to the Google Sheets
-- NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
-- Posting channels setup
-- OpenAI API key or a preferred model for Ollama 
+* Google Sheets document with a particular structure
+* Google Service Account integrated to the Google Sheets
+* NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
+* Posting channels setup
+* OpenAI API key or a preferred model for Ollama 
 
 The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users do not have to run any code and can simply run a python script performing daily search of new publications. An experienced user, however, can leverage modular structure of PapersBee to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
 
 # Acknowledgements
 
-We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee’s retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments. finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of Papersbee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
+We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee's retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments. finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of Papersbee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
 
 # References
