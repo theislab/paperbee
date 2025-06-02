@@ -1,0 +1,50 @@
+GOOGLE_SPREADSHEET_ID: "your-google-spreadsheet-id"
+GOOGLE_CREDENTIALS_JSON: "/path/to/your/google-credentials.json"
+NCBI_API_KEY: "your-ncbi-api-key"
+
+# path to the local root directory where query prompts and files are stored
+LOCAL_ROOT_DIR: "/path/to/local/root/dir"
+
+# Queries. You can set either only "query" to use in all databases or query_biorxiv and query_pubmed_arxiv.
+# Note that biorxiv has more requirements for the query, this is why it's separated.
+# More info: https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction
+query: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_biorxiv: "[AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]"
+query_pubmed_arxiv: "([single-cell transcriptomics]) AND ([Cell Dynamics]) AND ([AI] OR [machine learning] OR [deep learning]) AND NOT ([proteomics])"
+
+# LLM Filtering (optional)
+LLM_FILTERING: true
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gpt-4o-mini"
+OPENAI_API_KEY: "your-openai-api-key"
+# Describe in the natural language what are your interests and what kind of papers are relevant to your lab.
+# Change lab focus and interests to your own. Feel free to add more details and examples, but leave the last sentence as is.
+FILTERING_PROMPT: "You are a lab manager at a research lab focusing on machine learning methods development for single-cell RNA sequencing. Lab members are interested in developing methods to model cell dynamics. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"
+
+# Slack configuration
+SLACK:
+  is_posting_on: true
+  bot_token: "your-slack-bot-token"
+  channel_id: "your-slack-channel-id"
+  app_token: "your-slack-app-token"
+
+# Telegram configuration
+TELEGRAM:
+  is_posting_on: true
+  bot_token: "your-telegram-bot-token"
+  channel_id: "your-telegram-channel-id"
+
+# Zulip configuration
+ZULIP:
+  is_posting_on: false
+  prc: "path-to-your-zulip-prc"
+  stream: "your-zulip-stream"
+  topic: "your-zulip-topic"
+
+
+
+
+SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
+GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so left outside of dictionary
+

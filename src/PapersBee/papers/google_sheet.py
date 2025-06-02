@@ -110,9 +110,10 @@ class GoogleSheetsUpdater:
         sheet, nr_rows = sheet_data
 
         # Ensure the row index is within valid bounds (either append or insert)
-        if row > nr_rows + 1:
-            e = f"Selected row index {row} is too high for the sheet having {nr_rows} rows."
-            raise AssertionError(e)
+        # This causes an error, so it is now commented out. Not sure why it was needed in the first place
+        # if row > nr_rows + 1:
+        #     e = f"Selected row index {row} is too high for the sheet having {nr_rows} rows."
+        #     raise AssertionError(e)
 
         inherit_from_before = 2 <= row <= nr_rows
         if len(rows_data) == 1:

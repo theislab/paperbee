@@ -9,7 +9,6 @@ import pandas as pd
 from slack_sdk import WebClient
 from tqdm import tqdm
 
-from . import config
 from .cli import InteractiveCLIFilter
 from .google_sheet import GoogleSheetsUpdater
 from .llm_filtering import LLMFilter
@@ -31,7 +30,9 @@ class PapersFinder:
         llm_filtering (bool): Activate LLM-based filtering for the papers.
         llm_provider (Optional[str]): The LLM service to use for filtering.
         model (Optional[str]): The model to use for LLM filtering.
-        query (Optional[str]): A query string to override the query.txt file used in daily automated posting.
+        query (Optional[str]): A query string to search the papers.
+        query_biorxiv (Optional[str]): A query string to search the biorxiv papers.
+        query_pubmed_arxiv (Optional[str]): A query string to search the pubmed and arxiv papers.
         since (Optional[str]): The date from which to start the search formatted as YYYY-mm-dd.
         slack_bot_token (str): The Slack bot token for posting to Slack.
         slack_channel_id (str): The Slack channel ID where to post.
@@ -48,9 +49,9 @@ class PapersFinder:
         google_credentials_json: str,
         sheet_name: str,
         since: Optional[int] = None,
-        query_file: Optional[str] = None,
-        query_file_biorxiv: Optional[str] = None,
-        query_file_pubmed_arxiv: Optional[str] = None,
+        query: Optional[str] = None,
+        query_biorxiv: Optional[str] = None,
+        query_pubmed_arxiv: Optional[str] = None,
         interactive: bool = False,
         llm_filtering: bool = False,
         filtering_prompt : Optional[str] = "",
@@ -64,6 +65,7 @@ class PapersFinder:
         zulip_prc: str = "",
         zulip_stream: str = "",
         zulip_topic: str = "",
+        ncbi_api_key: str = ""
     ) -> None:
         self.root_dir: str = root_dir
         #dates
@@ -82,9 +84,9 @@ class PapersFinder:
         self.spreadsheet_id: str = spreadsheet_id
         self.sheet_name: str = sheet_name
         #Query and search files
-        self.query_file_biorxiv: Optional[str] = query_file_biorxiv if query_file_biorxiv else None
-        self.query_file_pub_arx: Optional[str] = query_file_pubmed_arxiv
-        self.query_file: Optional[str] = query_file if query_file else None
+        self.query_biorxiv: Optional[str] = query_biorxiv if query_biorxiv else None
+        self.query_pub_arx: Optional[str] = query_pubmed_arxiv
+        self.query: Optional[str] = query if query else None
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
         self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
@@ -105,6 +107,8 @@ class PapersFinder:
         self.zulip_topic: str = zulip_topic
         #Logger
         self.logger = Logger("PapersFinder")
+        #NCBI API
+        self.ncbi_api_key: str = ncbi_api_key
 
 
     def find_and_process_papers(self) -> pd.DataFrame:
@@ -117,12 +121,10 @@ class PapersFinder:
 
         articles: List[Dict[str, Any]] = []
 
-        if self.query_file:
-            with open(self.query_file) as f:
-                input_query = f.read().strip()
+        if self.query:
             findpapers.search(
                 self.search_file,
-                input_query,
+                self.query,
                 self.since,
                 self.until,
                 self.limit,
@@ -134,33 +136,28 @@ class PapersFinder:
                 articles_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             articles = list(articles_dict)
         else:
-            if not self.query_file_biorxiv or not self.query_file_pub_arx:
-                e = "Both query_file_biorxiv and query_file_pub_arx must be provided if query_file is not provided."
+            if not self.query_biorxiv or not self.query_pub_arx:
+                e = "Both query_biorxiv and query_pubmed_arxiv must be provided if query is not provided."
                 raise ValueError(e)
-            if self.query_file_pub_arx:
-                with open(self.query_file_pub_arx) as f:
-                    input_query_pub_arx = f.read().strip()
-            if self.query_file_biorxiv:
-                with open(self.query_file_biorxiv) as f:
-                    input_query_biorxiv = f.read().strip()
+            
             findpapers.search(
                 self.search_file_pub_arx,
-                input_query_pub_arx,
+                self.query_pub_arx,
                 self.since,
                 self.until,
                 self.limit,
                 self.limit_per_database,
-                self.databases[1:],
+                ["pubmed", "arxiv"],
                 verbose=False,
             )
             findpapers.search(
                 self.search_file_biorxiv,
-                input_query_biorxiv,
+                self.query_biorxiv,
                 self.since,
                 self.until,
                 self.limit,
                 self.limit_per_database,
-                [self.databases[0]],
+                ["biorxiv"],
                 verbose=False,
             )
             with open(self.search_file_pub_arx) as papers_file:
@@ -172,7 +169,7 @@ class PapersFinder:
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=config.NCBI_API_KEY)
+                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=self.ncbi_api_key)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
