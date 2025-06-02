@@ -47,9 +47,9 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 
 # Functionality
 
-![Papersbee pipeline](../images/papersbee_pipeline.svg){label="fig:pipeline"}
+![Papersbee pipeline](../images/papersbee_pipeline.png)
 
-Papersbee provides the following set of features for literature monitoring (Figure \autoref{fig:pipeline}):
+Papersbee provides the following set of features for literature monitoring (Figure 1):
 * **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 * **Filtering**:
   * Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
