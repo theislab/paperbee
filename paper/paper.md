@@ -45,24 +45,53 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 
 # Functionality
 
-Papersbee provides a comprehensive suite of features tailored for literature monitoring:
-
+Papersbee provides the following set of features for literature monitoring:
 - **Daily Retrieval**: Uses the [findpapers] package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 - **Filtering**:
-  - Manual CLI interface for hands-on review and selection.
+  - Manual Command-line interface (CLI) interface for hands-on review and selection if this is desired.
   - Automated relevance filtering using LLMs (OpenAI GPT or open-source alternatives via Ollama) [@dennstaedt2024llm; @cai2025llm], customizable with domain-specific prompts.
 - **Multichannel Delivery**: Posts curated papers to Slack, Telegram, and Zulip.
-- **Archival**: Automatically logs daily selected papers into Google Sheets for tracking.
+- **Archival**: Automatically logs daily selected papers into Google Sheets for tracking and avoiding sending the same paper twice.
 - **Configurability**:
-  - Modular prompt-based filtering logic for LLMs.
-  - Simple configuration for easy setup.
+  - Keywords-based papers search, familiar to researchers from querying databases for literature review.
+  - Filtering by LLMs based on a simple natural language description of the research interests of a team or individual researchers.
+  - Simple YAML-based configuration with a template for easy setup.
 
 # Implementation
 
-Papersbee adopts a modular architecture that separates core responsibilities into pluggable components: query handling, paper retrieval, filtering, formatting, and publishing. Queries are managed as YAML files and passed to the `findpapers` engine, which interfaces with relevant scientific APIs. The retrieved articles undergo a two-stage filtering process—initially via CLI review or fully automated LLM classification—based on user-defined semantic relevance prompts [@dennstaedt2024llm; @cai2025llm]. Filtered results are formatted into platform-specific message payloads and sent to designated communication channels via their respective APIs. A centralized Google Sheet is used for cumulative archival and collaborative review. This design supports extensibility and interoperability, making it straightforward to plug in new data sources, filters, or output channels.
+![Papersbee pipeline](images/papersbee_pipeline.svg){label="fig:pipeline"}
+
+Papersbee adopts a modular architecture (Figure \autoref{fig:pipeline}) that separates core responsibilities into pluggable components: query handling, paper retrieval, filtering, formatting, and publishing. Queries are managed as YAML files and passed to the `findpapers` engine, which searches scientific databases via correspondent APIs. The retrieved articles undergo a two-stage filtering process—initially via CLI or fully automated LLM classification—based on user-defined semantic relevance prompts [@dennstaedt2024llm; @cai2025llm]. Filtered results are formatted into platform-specific message payloads and sent to designated messengers via their respective APIs. A centralized Google Sheet is used for cumulative archival and collaborative review. This design supports extensibility and interoperability, making it straightforward to plug in new data sources, filters, or output channels.
+
+# Deployment 
+
+On GitHub, we provide comprehensive instructions for setting up the Papersbee [@papersbee_github], which were successfully tested by independent users in different laboratories. Briefly, users must:
+1. Set up a search query. This is identical to a query researchers normally use for finding papers for a literature review. We recommend making broader and including synonyms to not miss relevant papers, and splitting keywords into two parts: domain-based and methods-based. Here is an example query for a user interested in image-based cell profiling:
+
+`([image-based cell profiling] OR [cell imaging] OR [cell morphology] OR [phenotypic profiling] OR [high-content screening] OR [microscopy] OR [fluorescence imaging] OR [cellular phenotyping] OR [image analysis]) AND ([machine learning] OR [deep learning] OR [neural networks] OR [computer vision] OR [image segmentation] OR [feature extraction] OR [pattern recognition] OR [bioinformatics] OR [computational biology])`
+
+The bioRxiv API has stricter requirements for the query (see the documentation of `findpapers` [@grosman2020] for the detailed description). Briefly, it does not allow nested parentheses, "AND" statements between groups of keywords, and "NOT" terms. To overcome this, we set up a different query for this database. For the user above, this query looks like this:
+
+`[image-based cell profiling] OR [cell imaging] OR [cell morphology] OR [phenotypic profiling] OR [high-content screening] OR [microscopy] OR [fluorescence imaging] OR [cellular phenotyping] OR [image analysis] OR [neural networks] OR [computer vision] OR [image segmentation] OR [feature extraction] OR [pattern recognition]`
+
+Note that we deleted too broad keywords such as "machine learning" or "bioonformatics" to not query all the papers with this keyword published on a particular day.
+
+2. Set up a filtering prompt. This is the description of research interests in a natural language. Here is an example for the above-mentioned user:
+
+`You are a lab manager at a research lab focusing on the ai for image-based cell profiling. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?`
+
+We recommend changing the middle part of the prompt to better select publications relevant for the laboratory. A more complicated example used by a team focusing on single-cell transcriptomics methods development and application looks as following:
+
+```
+You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?
+```
+
+3. Set up the messengers and API keys required for the Papersbee to function. We provide detailed instructions and templates on the Github [@papersbee_github].
+
+The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users do not have to run any code and can simply run a python script performing daily search of new publications. An experienced user, however, can leverage modular structure of PapersBee to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
 
 # Acknowledgements
 
-We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee’s retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. Finally, we acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments.
+We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of Papersbee’s retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in Papersbee's semantic filtering experiments. finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of Papersbee.
 
 # References
