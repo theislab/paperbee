@@ -103,4 +103,8 @@ Here, we present PapersBee, an application for daily search of new scientific pu
 
 We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of PapersBee's retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in PapersBee's semantic filtering experiments. Finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of PapersBee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
 
+# Competing interests
+
+F.J.T. consults for Immunai Inc., CytoReason Ltd, Cellarity, BioTuring Inc., and Genbio.AI Inc., and has an ownership interest in Dermagnostix GmbH and Cellarity.
+
 # References
