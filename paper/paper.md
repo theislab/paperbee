@@ -12,7 +12,7 @@ authors:
   - name: Vladimir A. Shitov^[co-first author]
     affiliation: "1,6"
   - name: Luke Zappia
-    affiliation: "1"
+    affiliation: "7"
   - name: Fabian J. Theis
     affiliation: "1,5"
     corresponding: true
@@ -30,6 +30,8 @@ affiliations:
     index: 5
   - name: "Comprehensive Pneumology Center (CPC) with the CPC-M bioArchive and Institute of Lung Health and Immunity (LHI), Helmholtz Munich; Member of the German Center for Lung Research (DZL), Munich, Germany"
     index: 6
+  - name: "Data Intuitive BV, Lebbeke, Belgium"
+    index: 7
 
 date: 10 June 2025
 bibliography: paper.bib
