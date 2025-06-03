@@ -7,16 +7,17 @@ tags:
   - LLM
 
 authors:
-  - name: Daniele Lucarelli^[co-first author]
+  - name: Daniele Lucarelli
     affiliation: "1,2,3,4"
-  - name: Vladimir A. Shitov^[co-first author]
+    equal-contrib: true
+  - name: Vladimir A. Shitov
     affiliation: "1,6"
+    equal-contrib: true
   - name: Luke Zappia
     affiliation: "7"
   - name: Fabian J. Theis
     affiliation: "1,5"
     corresponding: true
-
 affiliations:
   - name: "Institute of Computational Biology, Helmholtz Center Munich, Germany."
     index: 1
