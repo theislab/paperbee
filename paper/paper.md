@@ -1,5 +1,5 @@
 ---
-title: 'PapersBee: An Automated Daily Digest Bot for Scientific Literature Monitoring'
+title: 'PaperBee: An Automated Daily Digest Bot for Scientific Literature Monitoring'
 tags:
   - python
   - automation
@@ -40,17 +40,17 @@ bibliography: paper.bib
 
 # Summary
 
-The number of scientific publications grows exponentially with an average rate estimated around 4% per year and doubling time of 17.3 years [@Bornmann2021]. In particularly popular fields, such as machine learning or single-cell transcriptomics it can be even faster, reaching doubling time of 23 months for papers [@Krenn2023] and 15 months for new authors [@Svensson2020] correspondingly. Staying current with the ever-expanding body of scientific literature is an increasing challenge for researchers. We developed **PapersBee**, a lightweight, modular, and open-source Python package designed to stay updated with new scientific papers. It automatically finds new publications every day, filters them based on the research interests of a particular user or team, and sends the selected publication to messenger applications commonly used in team settings. By integrating structured keyword-based queries, access to preprint databases and PubMed via the `findpapers` package [@grosman2020], and filtering powered by large language models (LLMs), PapersBee discovers relevant papers with minimal or no manual effort. We support Slack, Zulip and Telegram as channels for publication, and keep a structured archive of found papers in Google Sheets. PapersBee adapts to both interactive and fully automated use cases, enabling individual researchers, labs, and institutions to stay up to date with cutting-edge developments across multiple domains.
+The number of scientific publications grows exponentially with an average rate estimated around 4% per year and doubling time of 17.3 years [@Bornmann2021]. In particularly popular fields, such as machine learning or single-cell transcriptomics it can be even faster, reaching doubling time of 23 months for papers [@Krenn2023] and 15 months for new authors [@Svensson2020] correspondingly. Staying current with the ever-expanding body of scientific literature is an increasing challenge for researchers. We developed **PaperBee**, a lightweight, modular, and open-source Python package designed to stay updated with new scientific papers. It automatically finds new publications every day, filters them based on the research interests of a particular user or team, and sends the selected publication to messenger applications commonly used in team settings. By integrating structured keyword-based queries, access to preprint databases and PubMed via the `findpapers` package [@grosman2020], and filtering powered by large language models (LLMs), PaperBee discovers relevant papers with minimal or no manual effort. We support Slack, Zulip and Telegram as channels for publication, and keep a structured archive of found papers in Google Sheets. PaperBee adapts to both interactive and fully automated use cases, enabling individual researchers, labs, and institutions to stay up to date with cutting-edge developments across multiple domains.
 
 # Statement of Need
 
-The scientific publication landscape is growing at an unprecedented pace, often leaving researchers overwhelmed by the sheer volume of new literature. Conventional alert mechanisms, such as email subscriptions or RSS feeds [@hokamp2004], are limited in scope and flexibility, and often fail to integrate with modern collaborative tools. Moreover, they often lack intelligent filtering, leading to low signal-to-noise ratios in alerts. Prior tools with automation capabilities, such as ASReview [@vandeschoot2021], have emphasized systematic review workflows rather than daily monitoring. **PapersBee** fills this gap by offering an open, transparent, and configurable tool tailored for continuous literature monitoring. It bridges automation and collaboration, offering programmable integration with chat platforms and shared spreadsheets, and optional LLM-based semantic filtering that helps selecting only the most relevant content.
+The scientific publication landscape is growing at an unprecedented pace, often leaving researchers overwhelmed by the sheer volume of new literature. Conventional alert mechanisms, such as email subscriptions or RSS feeds [@hokamp2004], are limited in scope and flexibility, and often fail to integrate with modern collaborative tools. Moreover, they often lack intelligent filtering, leading to low signal-to-noise ratios in alerts. Prior tools with automation capabilities, such as ASReview [@vandeschoot2021], have emphasized systematic review workflows rather than daily monitoring. **PaperBee** fills this gap by offering an open, transparent, and configurable tool tailored for continuous literature monitoring. It bridges automation and collaboration, offering programmable integration with chat platforms and shared spreadsheets, and optional LLM-based semantic filtering that helps selecting only the most relevant content.
 
 # Functionality
 
-![PapersBee pipeline. Optional steps are surrounded by a dotted line. ](../images/papersbee_pipeline.png)
+![PaperBee pipeline. Optional steps are surrounded by a dotted line. ](../images/paperbee_pipeline.png)
 
-PapersBee provides the following set of features for literature monitoring (Figure 1):
+PaperBee provides the following set of features for literature monitoring (Figure 1):
 
 * **Daily Retrieval**: Uses the `findpapers` package [@grosman2020] to access PubMed, arXiv, and bioRxiv through structured keyword queries.
 * **Filtering**:
@@ -63,11 +63,11 @@ PapersBee provides the following set of features for literature monitoring (Figu
   * Filtering by LLMs based on a simple natural language description of the research interests of a team or individual researchers.
   * Simple YAML-based configuration with a template for easy setup.
 
- The modular nature of PapersBee enables extensibility and interoperability, making it straightforward to set up data sources, filters, or output channels for users, and add new functionality for developers.
+ The modular nature of PaperBee enables extensibility and interoperability, making it straightforward to set up data sources, filters, or output channels for users, and add new functionality for developers.
 
 # Deployment 
 
-On GitHub, we provide comprehensive instructions for setting up the PapersBee [@papersbee_github], which were successfully tested by independent users in different laboratories. Briefly, users need to:
+On GitHub, we provide comprehensive instructions for setting up the PaperBee [@paperbee_github], which were successfully tested by independent users in different laboratories. Briefly, users need to:
 
 1. Set up a search query. This is identical to a query researchers normally use for finding papers for a literature review. We recommend making it broad and to include synonyms to avoid missing relevant papers, and splitting keywords into two parts: domain-based and methods-based. Here is an example query for a user interested in image-based cell profiling:
 
@@ -87,22 +87,22 @@ We recommend changing the middle part of the prompt to better select publication
 
 `You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?`
 
-1. Set up the messaging platforms and API keys required for the PapersBee to function. We provide detailed instructions and templates on the Github [@papersbee_github]. Briefly, the following parts are required:
+1. Set up the messaging platforms and API keys required for the PaperBee to function. We provide detailed instructions and templates on the Github [@paperbee_github]. Briefly, the following parts are required:
 * Google Sheets document with a particular structure
 * Google Service Account integrated with the Google Sheet
 * NCBI API key to make requests to NCBI for querying papers on PubMed and obtaining their DOIs
 * Setup of posting channels and corresponding API keys
 * OpenAI API key or a preferred model for Ollama 
 
-The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users can simply run a Python script performing daily search of new publications. An experienced user, however, can leverage PapersBee's modular structure to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
+The package contains unit and integration tests to make sure that the setup works correctly. After filling out the configuration file in YAML format, users can simply run a Python script performing daily search of new publications. An experienced user, however, can leverage PaperBee's modular structure to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
 
 # Outlook
 
-Here, we present PapersBee, an application for daily search of new scientific publications with open-source Python code and modular architecture. PapersBee requires no programming experience from its users and is comprehensively documented for an easy setup. On the other side, developers can easily extend the code due to modular architecture, extensive documentation and automated testing. PapersBee can be used in laboratories worldwide for daily papers search. While its main purpose is keeping researchers updated with new literature, it is possible to use PapersBee for broader literature search, for example, for literature reviews with minimal coding effort. We envision that PapersBee will greatly benefit the scientific community by enabling daily discovery of more relevant publications and better integration with team communication tools than traditional approaches.
+Here, we present PaperBee, an application for daily search of new scientific publications with open-source Python code and modular architecture. PaperBee requires no programming experience from its users and is comprehensively documented for an easy setup. On the other side, developers can easily extend the code due to modular architecture, extensive documentation and automated testing. PaperBee can be used in laboratories worldwide for daily papers search. While its main purpose is keeping researchers updated with new literature, it is possible to use PaperBee for broader literature search, for example, for literature reviews with minimal coding effort. We envision that PaperBee will greatly benefit the scientific community by enabling daily discovery of more relevant publications and better integration with team communication tools than traditional approaches.
 
 # Acknowledgements
 
-We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of PapersBee's retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in PapersBee's semantic filtering experiments. Finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of PapersBee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
+We gratefully acknowledge the creators and maintainers of the `findpapers` library [@grosman2020], whose work forms the backbone of PaperBee's retrieval functionality. We also thank the teams behind the PubMed, arXiv, and bioRxiv APIs, which make programmatic literature access possible. We acknowledge the developers and researchers behind OpenAI and Ollama for the LLMs used in PaperBee's semantic filtering experiments. Finally, we would like to thank Ciro Ramírez-Suástegui from The Wellcome Sanger Institute and Daniel Strobl from Helmholtz Munich for testing the installation of PaperBee. V. A. S. is supported by the Helmholtz Association under the joint research school "Munich School for Data Science - MUDS".
 
 # Competing interests
 

@@ -3,7 +3,7 @@ import pytest
 from logging import Logger
 import yaml
 
-from PapersBee.papers.telegram_papers_formatter import TelegramPaperPublisher
+from PaperBee.papers.telegram_papers_formatter import TelegramPaperPublisher
 
 async def send_message(token, chat_id, text):
     bot = Bot(token)

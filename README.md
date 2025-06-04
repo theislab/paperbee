@@ -1,8 +1,8 @@
-# 🐝 PapersBee
+# 🐝 PaperBee
 
-<img src="images/papersbee_logo.png" width="200" height="auto" alt="logo"/>
+<img src="images/paperbee_logo.png" width="200" height="auto" alt="logo"/>
 
-PapersBee is a Python application designed to **automatically search for new scientific papers and post them** to your favorite channels.  
+PaperBee is a Python application designed to **automatically search for new scientific papers and post them** to your favorite channels.  
 Currently supported platforms:
 
 - 🟣 Slack
@@ -13,12 +13,12 @@ Currently supported platforms:
 
 ## 🚀 How Does It Work?
 
-![papersbee_pipeline](images/papersbee_pipeline.svg)
+![paperbee_pipeline](images/paperbee_pipeline.svg)
 
-PapersBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.  
+PaperBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.  
 Papers are then filtered either **manually via a command-line interface** or **automatically via an LLM**.  
 The filtered papers are posted to a Google Sheet and, if desired, to Slack, Telegram, or Zulip channels.
-PapersBee is easy to setup and configure with a simple `yml` file.
+PaperBee is easy to setup and configure with a simple `yml` file.
 
 ---
 
@@ -27,7 +27,7 @@ PapersBee is easy to setup and configure with a simple `yml` file.
 ### 1. Download the Code and Install Dependencies
 
 ```bash
-pip install PapersBee
+pip install paperbee
 ```
 
 ---
@@ -55,7 +55,7 @@ pip install PapersBee
 
 ### 2. 🔑 Get NCBI API Key
 
-PapersBee uses the NCBI API to fetch papers and DOIs from PubMed.  
+PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.  
 [Get your free API key here.](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys)
 
 ---
@@ -116,7 +116,7 @@ Update the **LLM** variables in the `config.yml` file. (LLM_PROVIDER, LANGUAGE_M
 
 ## ⚙️ Configuration
 
-PapersBee uses a YAML configuration file to specify all arguments.  
+PaperBee uses a YAML configuration file to specify all arguments.  
 Copy and customize the template below as `config.yml`:
 
 ### Example `config.yml`
@@ -225,14 +225,14 @@ You are a lab manager at a research lab focusing on machine learning methods dev
 When everything is set up, run the bot with:
 
 ```bash
-papersbee post --config /path/to/config.yml --interactive --since 10
+paperbee post --config /path/to/config.yml --interactive --since 10
 ```
 
 - `--config` : Path to your YAML configuration file.
 - `--interactive` : (Optional) Use CLI for manual filtering.
 - `--since` : (Optional) How many days back to search for papers (default: last 24h).
 
-See [daily_posting.py](src/PapersBee/daily_posting.py) for an example of running search from Python.
+See [daily_posting.py](src/PaperBee/daily_posting.py) for an example of running search from Python.
 
 ---
 
@@ -243,7 +243,7 @@ See [daily_posting.py](src/PapersBee/daily_posting.py) for an example of running
 Configuration for Slack apps.  
 With a manifest, you can create or adjust an app with a pre-defined configuration.
 
-### `src/PapersBee/papers`
+### `src/PaperBee/papers`
 
 Classes to fetch, format, and post papers, and update the Google Sheet.
 
@@ -288,4 +288,4 @@ pytest
 
 ---
 
-Enjoy using 🐝 **PapersBee**!
+Enjoy using 🐝 **PaperBee**!

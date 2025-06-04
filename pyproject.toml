@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "PapersBee"
+name = "PaperBee"
 version = "0.0.2"
 description = ""
 authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
 repository = "https://github.com/theislab/papersbee"
-documentation = "https://theislab.github.io/papersbee"
+documentation = "https://github.com/theislab/papersbee"
 readme = "README.md"
-packages = [{ include = "PapersBee", from = "src" }]
+packages = [{ include = "PaperBee", from = "src" }]
 
 
 [tool.poetry.dependencies]
@@ -44,8 +44,8 @@ requires = ["poetry-core>=1.0.0", "cython"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
-files = ["src/PapersBee"]
-exclude = ['src/PapersBee/listeners', 'src/PapersBee/app.py']
+files = ["src/PaperBee"]
+exclude = ['src/PaperBee/listeners', 'src/PaperBee/app.py']
 ignore_missing_imports = true
 disallow_untyped_defs = true
 disallow_untyped_calls = true
@@ -59,7 +59,7 @@ allow_untyped_globals = false
 allow_redefinition = false
 
 [tool.poetry.scripts]
-papersbee = "PapersBee.daily_posting:main"
+paperbee = "PaperBee.daily_posting:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
