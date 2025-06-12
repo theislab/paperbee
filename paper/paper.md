@@ -51,7 +51,7 @@ The scientific publication landscape is growing at an unprecedented pace, often 
 
 # Functionality
 
-![PaperBee pipeline. First, new publications are queried from databases given a list of keywords and filtered by date of publication when necessary. Further, manual filtering via command-line interface or automated filtering with large language models is applied to only leave the papers relevant for researchers’ interests. Finally, selected papers are put in a spreadsheet and posted to messengers. Optional steps are surrounded by a dashed line. ](../images/papersbee_pipeline.png)
+![PaperBee pipeline. First, new publications are queried from databases given a list of keywords and filtered by date of publication when necessary. Further, manual filtering via command-line interface or automated filtering with large language models is applied to only leave the papers relevant for researchers’ interests. Finally, selected papers are put in a spreadsheet and posted to messengers. Optional steps are surrounded by a dashed line. ](../images/paperbee_pipeline.png)
 
 PaperBee provides the following features for literature monitoring (Figure 1):
 
