@@ -69,7 +69,7 @@ The modular nature of **PaperBee** enables extensibility and interoperability, m
 
 # Deployment 
 
-On GitHub, we provide comprehensive instructions for setting up PaperBee[@papersbee_github], which have been successfully tested by independent users in different laboratories. Briefly, users need to:
+On GitHub, we provide comprehensive instructions for setting up PaperBee[@paperbee_github], which have been successfully tested by independent users in different laboratories. Briefly, users need to:
 
 1. Set up a search query. This is identical to a query researchers normally use for finding papers using tools such as Google Scholar. We recommend making it broad and including synonyms to avoid missing relevant papers, and splitting keywords into two parts: domain-based and methods-based. Here is an example query for a user interested in computational analysis of image-based cell profiling:
 
@@ -87,7 +87,7 @@ Note that it is recommended to remove broad keywords such as "machine learning" 
 
 In cases of more specific interests, the filtering prompt can be further extended to focus on more relevant papers.
 
-3. Set up the messaging platforms and API keys required for PaperBee to function. We provide detailed instructions and templates on GitHub [@papersbee_github]. Briefly, the following information is required:
+3. Set up the messaging platforms and API keys required for PaperBee to function. We provide detailed instructions and templates on GitHub [@paperbee_github]. Briefly, the following information is required:
 * Google Sheets document with a particular structure
 * Google Service Account integrated with the Google Sheet
 * NCBI API key to query papers on PubMed

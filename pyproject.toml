@@ -3,8 +3,8 @@ name = "PaperBee"
 version = "0.0.2"
 description = ""
 authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
-repository = "https://github.com/theislab/papersbee"
-documentation = "https://github.com/theislab/papersbee"
+repository = "https://github.com/theislab/paperbee"
+documentation = "https://github.com/theislab/paperbee"
 readme = "README.md"
 packages = [{ include = "PaperBee", from = "src" }]
 
