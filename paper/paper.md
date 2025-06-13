@@ -13,6 +13,8 @@ authors:
   - name: Vladimir A. Shitov
     affiliation: "1,6"
     equal-contrib: true
+  - name: Dieter Saur
+    affiliation: "2,3,4"
   - name: Luke Zappia
     affiliation: "7"
   - name: Fabian J. Theis
@@ -108,7 +110,7 @@ Here, we present PaperBee, a modular open-source Python application for daily se
 
 # Acknowledgements
 
-We thank the creators and maintainers of the `findpapers` package [@grosman2020], and the maintainers of the PubMed, arXiv, and bioRxiv APIs. We also acknowledge OpenAI and Ollama for their LLM contributions. Special thanks to Ciro Ramírez-Suástegui and Daniel Strobl for testing the installation. V.A.S. is supported by the Helmholtz Association under the MUDS program.
+We thank the creators and maintainers of the `findpapers` package [@grosman2020], and the maintainers of the PubMed, arXiv, and bioRxiv APIs. We also acknowledge OpenAI and Ollama for their LLM contributions. Special thanks to Ciro Ramírez-Suástegui and Daniel Strobl for testing the installation. V.A.S. is supported by the Helmholtz Association under the MUDS program. D.L. is supported by the German Cancer Consortium (DKTK), Deutsche Krebshilfe (DKH #70115743) and Deutsche Forschungsgemeinschaft (DFG SA 1374/8-1, Project-ID 515991405; DFG SA 1374/7-1, Project-ID 515571394; DFG SA 1374/6-1, Project ID 458890590) to D.S..
 
 # Competing Interests
 F.J.T. consults for Immunai Inc., CytoReason Ltd, Cellarity, BioTuring Inc., and Genbio.AI Inc., and has an ownership interest in Dermagnostix GmbH and Cellarity.
