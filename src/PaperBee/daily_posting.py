@@ -4,7 +4,7 @@ from typing import Any, List, Optional, Tuple
 
 import yaml
 
-from PapersBee.papers import (
+from PaperBee.papers import (
     PapersFinder,
     validate_configuration,
     validate_llm_args,
@@ -70,9 +70,9 @@ async def daily_papers_search(config: dict, interactive: bool = False, since: Op
 
 def main() -> None:
     """
-    CLI entry point for PapersBee, supporting subcommands like 'post'.
+    CLI entry point for PaperBee, supporting subcommands like 'post'.
     """
-    parser = argparse.ArgumentParser(description="PapersBee CLI")
+    parser = argparse.ArgumentParser(description="PaperBee CLI")
     subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
 
     # Subcommand: post

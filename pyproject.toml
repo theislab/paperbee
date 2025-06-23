@@ -1,16 +1,16 @@
 [tool.poetry]
-name = "PapersBee"
+name = "PaperBee"
 version = "0.0.2"
 description = ""
 authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
-repository = "https://github.com/theislab/papersbee"
-documentation = "https://theislab.github.io/papersbee"
+repository = "https://github.com/theislab/paperbee"
+documentation = "https://github.com/theislab/paperbee"
 readme = "README.md"
-packages = [{ include = "PapersBee", from = "src" }]
+packages = [{ include = "PaperBee", from = "src" }]
 
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.10,<4.0"
 gspread = "6.0.2"
 slack-bolt = "1.18.1"
 slack_sdk = "3.27.1"
@@ -24,13 +24,14 @@ zulip = "0.9.0"
 ollama = "0.4.6"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.2.0"
-pytest-asyncio = "^0.26.0"
+pytest = ">=8.2,<9"
+pytest-asyncio = "0.26.0"
 mypy = "^1.5.1"
 pre-commit = "^3.4.0"
 types-toml = "^0.10.8.20240310"
 types-pyyaml = "^6.0.12.20240808"
 types-requests = "^2.32.0.20240914"
+pandoc = "2.4"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
@@ -43,8 +44,8 @@ requires = ["poetry-core>=1.0.0", "cython"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
-files = ["src/PapersBee"]
-exclude = ['src/PapersBee/listeners', 'src/PapersBee/app.py']
+files = ["src/PaperBee"]
+exclude = ['src/PaperBee/listeners', 'src/PaperBee/app.py']
 ignore_missing_imports = true
 disallow_untyped_defs = true
 disallow_untyped_calls = true
@@ -58,7 +59,7 @@ allow_untyped_globals = false
 allow_redefinition = false
 
 [tool.poetry.scripts]
-papersbee = "PapersBee.daily_posting:main"
+paperbee = "PaperBee.daily_posting:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -4,8 +4,8 @@ from datetime import date
 
 import pytest
 
-from PapersBee.papers.papers_finder import PapersFinder
-from PapersBee.papers.google_sheet import GoogleSheetsUpdater
+from PaperBee.papers.papers_finder import PapersFinder
+from PaperBee.papers.google_sheet import GoogleSheetsUpdater
 
 @pytest.mark.asyncio
 async def test_posting():

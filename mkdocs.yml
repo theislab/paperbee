@@ -1,10 +1,10 @@
-site_name: papersbee
-repo_url: "https://github.com/theislab/papersbee"
-site_url: https://theislab.github.io/papersbee
-site_description: papersbee
+site_name: paperbee
+repo_url: "https://github.com/theislab/paperbee"
+site_url: https://theislab.github.io/paperbee
+site_description: paperbee
 site_author: Daniele Lucarelli
 edit_uri: edit/main/docs/
-repo_name: theislab/papersbee
+repo_name: theislab/paperbee
 copyright: Maintained by <a href="https://Saur-Lab.com"></a>.
 
 nav:
