@@ -288,4 +288,18 @@ pytest
 
 ---
 
+# Reference
+
+We have submitted the paper to the Journal of Open Source Software ([JOSS](https://joss.theoj.org/)). You can check the paper text in the [paper](paper/paper.md) directory or find a rendered PDF in the GitHub actions. While the paper is under revisions, feel free to cite this repo as:
+
+```
+@misc{shitov_patpy_2024,
+  author = {Lucarelli, Daniele and Shitov, Vladimir A. and Saur, Dieter and Zappia, Luke and Theis, Fabian J.},
+  title = {PaperBee: An Automated Daily Digest Bot for Scientific Literature Monitoring},
+  year = {2025},
+  url = {https://github.com/theislab/paperbee},
+  note = {Version 1.0.0}
+}
+```
+
 Enjoy using 🐝 **PaperBee**!
