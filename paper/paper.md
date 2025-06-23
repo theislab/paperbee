@@ -94,7 +94,7 @@ In cases of more specific interests, the filtering prompt can be further extende
 * Setup of posting channels and corresponding API keys
 * OpenAI API key or a preferred model for Ollama
 
-The package contains unit and integration tests to make sure that the setup works correctly. After completing the configuration file in YAML format, teams can run a Python script that performs a daily search of new publications. Experienced users can also leverage PaperBee's modular structure to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
+The package contains unit and integration tests to make sure that the setup works correctly. After completing the configuration file in YAML format, teams can run a Python script that performs a daily search of new publications. Experienced users can also leverage **PaperBee**'s modular structure to build custom functionality with its components. The code is openly accessible on GitHub under the MIT license.
 
 # User experience
 
@@ -104,7 +104,7 @@ We ran **PaperBee** for over a year in a laboratory focusing on computational me
 
 # Outlook
 
-Here, we present **PaperBee**, a modular open-source Python application for daily search of new scientific publications. **PaperBee** requires minimal programming experience from users and is comprehensively documented for easy setup. Developers can easily extend the code due to a modular architecture, extensive documentation, and automated testing. **PaperBee** can be used in laboratories worldwide for daily paper searches and has successfully demonstrated its usefulness in a laboratory developing computational methods for single-cell transcriptomics. While PaperBee is designed to keep researchers updated with new literature, it can also be used for broader literature searches. We envision that **PaperBee** will greatly benefit the scientific community by enabling daily discovery of more relevant publications and better integration with team communication tools.
+Here, we present **PaperBee**, a modular open-source Python application for daily search of new scientific publications. **PaperBee** requires minimal programming experience from users and is comprehensively documented for easy setup. Developers can easily extend the code due to a modular architecture, extensive documentation, and automated testing. **PaperBee** can be used in laboratories worldwide for daily paper searches and has successfully demonstrated its usefulness in a laboratory developing computational methods for single-cell transcriptomics. While **PaperBee** is designed to keep researchers updated with new literature, it can also be used for broader literature searches. We envision that **PaperBee** will greatly benefit the scientific community by enabling daily discovery of more relevant publications and better integration with team communication tools.
 
 # Acknowledgements
 
