@@ -99,7 +99,7 @@ def main() -> None:
     )
     post_parser.add_argument(
         "--since",
-        type=str,
+        type=int,
         help="Filter out papers if published before the specified number of days ago.",
     )
 
