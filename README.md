@@ -2,21 +2,21 @@
 
 <img src="images/paperbee_logo.png" width="200" height="auto" alt="logo"/>
 
-PaperBee is a Python application designed to **automatically search for new scientific papers and post them** to your favorite channels.  
+PaperBee is a Python application designed to **automatically search for new scientific papers and post them** to your favorite channels.
 Currently supported platforms:
 
 - 🟣 Slack
 - 🟢 Zulip
 - 🔵 Telegram
-  
+
 ---
 
 ## 🚀 How Does It Work?
 
 ![paperbee_pipeline](images/paperbee_pipeline.svg)
 
-PaperBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.  
-Papers are then filtered either **manually via a command-line interface** or **automatically via an LLM**.  
+PaperBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.
+Papers are then filtered either **manually via a command-line interface** or **automatically via an LLM**.
 The filtered papers are posted to a Google Sheet and, if desired, to Slack, Telegram, or Zulip channels.
 PaperBee is easy to setup and configure with a simple `yml` file.
 
@@ -36,26 +36,26 @@ pip install paperbee
 
 ### 1. Google Sheets Integration
 
-1. **Create a Google Service Account:**  
-   [Official guide](https://cloud.google.com/iam/docs/service-accounts-create)  
+1. **Create a Google Service Account:**
+   [Official guide](https://cloud.google.com/iam/docs/service-accounts-create)
    Needed to write found papers to a Google Spreadsheet.
-2. **Create a JSON Key:**  
-   [Official guide](https://cloud.google.com/iam/docs/keys-create-delete)  
+2. **Create a JSON Key:**
+   [Official guide](https://cloud.google.com/iam/docs/keys-create-delete)
    Download and store the JSON file securely.
-3. **Enable Google Sheets API:**  
+3. **Enable Google Sheets API:**
    In [Google Cloud Console](https://console.cloud.google.com/), enable the Google Sheets API for your service account.
-4. **Create a Google Spreadsheet:**  
-   You can copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/).  
-   The sheet must have columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`.  
+4. **Create a Google Spreadsheet:**
+   You can copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/).
+   The sheet must have columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`.
    The sheet name must be `Papers`.
-5. **Share the Spreadsheet:**  
-   Add the service account email as an *Editor*.
+5. **Share the Spreadsheet:**
+   Add the service account email as an _Editor_.
 
 ---
 
 ### 2. 🔑 Get NCBI API Key
 
-PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.  
+PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.
 [Get your free API key here.](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys)
 
 ---
@@ -96,7 +96,7 @@ Update the **ZULIP** variables in the `config.yml` file.
 
 ### 4. 🤖 Setup LLM for Automated Filtering (optional, but recommended)
 
-> If you want to use LLM filtering, remember to add a `filtering_prompt.txt` file.  
+> If you want to use LLM filtering, remember to add a `filtering_prompt.txt` file.
 > See [Setup Query and LLM Filtering Prompt](#setup-query-and-llm-filtering-prompt).
 
 #### OpenAI API
@@ -116,7 +116,7 @@ Update the **LLM** variables in the `config.yml` file. (LLM_PROVIDER, LANGUAGE_M
 
 ## ⚙️ Configuration
 
-PaperBee uses a YAML configuration file to specify all arguments.  
+PaperBee uses a YAML configuration file to specify all arguments.
 Copy and customize the template below as `config.yml`:
 
 ### Example `config.yml`
@@ -165,13 +165,9 @@ ZULIP:
   stream: "your-zulip-stream"
   topic: "your-zulip-topic"
 
-
-
-
 SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
 TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
 GOOGLE_TEST_SPREADSHEET_ID: "your-google-test-spreadsheet-id" # not required so left outside of dictionary
-
 ```
 
 ---
@@ -192,12 +188,14 @@ If you want to fine-tune the queries for pubmed and arxiv which allow for both A
 #### `query_biorxiv`
 
 This database has more requirements, so if your query is complex, you have to set a separate simple query for biorxiv, and a complex query for everything else. See [findpapers documentation](https://github.com/jonatasgrosman/findpapers?tab=readme-ov-file#search-query-construction) for more details. TLDR:
+
 - Only **1-level grouping** is supported: no round brackets inside round brackets
 - **Only OR connectors between parenthesis** are allowed, no `() AND ()`!
 - **AND NOT is not allowed**
 - All connectors must be either OR or AND. **No mixing**!
 
 Here's an example of a valid query:
+
 ```text
 [AI for cell trajectories] OR [machine learning for cell trajectories] OR [deep learning for cell trajectories] OR [AI for cell dynamics] OR [machine learning for cell dynamics] OR [deep learning for cell dynamics]
 ```
@@ -231,6 +229,7 @@ paperbee post --config /path/to/config.yml --interactive --since 10
 - `--config` : Path to your YAML configuration file.
 - `--interactive` : (Optional) Use CLI for manual filtering.
 - `--since` : (Optional) How many days back to search for papers (default: last 24h).
+- `--databases`: (Optional) list of databases to search, default pubmed biorxiv
 
 See [daily_posting.py](src/PaperBee/daily_posting.py) for an example of running search from Python.
 
@@ -240,7 +239,7 @@ See [daily_posting.py](src/PaperBee/daily_posting.py) for an example of running 
 
 ### `manifest.json`
 
-Configuration for Slack apps.  
+Configuration for Slack apps.
 With a manifest, you can create or adjust an app with a pre-defined configuration.
 
 ### `src/PaperBee/papers`
@@ -261,7 +260,7 @@ Classes to fetch, format, and post papers, and update the Google Sheet.
 
 ## 🧪 Running Tests (Optional)
 
-You can set up test channels for Slack/Telegram or run tests in production channels.  
+You can set up test channels for Slack/Telegram or run tests in production channels.
 Set the following variables in your `config.yml`:
 
 - `TELEGRAM_TEST_CHANNEL_ID` – Telegram test channel ID.
@@ -289,8 +288,6 @@ pytest
 ---
 
 # Reference
-
-We have submitted the paper to the Journal of Open Source Software ([JOSS](https://joss.theoj.org/)). You can check the paper text in the [paper](paper/paper.md) directory or find a rendered PDF in the GitHub actions. While the paper is under revisions, feel free to cite this repo as:
 
 ```
 @misc{shitov_patpy_2024,
