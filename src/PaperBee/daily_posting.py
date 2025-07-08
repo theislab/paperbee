@@ -1,6 +1,6 @@
 import argparse
 import asyncio
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, cast
 
 import yaml
 
@@ -12,17 +12,26 @@ from PaperBee.papers import (
 )
 
 
-def load_config(config_path: str) -> dict:
+def load_config(config_path: str) -> dict[Any, Any]:
     with open(config_path) as f:
-        return yaml.safe_load(f)
+        return cast(dict[Any, Any], yaml.safe_load(f))
 
 
-async def daily_papers_search(config: dict, interactive: bool = False, since: Optional[int] = None) -> Tuple[List[List[Any]], Any]:
+async def daily_papers_search(
+    config: dict,
+    interactive: bool = False,
+    since: Optional[int] = None,
+    databases: Optional[List[str]] = None,
+) -> Tuple[List[List[Any]], Any, Any, Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
     Returns:
-        Tuple[List[Dict[str, Any]], Any]: A tuple containing the list of papers and a response object.
+        Tuple[List[List[Any]], Any, Any, Any]:
+            - List of papers (list of lists of Any)
+            - Slack response
+            - Telegram response
+            - Zulip response
     """
     root_dir, query, query_biorxiv, query_pubmed_arxiv = validate_configuration(config)
 
@@ -30,16 +39,29 @@ async def daily_papers_search(config: dict, interactive: bool = False, since: Op
     zulip_args = validate_platform_args(config, "ZULIP")
     telegram_args = validate_platform_args(config, "TELEGRAM")
 
-    llm_filtering = config.get('LLM_FILTERING', False)
+    print(slack_args, zulip_args, telegram_args)
+
+    if telegram_args == {}:
+        telegram_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
+    if zulip_args == {}:
+        zulip_args = {"prc": "", "stream": "", "topic": "", "is_posting_on": False}
+    if slack_args == {}:
+        slack_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
+
+    print(slack_args, zulip_args, telegram_args)
+    llm_filtering = config.get("LLM_FILTERING", False)
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(config, root_dir)
     else:
-        filtering_prompt = LLM_PROVIDER = LANGUAGE_MODEL = OPENAI_API_KEY = None
+        filtering_prompt = ""
+        LLM_PROVIDER = ""
+        LANGUAGE_MODEL = ""
+        OPENAI_API_KEY = ""
 
     finder = PapersFinder(
         root_dir=root_dir,
-        spreadsheet_id=config.get('GOOGLE_SPREADSHEET_ID', ''),
-        google_credentials_json=config.get('GOOGLE_CREDENTIALS_JSON', ''),
+        spreadsheet_id=config.get("GOOGLE_SPREADSHEET_ID", ""),
+        google_credentials_json=config.get("GOOGLE_CREDENTIALS_JSON", ""),
         sheet_name="Papers",
         since=since,
         query=query,
@@ -58,11 +80,12 @@ async def daily_papers_search(config: dict, interactive: bool = False, since: Op
         zulip_prc=zulip_args["prc"],
         zulip_stream=zulip_args["stream"],
         zulip_topic=zulip_args["topic"],
+        databases=databases,
     )
     papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
         post_to_slack=slack_args["is_posting_on"],
         post_to_telegram=telegram_args["is_posting_on"],
-        post_to_zulip=zulip_args["is_posting_on"]
+        post_to_zulip=zulip_args["is_posting_on"],
     )
 
     return papers, response_slack, response_telegram, response_zulip
@@ -90,18 +113,27 @@ def main() -> None:
     )
     post_parser.add_argument(
         "--since",
-        type=str,
+        type=int,
         help="Filter out papers if published before the specified number of days ago.",
     )
-
+    post_parser.add_argument(
+        "--databases",
+        nargs="+",
+        type=str,
+        help="Specify any combination of databases to search among the available ones 'pubmed','arxiv', and 'biorxiv'(e.g., ['pubmed', 'arxiv']).",
+    )
     args = parser.parse_args()
 
     # Dispatch to the appropriate subcommand
     if args.command == "post":
         config = load_config(args.config)
         papers, response_slack, response_telegram, response_zulip = asyncio.run(
-            daily_papers_search(config, interactive=args.interactive, since=args.since)
+            daily_papers_search(
+                config,
+                interactive=args.interactive,
+                since=args.since,
+                databases=args.databases,
+            )
         )
         print("Papers found:")
         print(papers)
-

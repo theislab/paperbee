@@ -1,5 +1,5 @@
-from typing import List, Optional, Union
 import time
+from typing import List, Optional, Union
 
 import pandas as pd
 from ollama import Client
@@ -17,7 +17,14 @@ class LLMFilter:
         filtering_prompt (str): The prompt content for filtering the articles.
     """
 
-    def __init__(self, df: pd.DataFrame, llm_provider: str = "openai", model: str = "gpt-3.5-turbo", filtering_prompt: str = "", OPENAI_API_KEY: Optional[str] = "") -> None:
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        llm_provider: str = "openai",
+        model: str = "gpt-3.5-turbo",
+        filtering_prompt: str = "",
+        OPENAI_API_KEY: str = "",
+    ) -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
 
@@ -30,13 +37,11 @@ class LLMFilter:
         self.llm_provider: str = llm_provider.lower()
         self.model: str = model
         self.filtering_prompt: str = filtering_prompt
+        self.client: Union[OpenAI, Client]
         if self.llm_provider == "openai":
             self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
-            self.client = Client(
-                host='http://localhost:11434',
-                headers={'x-some-header': 'some-value'}
-                )
+            self.client = Client(host="http://localhost:11434", headers={"x-some-header": "some-value"})
         else:
             e = "Invalid client_type. Choose 'openai' or 'ollama'."
             raise ValueError(e)
@@ -72,16 +77,26 @@ class LLMFilter:
             # Use Ollama
             response = client.chat(
                 model=model,
-                messages=[{"role": "system", "content": filtering_prompt}, {"role": "user", "content": message}],
+                messages=[
+                    {"role": "system", "content": filtering_prompt},
+                    {"role": "user", "content": message},
+                ],
             )
-            content = response['message']['content']
-        else:
+            content = response["message"]["content"]
+        elif isinstance(client, OpenAI):
             # Use OpenAI API
-            response = client.chat.completions.create(
+            response = client.chat.completions.create(  # type: ignore[assignment]
                 model=model,
-                messages=[{"role": "system", "content": filtering_prompt}, {"role": "user", "content": message}]
+                messages=[
+                    {"role": "system", "content": filtering_prompt},
+                    {"role": "user", "content": message},
+                ],
             )
-            content = response.choices[0].message.content
+            # OpenAI returns an object with 'choices', Ollama does not
+            content = response.choices[0].message.content  # type: ignore[attr-defined]
+        else:
+            e = "Invalid client type. Use 'OpenAI' or 'Ollama'."
+            raise TypeError(e)
 
         if content is not None:
             return "yes" in content.lower()
@@ -106,7 +121,7 @@ class LLMFilter:
                 model=self.model,
             ):
                 retained_indices.append(index)
-            
+
             time.sleep(0.2)  # 100ms delay between requests to not exceed the rate limit
 
         # Return a DataFrame containing only the retained articles

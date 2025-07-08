@@ -95,19 +95,15 @@ class SlackPaperPublisher:
                     }
                     message_blocks.append(paper_section)
             else:
-                message_blocks.append(
-                    {
-                        "type": "section",
-                        "text": {"type": "mrkdwn", "text": "No preprints found today."},
-                    }
-                )
-            message_blocks.append({"type": "divider"})
-            message_blocks.append(
-                {
+                message_blocks.append({
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "*Papers:*:point_down:"},
-                }
-            )
+                    "text": {"type": "mrkdwn", "text": "No preprints found today."},
+                })
+            message_blocks.append({"type": "divider"})
+            message_blocks.append({
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": "*Papers:*:point_down:"},
+            })
             if papers:
                 for paper in papers:
                     paper_section = {
@@ -116,29 +112,23 @@ class SlackPaperPublisher:
                     }
                     message_blocks.append(paper_section)
             else:
-                message_blocks.append(
-                    {
-                        "type": "section",
-                        "text": {"type": "mrkdwn", "text": "No papers found today."},
-                    }
-                )
+                message_blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "No papers found today."},
+                })
             message_blocks.append({"type": "divider"})
             message_blocks.append({"type": "section", "text": {"type": "mrkdwn", "text": footer}})
-            message_blocks.append(
-                {
-                    "type": "section",
-                    "text": {"type": "mrkdwn", "text": f"Published on {today}"},
-                }
-            )
-            message_blocks.append(
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "Posted with `slack-papers-app` <https://github.com/theislab/slack_papers_bot|GitHub>",
-                    },
-                }
-            )
+            message_blocks.append({
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"Published on {today}"},
+            })
+            message_blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Posted with `slack-papers-app` <https://github.com/theislab/slack_papers_bot|GitHub>",
+                },
+            })
             if not self.channel_id:
                 self.logger.error("Channel ID is not provided.")
                 return None

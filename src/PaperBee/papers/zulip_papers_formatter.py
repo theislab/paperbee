@@ -1,6 +1,6 @@
 import os
 from logging import Logger
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import pandas as pd
 import zulip
@@ -87,9 +87,7 @@ class ZulipPaperPublisher:
 
         try:
             header = f"Good morning ☕ Here are today's papers ({today})! 📚\n\n"
-            footer = (
-                f"View all papers: [Google Sheet](https://docs.google.com/spreadsheets/d/{spreadsheet_id}) 📖"
-            )
+            footer = f"View all papers: [Google Sheet](https://docs.google.com/spreadsheets/d/{spreadsheet_id}) 📖"
 
             message_body = header
 

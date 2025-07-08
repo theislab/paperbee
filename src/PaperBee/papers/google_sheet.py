@@ -84,7 +84,10 @@ class GoogleSheetsUpdater:
         return cast(List[Dict[Any, Any]], sheet.get_all_records())
 
     def insert_rows(
-        self, sheet_name: str = "Papers", rows_data: Optional[List[List[Union[str, int, float]]]] = None, row: int = 2
+        self,
+        sheet_name: str = "Papers",
+        rows_data: Optional[List[List[Union[str, int, float]]]] = None,
+        row: int = 2,
     ) -> None:
         """
         Inserts new rows into the specified sheet starting from the given row index.

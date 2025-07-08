@@ -1,5 +1,7 @@
-import pytest
 import http.client as httplib
+
+import pytest
+
 
 def is_internet_available(host="8.8.8.8", timeout=2) -> bool:
     """Check if the internet is available by pinging a given host.
@@ -16,16 +18,16 @@ def is_internet_available(host="8.8.8.8", timeout=2) -> bool:
     True if the internet is available, False otherwise.
     """
     conn = httplib.HTTPSConnection(host, timeout=timeout)
-    
+
     try:
         conn.request("HEAD", "/")
-        return True
-    
     except Exception:
         return False
-    
+    else:
+        return True
     finally:
         conn.close()
+
 
 @pytest.mark.integration
 def test_internet_connection():
