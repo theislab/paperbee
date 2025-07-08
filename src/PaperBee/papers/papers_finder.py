@@ -86,10 +86,7 @@ class PapersFinder:
         if not all(db in allowed_databases for db in self.databases):
             e = f"Invalid database(s) in {self.databases}. Allowed values are: {allowed_databases}"
             raise ValueError(e)
-        if "biorxiv" in self.databases:
-            self.databases = ["biorxiv"] + [
-                db for db in self.databases if db != "biorxiv"
-            ]  # Ensure biorxiv is first if present
+        
         # Google Sheets
         self.google_credentials_json = google_credentials_json
         self.spreadsheet_id: str = spreadsheet_id
@@ -157,19 +154,20 @@ class PapersFinder:
                 self.until,
                 self.limit,
                 self.limit_per_database,
-                self.databases[1:],
+                [database for database in self.databases if database != "biorxiv"],  # Biorxiv requires a different query
                 verbose=False,
             )
-            findpapers.search(
-                self.search_file_biorxiv,
-                self.query_biorxiv,
-                self.since,
-                self.until,
-                self.limit,
-                self.limit_per_database,
-                self.databases[0],  # only biorxiv
-                verbose=False,
-            )
+            if "biorxiv" in databases:
+                findpapers.search(
+                    self.search_file_biorxiv,
+                    self.query_biorxiv,
+                    self.since,
+                    self.until,
+                    self.limit,
+                    self.limit_per_database,
+                    ["biorxiv"],
+                    verbose=False,
+                )
             with open(self.search_file_pub_arx) as papers_file:
                 articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             with open(self.search_file_biorxiv) as papers_file:
