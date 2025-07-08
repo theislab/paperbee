@@ -165,7 +165,7 @@ class PapersFinder:
                 ],  # Biorxiv requires a different query
                 verbose=False,
             )
-            if "biorxiv" in databases:
+            if "biorxiv" in self.databases:
                 findpapers.search(
                     self.search_file_biorxiv,
                     self.query_biorxiv,
