@@ -41,6 +41,7 @@ class PapersFinder:
         zulip_prc (str): The Zulip personal realm configuration.
         zulip_stream (str): The Zulip stream name.
         zulip_topic (str): The Zulip topic name.
+        databases (Optional[List[str]]): List of databases to search in, e.g., ['pubmed', 'biorxiv', 'arxiv'].
     """
 
     def __init__(
@@ -67,6 +68,7 @@ class PapersFinder:
         zulip_stream: str = "",
         zulip_topic: str = "",
         ncbi_api_key: str = "",
+        databases: Optional[List[str]] = None,
     ) -> None:
         self.root_dir: str = root_dir
         # dates
@@ -79,7 +81,15 @@ class PapersFinder:
         # search args
         self.limit: int = 1200
         self.limit_per_database: int = 400
-        self.databases = ["biorxiv", "arxiv", "pubmed"]
+        allowed_databases = {"biorxiv", "arxiv", "pubmed"}
+        self.databases = databases if databases else ["biorxiv", "pubmed"]
+        if not all(db in allowed_databases for db in self.databases):
+            e = f"Invalid database(s) in {self.databases}. Allowed values are: {allowed_databases}"
+            raise ValueError(e)
+        if "biorxiv" in self.databases:
+            self.databases = ["biorxiv"] + [
+                db for db in self.databases if db != "biorxiv"
+            ]  # Ensure biorxiv is first if present
         # Google Sheets
         self.google_credentials_json = google_credentials_json
         self.spreadsheet_id: str = spreadsheet_id
@@ -147,7 +157,7 @@ class PapersFinder:
                 self.until,
                 self.limit,
                 self.limit_per_database,
-                ["pubmed", "arxiv"],
+                self.databases[1:],
                 verbose=False,
             )
             findpapers.search(
@@ -157,7 +167,7 @@ class PapersFinder:
                 self.until,
                 self.limit,
                 self.limit_per_database,
-                ["biorxiv"],
+                self.databases[0],  # only biorxiv
                 verbose=False,
             )
             with open(self.search_file_pub_arx) as papers_file:

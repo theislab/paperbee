@@ -18,7 +18,7 @@ def load_config(config_path: str) -> dict[Any, Any]:
 
 
 async def daily_papers_search(
-    config: dict, interactive: bool = False, since: Optional[int] = None
+    config: dict, interactive: bool = False, since: Optional[int] = None, databases: Optional[List[str]] = None
 ) -> Tuple[List[List[Any]], Any, Any, Any]:
     """
     Searches for daily papers and posts them to Telegram.
@@ -77,6 +77,7 @@ async def daily_papers_search(
         zulip_prc=zulip_args["prc"],
         zulip_stream=zulip_args["stream"],
         zulip_topic=zulip_args["topic"],
+        databases=databases,
     )
     papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
         post_to_slack=slack_args["is_posting_on"],
@@ -112,14 +113,19 @@ def main() -> None:
         type=int,
         help="Filter out papers if published before the specified number of days ago.",
     )
-
+    post_parser.add_argument(
+        "--databases",
+        nargs="+",
+        type=str,
+        help="Specify any combination of databases to search among the available ones 'pubmed','arxiv', and 'biorxiv'(e.g., ['pubmed', 'arxiv']).",
+    )
     args = parser.parse_args()
 
     # Dispatch to the appropriate subcommand
     if args.command == "post":
         config = load_config(args.config)
         papers, response_slack, response_telegram, response_zulip = asyncio.run(
-            daily_papers_search(config, interactive=args.interactive, since=args.since)
+            daily_papers_search(config, interactive=args.interactive, since=args.since, databases=args.databases)
         )
         print("Papers found:")
         print(papers)
