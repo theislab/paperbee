@@ -19,7 +19,9 @@ async def test_posting():
     )
     sheet, n_rows = gsheet_updater.open_sheet("Papers")
     if n_rows > 1:
-        sheet.delete_rows(2, n_rows + 1)  # Delete all rows except the header, row count starts from 1
+        sheet.delete_rows(
+            2, n_rows + 1
+        )  # Delete all rows except the header, row count starts from 1
 
     query = "[single-cell transcriptomics] OR [single-cell gene expression] OR [single-cell multiomics] OR [single-cell proteomics] OR [single-cell genomics] OR [single-cell RNA-seq] OR [scRNA] OR [scRNA-seq] OR [single-cell sequencing] OR [spatial transcriptomics] OR [single-nucleus sequencing] OR [snRNA-seq] OR [single-cell transcriptome] OR [single-cell omics]"
     filtering_prompt = "You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on fibrosis, VEO-IBD, lung health, COPD, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"
@@ -49,7 +51,9 @@ async def test_posting():
         finder.since = date(2023, 10, 8)
         finder.until = date(2023, 10, 10)
 
-        papers, _, _, _ = await finder.run_daily(post_to_slack=True, post_to_telegram=True)
+        papers, _, _, _ = await finder.run_daily(
+            post_to_slack=True, post_to_telegram=True
+        )
 
         assert len(papers) > 3
 

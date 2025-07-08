@@ -17,7 +17,9 @@ class SlackPaperPublisher:
         channel_id (Optional[str]): The ID of the Slack channel where papers will be published.
     """
 
-    def __init__(self, client: WebClient, logger: Logger, channel_id: Optional[str] = None) -> None:
+    def __init__(
+        self, client: WebClient, logger: Logger, channel_id: Optional[str] = None
+    ) -> None:
         """
         Initializes the SlackPaperPublisher with the Slack client, logger, and optional channel ID.
 
@@ -76,9 +78,7 @@ class SlackPaperPublisher:
         """
         try:
             header = "Good morning :coffee: Here are today's papers! Enjoy your reading! :wave:\n"
-            footer = (
-                f"*View all papers:* <https://docs.google.com/spreadsheets/d/{spreadsheet_id}|Google Sheet> :books:"
-            )
+            footer = f"*View all papers:* <https://docs.google.com/spreadsheets/d/{spreadsheet_id}|Google Sheet> :books:"
             message_blocks: List[Dict[str, Any]] = [
                 {"type": "section", "text": {"type": "mrkdwn", "text": header}},
                 {"type": "divider"},
@@ -123,7 +123,9 @@ class SlackPaperPublisher:
                     }
                 )
             message_blocks.append({"type": "divider"})
-            message_blocks.append({"type": "section", "text": {"type": "mrkdwn", "text": footer}})
+            message_blocks.append(
+                {"type": "section", "text": {"type": "mrkdwn", "text": footer}}
+            )
             message_blocks.append(
                 {
                     "type": "section",
@@ -151,12 +153,16 @@ class SlackPaperPublisher:
             )
             self.logger.info(f"Published papers to Slack: {response}")
         except Exception:
-            self.logger.exception("Error in publishing papers to Slack: ", exc_info=True)
+            self.logger.exception(
+                "Error in publishing papers to Slack: ", exc_info=True
+            )
             return None
         else:
             return response
 
-    def _send_csv(self, papers: pd.DataFrame, root_dir: str, user_id: str, user_query: str) -> Optional[SlackResponse]:
+    def _send_csv(
+        self, papers: pd.DataFrame, root_dir: str, user_id: str, user_query: str
+    ) -> Optional[SlackResponse]:
         """
         Sends a CSV file of papers to the specified Slack channel.
 
@@ -173,9 +179,7 @@ class SlackPaperPublisher:
         papers.to_csv(csv_path, index=False)
 
         try:
-            initial_comment = (
-                f"Hey <@{user_id}>, here is the CSV file of papers based on your query:\n\n '{user_query}'."
-            )
+            initial_comment = f"Hey <@{user_id}>, here is the CSV file of papers based on your query:\n\n '{user_query}'."
 
             # Upload the CSV file to Slack
             response = self.client.files_upload(
@@ -189,7 +193,9 @@ class SlackPaperPublisher:
 
         except Exception:
             # Log any exceptions that occur during the upload
-            self.logger.exception("Error encountered while sending CSV file to Slack.", exc_info=True)
+            self.logger.exception(
+                "Error encountered while sending CSV file to Slack.", exc_info=True
+            )
             return None
         else:
             return response

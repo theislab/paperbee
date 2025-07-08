@@ -40,10 +40,14 @@ class GoogleSheetsUpdater:
 
     def authenticate_google(self) -> ServiceAccountCredentials:
         """Authenticates with Google API using service account credentials."""
-        creds = ServiceAccountCredentials.from_json_keyfile_name(self.credentials_json_path, self.SCOPES)
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            self.credentials_json_path, self.SCOPES
+        )
         return creds
 
-    def open_sheet(self, sheet_name: str = "Sheet1") -> Optional[Tuple[gspread.Worksheet, int]]:
+    def open_sheet(
+        self, sheet_name: str = "Sheet1"
+    ) -> Optional[Tuple[gspread.Worksheet, int]]:
         """
         Opens a Google Sheet by its name.
 
@@ -66,7 +70,9 @@ class GoogleSheetsUpdater:
             return sheet, nr_rows
         return None
 
-    def read_sheet_data(self, sheet_name: str = "Sheet1") -> Optional[List[Dict[Any, Any]]]:
+    def read_sheet_data(
+        self, sheet_name: str = "Sheet1"
+    ) -> Optional[List[Dict[Any, Any]]]:
         """
         Reads data from a specified sheet.
 
@@ -84,7 +90,10 @@ class GoogleSheetsUpdater:
         return cast(List[Dict[Any, Any]], sheet.get_all_records())
 
     def insert_rows(
-        self, sheet_name: str = "Papers", rows_data: Optional[List[List[Union[str, int, float]]]] = None, row: int = 2
+        self,
+        sheet_name: str = "Papers",
+        rows_data: Optional[List[List[Union[str, int, float]]]] = None,
+        row: int = 2,
     ) -> None:
         """
         Inserts new rows into the specified sheet starting from the given row index.
@@ -117,6 +126,10 @@ class GoogleSheetsUpdater:
 
         inherit_from_before = 2 <= row <= nr_rows
         if len(rows_data) == 1:
-            sheet.insert_row(values=rows_data[0], index=row, inherit_from_before=inherit_from_before)
+            sheet.insert_row(
+                values=rows_data[0], index=row, inherit_from_before=inherit_from_before
+            )
         else:
-            sheet.insert_rows(values=rows_data, row=row, inherit_from_before=inherit_from_before)
+            sheet.insert_rows(
+                values=rows_data, row=row, inherit_from_before=inherit_from_before
+            )

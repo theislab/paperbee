@@ -30,7 +30,12 @@ class TelegramPaperPublisher:
         bot (Bot): A Telegram bot instance used to send messages.
     """
 
-    def __init__(self, logger: Logger, channel_id: Optional[str] = None, bot_token: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        logger: Logger,
+        channel_id: Optional[str] = None,
+        bot_token: Optional[str] = None,
+    ) -> None:
         """
         Initializes the TelegramPaperPublisher with the logger, channel ID, and bot token.
 
@@ -124,11 +129,15 @@ class TelegramPaperPublisher:
             message_blocks.append(footer)
 
             response = await self.bot.send_message(
-                chat_id=self.channel_id, text="\n".join(message_blocks), parse_mode="MarkdownV2"
+                chat_id=self.channel_id,
+                text="\n".join(message_blocks),
+                parse_mode="MarkdownV2",
             )
             self.logger.info(f"Published papers to Telegram: {response}")
         except Exception:
-            self.logger.exception("Error in publishing papers to Telegram: ", exc_info=True)
+            self.logger.exception(
+                "Error in publishing papers to Telegram: ", exc_info=True
+            )
         else:
             return response
 

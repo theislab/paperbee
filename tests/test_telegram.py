@@ -58,7 +58,9 @@ async def test_message_sending():
         config = yaml.safe_load(f)
     message_text = "Bot is working!"
     message = await send_message(
-        config.get("TELEGRAM")["bot_token"], config.get("TELEGRAM_TEST_CHANNEL_ID"), message_text
+        config.get("TELEGRAM")["bot_token"],
+        config.get("TELEGRAM_TEST_CHANNEL_ID"),
+        message_text,
     )
 
     assert message.message_id is not None
@@ -67,7 +69,9 @@ async def test_message_sending():
 @pytest.mark.asyncio
 async def test_publish_papers(publisher, papers):
     papers, preprints = publisher.format_papers(papers)
-    message = await publisher.publish_papers(papers, preprints, today=None, spreadsheet_id=None)
+    message = await publisher.publish_papers(
+        papers, preprints, today=None, spreadsheet_id=None
+    )
 
     assert message.message_id is not None
 
@@ -75,6 +79,8 @@ async def test_publish_papers(publisher, papers):
 @pytest.mark.asyncio
 async def test_publish_many_papers(publisher, papers):
     papers, preprints = publisher.format_papers(papers * 10)
-    message = await publisher.publish_papers(papers, preprints, today=None, spreadsheet_id=None)
+    message = await publisher.publish_papers(
+        papers, preprints, today=None, spreadsheet_id=None
+    )
 
     assert message.message_id is not None

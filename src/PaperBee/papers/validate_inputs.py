@@ -2,7 +2,9 @@ import os
 from typing import Any, Optional, Tuple
 
 
-def validate_configuration(config: dict) -> Tuple[str, Optional[str], Optional[str], Optional[str]]:
+def validate_configuration(
+    config: dict,
+) -> Tuple[str, Optional[str], Optional[str], Optional[str]]:
     """
     Validate the root directory, google and NCBI credentials, and the query files.
 

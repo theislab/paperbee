@@ -126,7 +126,9 @@ class ZulipPaperPublisher:
         else:
             return response
 
-    def _send_csv(self, papers: pd.DataFrame, root_dir: str, user_email: str, user_query: str) -> Optional[Any]:
+    def _send_csv(
+        self, papers: pd.DataFrame, root_dir: str, user_email: str, user_query: str
+    ) -> Optional[Any]:
         """
         Sends a CSV file of papers to the specified Zulip user via private message.
 
@@ -154,7 +156,9 @@ class ZulipPaperPublisher:
                 )
             self.logger.info(f"Successfully uploaded papers CSV to Zulip: {response}")
         except Exception:
-            self.logger.exception("Error encountered while sending CSV file to Zulip.", exc_info=True)
+            self.logger.exception(
+                "Error encountered while sending CSV file to Zulip.", exc_info=True
+            )
             return None
         finally:
             if os.path.exists(csv_path):
