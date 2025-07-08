@@ -1,6 +1,6 @@
 import argparse
 import asyncio
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, cast
 
 import yaml
 
@@ -12,19 +12,23 @@ from PaperBee.papers import (
 )
 
 
-def load_config(config_path: str) -> dict:
+def load_config(config_path: str) -> dict[Any, Any]:
     with open(config_path) as f:
-        return yaml.safe_load(f)
+        return cast(dict[Any, Any], yaml.safe_load(f))
 
 
 async def daily_papers_search(
     config: dict, interactive: bool = False, since: Optional[int] = None
-) -> Tuple[List[List[Any]], Any]:
+) -> Tuple[List[List[Any]], Any, Any, Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
     Returns:
-        Tuple[List[Dict[str, Any]], Any]: A tuple containing the list of papers and a response object.
+        Tuple[List[List[Any]], Any, Any, Any]:
+            - List of papers (list of lists of Any)
+            - Slack response
+            - Telegram response
+            - Zulip response
     """
     root_dir, query, query_biorxiv, query_pubmed_arxiv = validate_configuration(config)
 
@@ -32,18 +36,24 @@ async def daily_papers_search(
     zulip_args = validate_platform_args(config, "ZULIP")
     telegram_args = validate_platform_args(config, "TELEGRAM")
 
-    if telegram_args is None:
+    print(slack_args, zulip_args, telegram_args)
+
+    if telegram_args == {}:
         telegram_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
-    if zulip_args is None:
+    if zulip_args == {}:
         zulip_args = {"prc": "", "stream": "", "topic": "", "is_posting_on": False}
-    if slack_args is None:
+    if slack_args == {}:
         slack_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
 
+    print(slack_args, zulip_args, telegram_args)
     llm_filtering = config.get("LLM_FILTERING", False)
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(config, root_dir)
     else:
-        filtering_prompt = LLM_PROVIDER = LANGUAGE_MODEL = OPENAI_API_KEY = None
+        filtering_prompt = ""
+        LLM_PROVIDER = ""
+        LANGUAGE_MODEL = ""
+        OPENAI_API_KEY = ""
 
     finder = PapersFinder(
         root_dir=root_dir,

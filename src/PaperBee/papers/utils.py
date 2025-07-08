@@ -116,19 +116,21 @@ class PubMedClient:
                 if seconds_to_wait:
                     sleep(seconds_to_wait)
 
-                pubmed_id = search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
+                pubmed_id = (
+                    search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
+                )
                 if not pubmed_id:
                     return None
                 else:
                     break
             except Exception as e:
                 print(f"Error fetching DOI from PubMed: {e}")
-                print(f"Increasing timeout and retrying...")
+                print("Increasing timeout and retrying...")
                 seconds_to_wait *= 2
-                
+
                 if seconds_to_wait:
                     sleep(seconds_to_wait)
-                
+
                 continue
 
         if seconds_to_wait:

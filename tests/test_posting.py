@@ -1,18 +1,18 @@
-import yaml
-from tempfile import TemporaryDirectory
 from datetime import date
+from tempfile import TemporaryDirectory
 
 import pytest
-
-from PaperBee.papers.papers_finder import PapersFinder
+import yaml
 from PaperBee.papers.google_sheet import GoogleSheetsUpdater
+from PaperBee.papers.papers_finder import PapersFinder
+
 
 @pytest.mark.asyncio
 async def test_posting():
     with open("files/config.yml") as f:
         config = yaml.safe_load(f)
 
-    #Clean up test google spreadsheet
+    # Clean up test google spreadsheet
     gsheet_updater = GoogleSheetsUpdater(
         spreadsheet_id=config.get("GOOGLE_TEST_SPREADSHEET_ID"),
         credentials_json_path=config.get("GOOGLE_CREDENTIALS_JSON"),
@@ -45,7 +45,7 @@ async def test_posting():
             google_credentials_json=config.get("GOOGLE_CREDENTIALS_JSON"),
             ncbi_api_key=config.get("NCBI_API_KEY"),
         )
-        
+
         finder.since = date(2023, 10, 8)
         finder.until = date(2023, 10, 10)
 
@@ -58,6 +58,7 @@ async def test_posting():
             if paper[4].startswith("Population-level integration of single-cell"):
                 break
         else:
-            raise ValueError("scpoli paper not found")
+            e = "scpoli paper not found"
+            raise ValueError(e)
 
         print(papers)

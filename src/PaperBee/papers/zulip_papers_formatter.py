@@ -1,6 +1,6 @@
 import os
 from logging import Logger
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import pandas as pd
 import zulip
@@ -87,9 +87,7 @@ class ZulipPaperPublisher:
 
         try:
             header = f"Good morning ☕ Here are today's papers ({today})! 📚\n\n"
-            footer = (
-                f"View all papers: [Google Sheet](https://docs.google.com/spreadsheets/d/{spreadsheet_id}) 📖"
-            )
+            footer = f"View all papers: [Google Sheet](https://docs.google.com/spreadsheets/d/{spreadsheet_id}) 📖"
 
             message_body = header
 
@@ -112,12 +110,14 @@ class ZulipPaperPublisher:
             message_body += f"\n\n---\n\n{footer}"
 
             # Send the message to Zulip
-            response = self.client.send_message({
-                "type": "stream",
-                "to": self.stream_name,
-                "topic": self.topic_name,
-                "content": message_body,
-            })
+            response = self.client.send_message(
+                {
+                    "type": "stream",
+                    "to": self.stream_name,
+                    "topic": self.topic_name,
+                    "content": message_body,
+                }
+            )
 
             self.logger.info(f"Published papers to Zulip: {response}")
         except Exception:
@@ -144,12 +144,14 @@ class ZulipPaperPublisher:
 
         try:
             with open(csv_path, "rb") as file:
-                response = self.client.send_message({
-                    "type": "private",
-                    "to": user_email,
-                    "content": f"Here is the CSV file of papers based on your query: '{user_query}'",
-                    "file": file,
-                })
+                response = self.client.send_message(
+                    {
+                        "type": "private",
+                        "to": user_email,
+                        "content": f"Here is the CSV file of papers based on your query: '{user_query}'",
+                        "file": file,
+                    }
+                )
             self.logger.info(f"Successfully uploaded papers CSV to Zulip: {response}")
         except Exception:
             self.logger.exception("Error encountered while sending CSV file to Zulip.", exc_info=True)

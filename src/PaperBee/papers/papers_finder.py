@@ -42,6 +42,7 @@ class PapersFinder:
         zulip_stream (str): The Zulip stream name.
         zulip_topic (str): The Zulip topic name.
     """
+
     def __init__(
         self,
         root_dir: str,
@@ -54,7 +55,7 @@ class PapersFinder:
         query_pubmed_arxiv: Optional[str] = None,
         interactive: bool = False,
         llm_filtering: bool = False,
-        filtering_prompt : Optional[str] = "",
+        filtering_prompt: Optional[str] = "",
         llm_provider: Optional[str] = "",
         model: Optional[str] = "",
         OPENAI_API_KEY: Optional[str] = "",
@@ -65,39 +66,39 @@ class PapersFinder:
         zulip_prc: str = "",
         zulip_stream: str = "",
         zulip_topic: str = "",
-        ncbi_api_key: str = ""
+        ncbi_api_key: str = "",
     ) -> None:
         self.root_dir: str = root_dir
-        #dates
+        # dates
         self.today: date = date.today()
         self.today_str: str = self.today.strftime("%Y-%m-%d")
         self.yesterday: date = self.today - timedelta(days=since if since is not None else 1)
         self.yesterday_str: str = self.yesterday.strftime("%Y-%m-%d")
         self.until: date = self.today
         self.since: date = self.yesterday
-        #search args
+        # search args
         self.limit: int = 1200
         self.limit_per_database: int = 400
         self.databases = ["biorxiv", "arxiv", "pubmed"]
-        #Google Sheets
+        # Google Sheets
         self.google_credentials_json = google_credentials_json
         self.spreadsheet_id: str = spreadsheet_id
         self.sheet_name: str = sheet_name
-        #Query and search files
+        # Query and search files
         self.query_biorxiv: Optional[str] = query_biorxiv if query_biorxiv else None
         self.query_pub_arx: Optional[str] = query_pubmed_arxiv
         self.query: Optional[str] = query if query else None
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
         self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
         self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
-        #Filter
+        # Filter
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
-        self.llm_provider: Optional[str] = llm_provider
-        self.model: Optional[str] = model
-        self.filtering_prompt: Optional[str] = filtering_prompt
-        self.OPENAI_API_KEY: Optional[str] = OPENAI_API_KEY
-        #Slack, Telegram, Zulip
+        self.llm_provider: str = llm_provider or "openai"
+        self.model: str = model or "gpt-3.5-turbo"
+        self.filtering_prompt: str = filtering_prompt or ""
+        self.OPENAI_API_KEY: str = OPENAI_API_KEY or ""
+        # Slack, Telegram, Zulip
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
         self.telegram_bot_token: str = telegram_bot_token
@@ -105,11 +106,10 @@ class PapersFinder:
         self.zulip_prc: str = zulip_prc
         self.zulip_stream: str = zulip_stream
         self.zulip_topic: str = zulip_topic
-        #Logger
+        # Logger
         self.logger = Logger("PapersFinder")
-        #NCBI API
+        # NCBI API
         self.ncbi_api_key: str = ncbi_api_key
-
 
     def find_and_process_papers(self) -> pd.DataFrame:
         """
@@ -139,7 +139,7 @@ class PapersFinder:
             if not self.query_biorxiv or not self.query_pub_arx:
                 e = "Both query_biorxiv and query_pubmed_arxiv must be provided if query is not provided."
                 raise ValueError(e)
-            
+
             findpapers.search(
                 self.search_file_pub_arx,
                 self.query_pub_arx,
@@ -182,7 +182,13 @@ class PapersFinder:
         self.logger.info(f"Found {len(processed_articles)} articles.")
 
         if self.llm_filtering:
-            llm_filter = LLMFilter(processed_articles, llm_provider=self.llm_provider, model=self.model, filtering_prompt=self.filtering_prompt, OPENAI_API_KEY=self.OPENAI_API_KEY)
+            llm_filter = LLMFilter(
+                processed_articles,
+                llm_provider=self.llm_provider,
+                model=self.model,
+                filtering_prompt=self.filtering_prompt,
+                OPENAI_API_KEY=self.OPENAI_API_KEY,
+            )
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 
@@ -271,7 +277,9 @@ class PapersFinder:
         )
 
         papers_pub, preprints = zulip_publisher.format_papers_for_zulip(papers)
-        response = await zulip_publisher.publish_papers_to_zulip(papers_pub, preprints, self.today_str, self.spreadsheet_id)
+        response = await zulip_publisher.publish_papers_to_zulip(
+            papers_pub, preprints, self.today_str, self.spreadsheet_id
+        )
         return response
 
     def cleanup_files(self) -> None:
@@ -299,7 +307,7 @@ class PapersFinder:
 
     async def run_daily(
         self, post_to_slack: bool = True, post_to_telegram: bool = False, post_to_zulip: bool = False
-    ) -> Tuple[List[List[Any]], Any]:
+    ) -> Tuple[List[List[Any]], Any | None, Any | None, Any | None]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
 

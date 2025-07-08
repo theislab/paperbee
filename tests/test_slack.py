@@ -1,8 +1,8 @@
-import yaml
-
 import pytest
+import yaml
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+
 
 # The function to send messages
 def send_message(config, client, message):
@@ -10,7 +10,9 @@ def send_message(config, client, message):
     if response["ok"]:
         return response["message"]["text"]
     else:
-        raise SlackApiError("Error sending message", response)
+        e = f"Error sending message: {response['error']}"
+        raise SlackApiError(e)
+
 
 # The actual test
 @pytest.mark.integration
@@ -27,4 +29,3 @@ def test_slack_integration():
     received_message = send_message(config, client, sent_message)
 
     assert received_message == sent_message, "The message sent should match the message received"
-
