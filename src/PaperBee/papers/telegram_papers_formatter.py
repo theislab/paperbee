@@ -135,9 +135,7 @@ class TelegramPaperPublisher:
             )
             self.logger.info(f"Published papers to Telegram: {response}")
         except Exception:
-            self.logger.exception(
-                "Error in publishing papers to Telegram: ", exc_info=True
-            )
+            self.logger.exception("Error in publishing papers to Telegram: ", exc_info=True)
         else:
             return response
 

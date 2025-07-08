@@ -41,9 +41,7 @@ class LLMFilter:
         if self.llm_provider == "openai":
             self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
-            self.client = Client(
-                host="http://localhost:11434", headers={"x-some-header": "some-value"}
-            )
+            self.client = Client(host="http://localhost:11434", headers={"x-some-header": "some-value"})
         else:
             e = "Invalid client_type. Choose 'openai' or 'ollama'."
             raise ValueError(e)
@@ -71,9 +69,7 @@ class LLMFilter:
             bool: True if the publication is deemed relevant, otherwise False.
         """
         if keywords:
-            message = (
-                f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords)}"
-            )
+            message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords)}"
         else:
             message = f"Title of the publication: '{title}'"
 

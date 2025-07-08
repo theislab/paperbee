@@ -63,16 +63,12 @@ class ArticlesProcessor:
     def rename_and_process_columns(self) -> None:
         """Renames columns and processes keywords."""
         self.articles["Title"] = self.articles["title"]
-        self.articles["Keywords"] = self.articles["keywords"].apply(
-            lambda kws: ", ".join(kw[2:] for kw in kws)
-        )
+        self.articles["Keywords"] = self.articles["keywords"].apply(lambda kws: ", ".join(kw[2:] for kw in kws))
         self.articles["URL"] = self.articles["url"]
 
     def select_last_columns(self) -> None:
         """Selects and rearranges the final set of columns for the DataFrame."""
-        self.articles["Preprint"] = (
-            None  # TODO add search for preprint of published articles
-        )
+        self.articles["Preprint"] = None  # TODO add search for preprint of published articles
         self.articles = self.articles[
             [
                 "DOI",
@@ -112,9 +108,7 @@ class PubMedClient:
         """
         api_key = f"&api_key={ncbi_api_key}" if ncbi_api_key else ""
         base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-        search_url = (
-            f"{base_url}esearch.fcgi?db=pubmed&term={title}&retmode=json{api_key}"
-        )
+        search_url = f"{base_url}esearch.fcgi?db=pubmed&term={title}&retmode=json{api_key}"
 
         for _ in range(n_retries):
             try:
@@ -126,9 +120,7 @@ class PubMedClient:
                     sleep(seconds_to_wait)
 
                 pubmed_id = (
-                    search_data["esearchresult"]["idlist"][0]
-                    if search_data["esearchresult"]["idlist"]
-                    else None
+                    search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
                 )
                 if not pubmed_id:
                     return None

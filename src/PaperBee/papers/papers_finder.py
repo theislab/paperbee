@@ -74,9 +74,7 @@ class PapersFinder:
         # dates
         self.today: date = date.today()
         self.today_str: str = self.today.strftime("%Y-%m-%d")
-        self.yesterday: date = self.today - timedelta(
-            days=since if since is not None else 1
-        )
+        self.yesterday: date = self.today - timedelta(days=since if since is not None else 1)
         self.yesterday_str: str = self.yesterday.strftime("%Y-%m-%d")
         self.until: date = self.today
         self.since: date = self.yesterday
@@ -98,12 +96,8 @@ class PapersFinder:
         self.query_pub_arx: Optional[str] = query_pubmed_arxiv
         self.query: Optional[str] = query if query else None
         self.search_file: str = os.path.join(root_dir, f"{self.today_str}.json")
-        self.search_file_biorxiv: str = os.path.join(
-            root_dir, f"{self.today_str}_biorxiv.json"
-        )
-        self.search_file_pub_arx: str = os.path.join(
-            root_dir, f"{self.today_str}_pub_arx.json"
-        )
+        self.search_file_biorxiv: str = os.path.join(root_dir, f"{self.today_str}_biorxiv.json")
+        self.search_file_pub_arx: str = os.path.join(root_dir, f"{self.today_str}_pub_arx.json")
         # Filter
         self.interactive_filtering: bool = interactive
         self.llm_filtering: bool = llm_filtering
@@ -177,21 +171,15 @@ class PapersFinder:
                     verbose=False,
                 )
             with open(self.search_file_pub_arx) as papers_file:
-                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)[
-                    "papers"
-                ]
+                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             with open(self.search_file_biorxiv) as papers_file:
-                articles_biorxiv_dict: List[Dict[str, Any]] = json.load(papers_file)[
-                    "papers"
-                ]
+                articles_biorxiv_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             articles = articles_pub_arx_dict + articles_biorxiv_dict
 
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(
-                    article["title"], ncbi_api_key=self.ncbi_api_key
-                )
+                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=self.ncbi_api_key)
                 article["url"] = f"https://doi.org/{doi}" if doi else None
             else:
                 article["url"] = next(
@@ -212,22 +200,16 @@ class PapersFinder:
                 OPENAI_API_KEY=self.OPENAI_API_KEY,
             )
             processed_articles = llm_filter.filter_articles()
-            self.logger.info(
-                f"Filtered down to {len(processed_articles)} articles using LLM."
-            )
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
 
         if self.interactive_filtering:
             cli = InteractiveCLIFilter(processed_articles)
             processed_articles = cli.filter_articles()
-            self.logger.info(
-                f"Filtered down to {len(processed_articles)} articles manually."
-            )
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles manually.")
 
         return processed_articles
 
-    def update_google_sheet(
-        self, processed_articles: pd.DataFrame, row: int = 2
-    ) -> List[List[Any]]:
+    def update_google_sheet(self, processed_articles: pd.DataFrame, row: int = 2) -> List[List[Any]]:
         """
         Updates the Google Sheet with the processed articles that are not already listed.
 
@@ -245,18 +227,14 @@ class PapersFinder:
         if gsheet_cache:
             published_dois = [article["DOI"] for article in gsheet_cache]
 
-            processed_articles_filtered = processed_articles[
-                ~processed_articles["DOI"].isin(published_dois)
-            ]
+            processed_articles_filtered = processed_articles[~processed_articles["DOI"].isin(published_dois)]
         else:  # Sheet is empty (the moment of deployment)
             processed_articles_filtered = processed_articles
 
         row_data = [list(row) for row in processed_articles_filtered.values.tolist()]
 
         if row_data:
-            gsheet_updater.insert_rows(
-                sheet_name=self.sheet_name, rows_data=row_data, row=row
-            )
+            gsheet_updater.insert_rows(sheet_name=self.sheet_name, rows_data=row_data, row=row)
         return row_data
 
     def post_paper_to_slack(self, papers: List[List[str]]) -> Any:
@@ -291,9 +269,7 @@ class PapersFinder:
         )
 
         papers_pub, preprints = telegram_publisher.format_papers(papers)
-        response = await telegram_publisher.publish_papers(
-            papers_pub, preprints, self.today_str, self.spreadsheet_id
-        )
+        response = await telegram_publisher.publish_papers(papers_pub, preprints, self.today_str, self.spreadsheet_id)
         return response
 
     async def post_paper_to_zulip(self, papers: List[List[str]]) -> Any:
@@ -326,17 +302,13 @@ class PapersFinder:
             print(f"Deleted yesterday's file: {yesterday_file}")
         else:
             print(f"File not found, no deletion needed for: {yesterday_file}")
-        yesterday_file_biorxiv = os.path.join(
-            self.root_dir, f"{self.yesterday_str}_biorxiv.json"
-        )
+        yesterday_file_biorxiv = os.path.join(self.root_dir, f"{self.yesterday_str}_biorxiv.json")
         if os.path.exists(yesterday_file_biorxiv):
             os.remove(yesterday_file_biorxiv)
             print(f"Deleted yesterday's file: {yesterday_file_biorxiv}")
         else:
             print(f"File not found, no deletion needed for: {yesterday_file_biorxiv}")
-        yesterday_file_pub_arx = os.path.join(
-            self.root_dir, f"{self.yesterday_str}_pub_arx.json"
-        )
+        yesterday_file_pub_arx = os.path.join(self.root_dir, f"{self.yesterday_str}_pub_arx.json")
         if os.path.exists(yesterday_file_pub_arx):
             os.remove(yesterday_file_pub_arx)
             print(f"Deleted yesterday's file: {yesterday_file_pub_arx}")

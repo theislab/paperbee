@@ -110,14 +110,12 @@ class ZulipPaperPublisher:
             message_body += f"\n\n---\n\n{footer}"
 
             # Send the message to Zulip
-            response = self.client.send_message(
-                {
-                    "type": "stream",
-                    "to": self.stream_name,
-                    "topic": self.topic_name,
-                    "content": message_body,
-                }
-            )
+            response = self.client.send_message({
+                "type": "stream",
+                "to": self.stream_name,
+                "topic": self.topic_name,
+                "content": message_body,
+            })
 
             self.logger.info(f"Published papers to Zulip: {response}")
         except Exception:
@@ -126,9 +124,7 @@ class ZulipPaperPublisher:
         else:
             return response
 
-    def _send_csv(
-        self, papers: pd.DataFrame, root_dir: str, user_email: str, user_query: str
-    ) -> Optional[Any]:
+    def _send_csv(self, papers: pd.DataFrame, root_dir: str, user_email: str, user_query: str) -> Optional[Any]:
         """
         Sends a CSV file of papers to the specified Zulip user via private message.
 
@@ -146,19 +142,15 @@ class ZulipPaperPublisher:
 
         try:
             with open(csv_path, "rb") as file:
-                response = self.client.send_message(
-                    {
-                        "type": "private",
-                        "to": user_email,
-                        "content": f"Here is the CSV file of papers based on your query: '{user_query}'",
-                        "file": file,
-                    }
-                )
+                response = self.client.send_message({
+                    "type": "private",
+                    "to": user_email,
+                    "content": f"Here is the CSV file of papers based on your query: '{user_query}'",
+                    "file": file,
+                })
             self.logger.info(f"Successfully uploaded papers CSV to Zulip: {response}")
         except Exception:
-            self.logger.exception(
-                "Error encountered while sending CSV file to Zulip.", exc_info=True
-            )
+            self.logger.exception("Error encountered while sending CSV file to Zulip.", exc_info=True)
             return None
         finally:
             if os.path.exists(csv_path):

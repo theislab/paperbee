@@ -69,9 +69,7 @@ async def test_message_sending():
 @pytest.mark.asyncio
 async def test_publish_papers(publisher, papers):
     papers, preprints = publisher.format_papers(papers)
-    message = await publisher.publish_papers(
-        papers, preprints, today=None, spreadsheet_id=None
-    )
+    message = await publisher.publish_papers(papers, preprints, today=None, spreadsheet_id=None)
 
     assert message.message_id is not None
 
@@ -79,8 +77,6 @@ async def test_publish_papers(publisher, papers):
 @pytest.mark.asyncio
 async def test_publish_many_papers(publisher, papers):
     papers, preprints = publisher.format_papers(papers * 10)
-    message = await publisher.publish_papers(
-        papers, preprints, today=None, spreadsheet_id=None
-    )
+    message = await publisher.publish_papers(papers, preprints, today=None, spreadsheet_id=None)
 
     assert message.message_id is not None

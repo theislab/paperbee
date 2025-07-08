@@ -6,9 +6,7 @@ from slack_sdk.errors import SlackApiError
 
 # The function to send messages
 def send_message(config, client, message):
-    response = client.chat_postMessage(
-        channel=config.get("SLACK_TEST_CHANNEL_ID"), text=message
-    )
+    response = client.chat_postMessage(channel=config.get("SLACK_TEST_CHANNEL_ID"), text=message)
     if response["ok"]:
         return response["message"]["text"]
     else:
@@ -30,6 +28,4 @@ def test_slack_integration():
     sent_message = "The bot is working!"
     received_message = send_message(config, client, sent_message)
 
-    assert (
-        received_message == sent_message
-    ), "The message sent should match the message received"
+    assert received_message == sent_message, "The message sent should match the message received"

@@ -51,9 +51,7 @@ async def daily_papers_search(
     print(slack_args, zulip_args, telegram_args)
     llm_filtering = config.get("LLM_FILTERING", False)
     if llm_filtering:
-        filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = (
-            validate_llm_args(config, root_dir)
-        )
+        filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(config, root_dir)
     else:
         filtering_prompt = ""
         LLM_PROVIDER = ""
@@ -98,9 +96,7 @@ def main() -> None:
     CLI entry point for PaperBee, supporting subcommands like 'post'.
     """
     parser = argparse.ArgumentParser(description="PaperBee CLI")
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Available commands"
-    )
+    subparsers = parser.add_subparsers(dest="command", required=True, help="Available commands")
 
     # Subcommand: post
     post_parser = subparsers.add_parser("post", help="Post daily papers")
