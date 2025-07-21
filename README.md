@@ -70,10 +70,10 @@ PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.
 2. Choose your workspace.
 3. Copy the contents of `manifest.json` into the manifest box.
 4. Review and create the app.
-5. Install to Workspace and allow permissions.
-6. In **OAuth & Permissions**, copy the Bot User OAuth Token.
-7. In **Basic Information**, create an app-level token with `connections:write` scope.
-8. Set `SLACK_CHANNEL_ID` to your desired channel's ID.
+5. In **Install App** , install to Workspace and allow permissions. It is possible that you need to add a Bot Token Scope before installing, if that is the case, go to **OAuth & Permissions** -> **Scopes** and add a Bot Token Scope (any Bot Token Scope is good).
+6. In **OAuth & Permissions**, copy the Bot User OAuth Token and paste it in the `bot_token` in the `config.yml` file.
+7. In **Basic Information** -> **App-Level Tokens**, create an app-level token with `connections:write` scope.
+8. Set `SLACK_CHANNEL_ID` in the `config.yml` file to your desired channel's ID.
 
 Update the **SLACK** variables in the `config.yml` file.
 
@@ -100,6 +100,8 @@ Update the **ZULIP** variables in the `config.yml` file.
 > See [Setup Query and LLM Filtering Prompt](#setup-query-and-llm-filtering-prompt).
 
 #### OpenAI API
+
+The OpenAI API is not free, but it is really cheap, usually 5$ is more than enough for a year of everyday LLM filtering.
 
 - [Sign up for OpenAI](https://platform.openai.com/signup)
 - [Get your API key](https://platform.openai.com/settings/organization/api-api-keys)
