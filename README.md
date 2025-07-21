@@ -71,7 +71,7 @@ PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.
 3. Copy the contents of `manifest.json` into the manifest box.
 4. Review and create the app.
 5. In **Install App** , install to Workspace and allow permissions. It is possible that you need to add a Bot Token Scope before installing, if that is the case, go to **OAuth & Permissions** -> **Scopes** and add a Bot Token Scope (any Bot Token Scope is good).
-6. In **OAuth & Permissions**, copy the Bot User OAuth Token and paste it in the `box_token` in the `config.yml` file.
+6. In **OAuth & Permissions**, copy the Bot User OAuth Token and paste it in the `bot_token` in the `config.yml` file.
 7. In **Basic Information** -> **App-Level Tokens**, create an app-level token with `connections:write` scope.
 8. Set `SLACK_CHANNEL_ID` in the `config.yml` file to your desired channel's ID.
 
