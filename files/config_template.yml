@@ -44,8 +44,8 @@ ZULIP:
 # Mattermost configuration
 MATTERMOST:
   is_posting_on: true                # Set to true to enable Mattermost posting
-  url: "your-mattermost-url"        # e.g. mattermost.example.com
-  token: "your-mattermost-access-token" # Your Mattermost personal access token
+  url: "your-mattermost-url"        # e.g. mattermost.example.com (do NOT include https://)
+  token: "your-mattermost-access-token" # Your Mattermost personal access token (do NOT commit real tokens)
   team: "your-mattermost-team-name" # The team name (not display name)
   channel: "your-mattermost-channel-name" # The channel name (not display name)
 

@@ -34,7 +34,7 @@ Alternatively, you can set the following environment variables:
 2. Set your Mattermost credentials as environment variables (see above).
 3. Run the script:
    ```bash
-   python src/send_to_mattermost.py
+   python src/demo_mattermost.py
    ```
 
 The script will format a sample list of papers and post it to your specified Mattermost channel.
