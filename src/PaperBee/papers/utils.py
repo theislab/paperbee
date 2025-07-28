@@ -42,46 +42,72 @@ class ArticlesProcessor:
 
     def filter_columns(self) -> None:
         """Filters the DataFrame to include specific columns."""
-        columns = ["databases", "publication_date", "title", "keywords", "url"]
-        self.articles = self.articles.loc[:, columns]
+        # Check if DataFrame is empty
+        if self.articles.empty:
+            # Create an empty DataFrame with the expected columns
+            columns = ["databases", "publication_date", "title", "keywords", "url"]
+            self.articles = pd.DataFrame(columns=columns)
+        else:
+            columns = ["databases", "publication_date", "title", "keywords", "url"]
+            self.articles = self.articles.loc[:, columns]
 
     def extract_doi(self) -> None:
         """Extracts DOIs from URLs and adds them as a new column."""
-        self.articles["DOI"] = self.articles["url"].apply(lambda x: x[x.find("10.") :])
+        if self.articles.empty:
+            self.articles["DOI"] = []
+        else:
+            self.articles["DOI"] = self.articles["url"].apply(lambda x: x[x.find("10.") :])
 
     def set_dates(self) -> None:
         """Sets the publication date and the date of processing."""
-        self.articles["Date"] = self.today_str
-        self.articles["PostedDate"] = self.articles["publication_date"]
+        if self.articles.empty:
+            self.articles["Date"] = []
+            self.articles["PostedDate"] = []
+        else:
+            self.articles["Date"] = self.today_str
+            self.articles["PostedDate"] = self.articles["publication_date"]
 
     def determine_preprint_status(self) -> None:
         """Determines whether each article is a preprint based on its database."""
-        self.articles["IsPreprint"] = self.articles["databases"].apply(
-            lambda dbs: "FALSE" if "PubMed" in dbs else "TRUE"
-        )
+        if self.articles.empty:
+            self.articles["IsPreprint"] = []
+        else:
+            self.articles["IsPreprint"] = self.articles["databases"].apply(
+                lambda dbs: "FALSE" if "PubMed" in dbs else "TRUE"
+            )
 
     def rename_and_process_columns(self) -> None:
         """Renames columns and processes keywords."""
-        self.articles["Title"] = self.articles["title"]
-        self.articles["Keywords"] = self.articles["keywords"].apply(lambda kws: ", ".join(kw[2:] for kw in kws))
-        self.articles["URL"] = self.articles["url"]
+        if self.articles.empty:
+            self.articles["Title"] = []
+            self.articles["Keywords"] = []
+            self.articles["URL"] = []
+        else:
+            self.articles["Title"] = self.articles["title"]
+            self.articles["Keywords"] = self.articles["keywords"].apply(lambda kws: ", ".join(kw[2:] for kw in kws))
+            self.articles["URL"] = self.articles["url"]
 
     def select_last_columns(self) -> None:
         """Selects and rearranges the final set of columns for the DataFrame."""
-        self.articles["Preprint"] = None  # TODO add search for preprint of published articles
-        self.articles = self.articles[
-            [
-                "DOI",
-                "Date",
-                "PostedDate",
-                "IsPreprint",
-                "Title",
-                "Keywords",
-                "Preprint",
-                "URL",
+        if self.articles.empty:
+            self.articles["Preprint"] = []
+            # Create empty DataFrame with expected columns
+            expected_columns = ["DOI", "Date", "PostedDate", "IsPreprint", "Title", "Keywords", "Preprint", "URL"]
+            self.articles = pd.DataFrame(columns=expected_columns)
+        else:
+            self.articles["Preprint"] = None  # TODO add search for preprint of published articles
+            self.articles = self.articles[
+                [
+                    "DOI",
+                    "Date",
+                    "PostedDate",
+                    "IsPreprint",
+                    "Title",
+                    "Keywords",
+                    "Preprint",
+                    "URL",
+                ]
             ]
-        ]
-
 
 class PubMedClient:
     """
