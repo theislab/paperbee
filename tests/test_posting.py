@@ -1,3 +1,4 @@
+import tests.patch_editor
 from datetime import date
 from tempfile import TemporaryDirectory
 
@@ -10,8 +11,11 @@ from PaperBee.papers.papers_finder import PapersFinder
 
 @pytest.mark.asyncio
 async def test_posting():
-    with open("files/config.yml") as f:
+    with open("files/config_template.yml") as f:
         config = yaml.safe_load(f)
+
+    if "/path/to/your/google-credentials.json" in config.get("GOOGLE_CREDENTIALS_JSON"):
+        pytest.skip("Google Sheets config is not set up for integration test.")
 
     # Clean up test google spreadsheet
     gsheet_updater = GoogleSheetsUpdater(

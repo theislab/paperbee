@@ -24,6 +24,7 @@ zulip = "0.9.0"
 ollama = "0.4.6"
 pyyaml = "6.0.2"
 mattermostdriver = "^7.3.0"
+python-editor = "1.0.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.2,<9"
