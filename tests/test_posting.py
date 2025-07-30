@@ -11,7 +11,7 @@ from PaperBee.papers.papers_finder import PapersFinder
 
 @pytest.mark.asyncio
 async def test_posting():
-    with open("files/config_template.yml") as f:
+    with open("files/config.yml") as f:
         config = yaml.safe_load(f)
 
     if "/path/to/your/google-credentials.json" in config.get("GOOGLE_CREDENTIALS_JSON"):

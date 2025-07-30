@@ -23,7 +23,7 @@ def papers():
 
 @pytest.fixture
 def publisher():
-    with open("files/config_template.yml") as f:
+    with open("files/config.yml") as f:
         config = yaml.safe_load(f)
     return TelegramPaperPublisher(
         logger=Logger("TelegramTest"),
@@ -34,7 +34,7 @@ def publisher():
 
 @pytest.mark.asyncio
 async def test_message_sending():
-    with open("files/config_template.yml") as f:
+    with open("files/config.yml") as f:
         config = yaml.safe_load(f)
     if "your-telegram-bot-token" in config.get("TELEGRAM")["bot_token"]:
         pytest.skip("Telegram config is not set up for integration test.")
@@ -50,7 +50,7 @@ async def test_message_sending():
 
 @pytest.mark.asyncio
 async def test_publish_papers(publisher, papers):
-    with open("files/config_template.yml") as f:
+    with open("files/config.yml") as f:
         config = yaml.safe_load(f)
     if "your-telegram-bot-token" in config.get("TELEGRAM")["bot_token"]:
         pytest.skip("Telegram config is not set up for integration test.")
@@ -62,7 +62,7 @@ async def test_publish_papers(publisher, papers):
 
 @pytest.mark.asyncio
 async def test_publish_many_papers(publisher, papers):
-    with open("files/config_template.yml") as f:
+    with open("files/config.yml") as f:
         config = yaml.safe_load(f)
     if "your-telegram-bot-token" in config.get("TELEGRAM")["bot_token"]:
         pytest.skip("Telegram config is not set up for integration test.")

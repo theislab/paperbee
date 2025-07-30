@@ -13,7 +13,7 @@ def papers():
 
 @pytest.fixture
 def config():
-    config_path = os.environ.get("PAPERBEE_CONFIG", "files/config_template.yml")
+    config_path = os.environ.get("PAPERBEE_CONFIG", "files/config.yml")
     with open(config_path) as f:
         return yaml.safe_load(f)
 
