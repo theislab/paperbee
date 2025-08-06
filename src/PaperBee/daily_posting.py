@@ -87,13 +87,13 @@ async def daily_papers_search(
         mattermost_channel=mattermost_args["channel"],
         databases=databases,
     )
-    papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
+    papers, response_slack, response_telegram, response_zulip, response_mattermost = await finder.run_daily(
         post_to_slack=slack_args["is_posting_on"],
         post_to_telegram=telegram_args["is_posting_on"],
         post_to_zulip=zulip_args["is_posting_on"],
     )
 
-    return papers, response_slack, response_telegram, response_zulip
+    return papers, response_slack, response_telegram, response_zulip, response_mattermost
 
 
 def main() -> None:
@@ -132,7 +132,7 @@ def main() -> None:
     # Dispatch to the appropriate subcommand
     if args.command == "post":
         config = load_config(args.config)
-        papers, response_slack, response_telegram, response_zulip = asyncio.run(
+        papers, _, _, _, _ = asyncio.run(
             daily_papers_search(
                 config,
                 interactive=args.interactive,
