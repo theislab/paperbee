@@ -82,7 +82,7 @@ class ZulipPaperPublisher:
             Optional[Any]: The Zulip API response on success, or None if there is an error.
         """
         if not self.stream_name:
-            self.logger.error("Stream name is not provided.")
+            self.logger.exception("Stream name is not provided.")
             return None
 
         try:

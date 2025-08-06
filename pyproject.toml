@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PaperBee"
-version = "1.0.1"
+version = "1.1.0"
 description = ""
 authors = ["Daniele Lucarelli <daniele.lucarelli@tum.de>", "Vladimir Shitov <vladimir.shitov@helmholtz-munich.de>"]
 repository = "https://github.com/theislab/paperbee"
@@ -23,6 +23,8 @@ defusedxml = "^0.7.1"
 zulip = "0.9.0"
 ollama = "0.4.6"
 pyyaml = "6.0.2"
+mattermostdriver = "^7.3.0"
+python-editor = "1.0.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.2,<9"

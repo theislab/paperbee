@@ -22,22 +22,24 @@ async def daily_papers_search(
     interactive: bool = False,
     since: Optional[int] = None,
     databases: Optional[List[str]] = None,
-) -> Tuple[List[List[Any]], Any, Any, Any]:
+) -> Tuple[List[List[Any]], Any, Any, Any, Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
     Returns:
-        Tuple[List[List[Any]], Any, Any, Any]:
+        Tuple[List[List[Any]], Any, Any, Any, Any]:
             - List of papers (list of lists of Any)
             - Slack response
             - Telegram response
             - Zulip response
+            - Mattermost response
     """
     root_dir, query, query_biorxiv, query_pubmed_arxiv = validate_configuration(config)
 
     slack_args = validate_platform_args(config, "SLACK")
     zulip_args = validate_platform_args(config, "ZULIP")
     telegram_args = validate_platform_args(config, "TELEGRAM")
+    mattermost_args = validate_platform_args(config, "MATTERMOST")
 
     print(slack_args, zulip_args, telegram_args)
 
@@ -80,15 +82,19 @@ async def daily_papers_search(
         zulip_prc=zulip_args["prc"],
         zulip_stream=zulip_args["stream"],
         zulip_topic=zulip_args["topic"],
+        mattermost_url=mattermost_args["url"],
+        mattermost_token=mattermost_args["token"],
+        mattermost_team=mattermost_args["team"],
+        mattermost_channel=mattermost_args["channel"],
         databases=databases,
     )
-    papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
+    papers, response_slack, response_telegram, response_zulip, response_mattermost = await finder.run_daily(
         post_to_slack=slack_args["is_posting_on"],
         post_to_telegram=telegram_args["is_posting_on"],
         post_to_zulip=zulip_args["is_posting_on"],
     )
 
-    return papers, response_slack, response_telegram, response_zulip
+    return papers, response_slack, response_telegram, response_zulip, response_mattermost
 
 
 def main() -> None:
@@ -127,7 +133,7 @@ def main() -> None:
     # Dispatch to the appropriate subcommand
     if args.command == "post":
         config = load_config(args.config)
-        papers, response_slack, response_telegram, response_zulip = asyncio.run(
+        papers, _, _, _, _ = asyncio.run(
             daily_papers_search(
                 config,
                 interactive=args.interactive,

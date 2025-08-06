@@ -20,6 +20,9 @@ def test_slack_integration():
     with open("files/config.yml") as f:
         config = yaml.safe_load(f)
 
+    if "your-slack-bot-token" in config.get("SLACK")["bot_token"]:
+        pytest.skip("Slack config is not set up for integration test.")
+
     client = WebClient(token=config.get("SLACK")["bot_token"])
 
     print("Bot token:", config.get("SLACK")["bot_token"])

@@ -126,7 +126,7 @@ class SlackPaperPublisher:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Posted with `slack-papers-app` <https://github.com/theislab/slack_papers_bot|GitHub>",
+                    "text": "Posted with `paperbee` <https://github.com/theislab/paperbee|GitHub>",
                 },
             })
             if not self.channel_id:

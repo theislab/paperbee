@@ -1,3 +1,0 @@
-# paperbee
-
-paperbee
