@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1
+
+### Added
+
+- Test with empty papers list in `tests/test_telegrm.py`
+
+### Changed
+
+- Improve handling of papers list when it is empty
+
 ## 1.1.0
 
 ### Added
