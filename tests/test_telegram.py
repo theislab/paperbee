@@ -68,6 +68,7 @@ async def test_publish_many_papers(publisher, papers):
 
     assert message.message_id is not None
 
+
 @pytest.mark.asyncio
 async def test_publish_empty_list(publisher, papers):
     papers, preprints = publisher.format_papers([])

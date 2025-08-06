@@ -85,6 +85,7 @@ class ArticlesProcessor:
             self.articles["Preprint"] = None  # TODO add search for preprint of published articles
             self.articles = self.articles[expected_columns]
 
+
 class PubMedClient:
     """
     A client for fetching DOI (Digital Object Identifier) information for publications from PubMed.
