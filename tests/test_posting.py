@@ -11,6 +11,7 @@ from PaperBee.papers.papers_finder import PapersFinder
 
 @pytest.mark.asyncio
 async def test_posting():
+    """Test a real query and posting to all platforms for which the config is set up."""
     with open("files/config.yml") as f:
         config = yaml.safe_load(f)
 
@@ -44,6 +45,10 @@ async def test_posting():
             slack_channel_id=config.get("SLACK_TEST_CHANNEL_ID"),
             telegram_bot_token=config.get("TELEGRAM")["bot_token"],
             telegram_channel_id=config.get("TELEGRAM_TEST_CHANNEL_ID"),
+            mattermost_url=config.get("MATTERMOST")["url"],
+            mattermost_token=config.get("MATTERMOST")["token"],
+            mattermost_team=config.get("MATTERMOST")["team"],
+            mattermost_channel=config.get("MATTERMOST_TEST_CHANNEL_ID"),
             query=query,
             query_biorxiv=query,
             query_pubmed_arxiv=query,
@@ -54,7 +59,7 @@ async def test_posting():
         finder.since = date(2023, 10, 8)
         finder.until = date(2023, 10, 10)
 
-        papers, _, _, _ = await finder.run_daily(post_to_slack=True, post_to_telegram=True)
+        papers, _, _, _ = await finder.run_daily(post_to_slack=True, post_to_telegram=True, post_to_mattermost=True)
 
         assert len(papers) > 3
 

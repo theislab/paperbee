@@ -351,6 +351,7 @@ class PapersFinder:
         post_to_slack: bool = True,
         post_to_telegram: bool = False,
         post_to_zulip: bool = False,
+        post_to_mattermost: bool = False,
     ) -> Tuple[List[List[Any]], Any | None, Any | None, Any | None]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
@@ -359,6 +360,7 @@ class PapersFinder:
             post_to_slack (bool): Whether to post the papers to Slack.
             post_to_telegram (bool): Whether to post the papers to Telegram.
             post_to_zulip (bool): Whether to post the papers to Zulip.
+            post_to_mattermost (bool): Whether to post the papers to Mattermost.
 
         Returns:
             Tuple[List[List[Any]], Any]: The papers posted and the response from the posting method.
@@ -378,6 +380,9 @@ class PapersFinder:
 
         if post_to_zulip:
             response_zulip = await self.post_paper_to_zulip(papers)
+        
+        if post_to_mattermost:
+            response_mattermost = await self.post_paper_to_mattermost(papers)
 
         self.cleanup_files()
 
