@@ -99,15 +99,15 @@ class MattermostPaperPublisher:
             The complete message string.
         """
         divider = "────────────"
-        header = f"Good morning :coffee: Here are today's papers!\n"
-        footer = "\nEnjoy your reading! :wave:\n"
-        message_blocks = [header, "**Preprints:** :point_down:"]
+        header = f"Good morning ☕ Here are today's papers!\n"
+        footer = "\nEnjoy your reading! 👋\n"
+        message_blocks = [header, "**Preprints:** 👇"]
         if preprints:
             message_blocks.extend(preprints)
         else:
             message_blocks.append("No preprints found today.")
         message_blocks.append(divider)
-        message_blocks.append("\n**Papers:** :point_down:")
+        message_blocks.append("\n**Papers:** 👇")
         if papers:
             message_blocks.extend(papers)
         else:
