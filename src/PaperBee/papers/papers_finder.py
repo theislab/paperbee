@@ -16,6 +16,7 @@ from .slack_papers_formatter import SlackPaperPublisher
 from .telegram_papers_formatter import TelegramPaperPublisher
 from .utils import ArticlesProcessor, PubMedClient
 from .zulip_papers_formatter import ZulipPaperPublisher
+from .mattermost_papers_formatter import MattermostPaperPublisher
 
 
 class PapersFinder:
@@ -41,6 +42,11 @@ class PapersFinder:
         zulip_prc (str): The Zulip personal realm configuration.
         zulip_stream (str): The Zulip stream name.
         zulip_topic (str): The Zulip topic name.
+        mattermost_url (str): The Mattermost server URL.
+        mattermost_token (str): The Mattermost token.
+        mattermost_team (str): The Mattermost team name.
+        mattermost_channel (str): The Mattermost channel name.
+        ncbi_api_key (str): The NCBI API key.
         databases (Optional[List[str]]): List of databases to search in, e.g., ['pubmed', 'biorxiv', 'arxiv'].
     """
 
@@ -67,6 +73,10 @@ class PapersFinder:
         zulip_prc: str = "",
         zulip_stream: str = "",
         zulip_topic: str = "",
+        mattermost_url: str = "",
+        mattermost_token: str = "",
+        mattermost_team: str = "",
+        mattermost_channel: str = "",
         ncbi_api_key: str = "",
         databases: Optional[List[str]] = None,
     ) -> None:
@@ -105,7 +115,7 @@ class PapersFinder:
         self.model: str = model or "gpt-3.5-turbo"
         self.filtering_prompt: str = filtering_prompt or ""
         self.OPENAI_API_KEY: str = OPENAI_API_KEY or ""
-        # Slack, Telegram, Zulip
+        # Messaging platforms
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
         self.telegram_bot_token: str = telegram_bot_token
@@ -113,6 +123,10 @@ class PapersFinder:
         self.zulip_prc: str = zulip_prc
         self.zulip_stream: str = zulip_stream
         self.zulip_topic: str = zulip_topic
+        self.mattermost_url: str = mattermost_url
+        self.mattermost_token: str = mattermost_token
+        self.mattermost_team: str = mattermost_team
+        self.mattermost_channel: str = mattermost_channel
         # Logger
         self.logger = Logger("PapersFinder")
         # NCBI API
@@ -290,6 +304,23 @@ class PapersFinder:
         response = await zulip_publisher.publish_papers_to_zulip(
             papers_pub, preprints, self.today_str, self.spreadsheet_id
         )
+        return response
+    
+    async def post_paper_to_mattermost(self, papers: List[List[str]]) -> Any:
+        """
+        Posts the papers to Mattermost.
+
+        Args:
+            papers (List[str]): List of papers to post to Mattermost.
+        """
+        mattermost_publisher = MattermostPaperPublisher(
+            Logger("MattermostPaperPublisher"),
+            url=self.mattermost_url,
+            token=self.mattermost_token,
+            team=self.mattermost_team,
+            channel=self.mattermost_channel,
+        )
+        response = await mattermost_publisher.publish_papers(papers)
         return response
 
     def cleanup_files(self) -> None:
