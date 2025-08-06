@@ -352,7 +352,7 @@ class PapersFinder:
         post_to_telegram: bool = False,
         post_to_zulip: bool = False,
         post_to_mattermost: bool = False,
-    ) -> Tuple[List[List[Any]], Any | None, Any | None, Any | None]:
+    ) -> Tuple[List[List[Any]], Any | None, Any | None, Any | None, Any | None]:
         """
         The main method to orchestrate finding, processing, and updating papers in a Google Sheet on a daily schedule.
 
