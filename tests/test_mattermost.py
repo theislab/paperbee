@@ -1,21 +1,24 @@
-import yaml
-import os
 import logging
+import os
 
 import pytest
+import yaml
 
-from tests.sample_papers import sample_papers
 from PaperBee.papers.mattermost_papers_formatter import MattermostPaperPublisher
+from tests.sample_papers import sample_papers
+
 
 @pytest.fixture
 def papers():
     return sample_papers
+
 
 @pytest.fixture
 def config():
     config_path = os.environ.get("PAPERBEE_CONFIG", "files/config.yml")
     with open(config_path) as f:
         return yaml.safe_load(f)
+
 
 def test_format_papers(config, papers):
     mm_cfg = config["MATTERMOST"]
@@ -27,6 +30,7 @@ def test_format_papers(config, papers):
     assert isinstance(preprints_out, list)
     assert len(preprints_out) == len(papers)
     assert all("[" in p and "](" in p for p in preprints_out)
+
 
 def test_build_message(config, papers):
     mm_cfg = config["MATTERMOST"]
@@ -46,6 +50,7 @@ def test_build_message(config, papers):
     assert "Preprints" in message
     assert "Papers" in message
     assert "Good morning" in message
+
 
 @pytest.mark.asyncio
 async def test_publish_papers(config, papers):

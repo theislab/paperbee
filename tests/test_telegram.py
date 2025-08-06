@@ -1,4 +1,3 @@
-import tests.patch_editor
 from logging import Logger
 
 import pytest

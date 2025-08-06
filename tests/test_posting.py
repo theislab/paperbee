@@ -1,4 +1,3 @@
-import tests.patch_editor
 from datetime import date
 from tempfile import TemporaryDirectory
 

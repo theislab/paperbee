@@ -12,11 +12,11 @@ from tqdm import tqdm
 from .cli import InteractiveCLIFilter
 from .google_sheet import GoogleSheetsUpdater
 from .llm_filtering import LLMFilter
+from .mattermost_papers_formatter import MattermostPaperPublisher
 from .slack_papers_formatter import SlackPaperPublisher
 from .telegram_papers_formatter import TelegramPaperPublisher
 from .utils import ArticlesProcessor, PubMedClient
 from .zulip_papers_formatter import ZulipPaperPublisher
-from .mattermost_papers_formatter import MattermostPaperPublisher
 
 
 class PapersFinder:
@@ -305,7 +305,7 @@ class PapersFinder:
             papers_pub, preprints, self.today_str, self.spreadsheet_id
         )
         return response
-    
+
     async def post_paper_to_mattermost(self, papers: List[List[str]]) -> Any:
         """
         Posts the papers to Mattermost.
@@ -380,7 +380,7 @@ class PapersFinder:
 
         if post_to_zulip:
             response_zulip = await self.post_paper_to_zulip(papers)
-        
+
         if post_to_mattermost:
             response_mattermost = await self.post_paper_to_mattermost(papers)
 

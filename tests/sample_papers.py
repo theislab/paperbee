@@ -23,4 +23,4 @@ sample_papers = [
         "Imbalance and Composition Correction Ensemble Learning Framework (ICCELF): A novel framework for automated scRNA-seq cell type annotation",
         "https://doi.org/10.1101/2024.04.21.590442",
     ],
-] 
+]

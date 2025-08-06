@@ -1,12 +1,15 @@
 from logging import Logger
-from typing import List, Optional, Tuple, Any
+from typing import Any, List, Optional, Tuple
+
 from mattermostdriver import Driver
+
 
 class MattermostPaperPublisher:
     """
     Formats and publishes academic papers to a Mattermost channel.
     Handles all Mattermost API logic and message formatting.
     """
+
     def __init__(
         self,
         logger: Logger,
@@ -34,23 +37,23 @@ class MattermostPaperPublisher:
             self.driver = driver
         else:
             self.driver = Driver({
-                'url': self.url,
-                'token': self.token,
-                'scheme': 'https',
-                'port': 443,
-                'verify': True,
-                'debug': False,
+                "url": self.url,
+                "token": self.token,
+                "scheme": "https",
+                "port": 443,
+                "verify": True,
+                "debug": False,
             })
             self.driver.login()
         try:
             team_obj = self.driver.teams.get_team_by_name(self.team)
-            self.team_id = team_obj['id']
+            self.team_id = team_obj["id"]
         except Exception as e:
             self.logger.error(f"Failed to get Mattermost team '{self.team}': {e}")
             raise RuntimeError(f"Could not find Mattermost team '{self.team}'") from e
         try:
             channel_obj = self.driver.channels.get_channel_by_name(self.team_id, self.channel)
-            self.channel_id = channel_obj['id']
+            self.channel_id = channel_obj["id"]
         except Exception as e:
             self.logger.error(f"Failed to get Mattermost channel '{self.channel}' in team '{self.team}': {e}")
             raise RuntimeError(f"Could not find Mattermost channel '{self.channel}' in team '{self.team}'") from e
@@ -99,7 +102,7 @@ class MattermostPaperPublisher:
             The complete message string.
         """
         divider = "────────────"
-        header = f"Good morning ☕ Here are today's papers!\n"
+        header = "Good morning ☕ Here are today's papers!\n"
         footer = "\nEnjoy your reading! 👋\n"
         message_blocks = [header, "**Preprints:** 👇"]
         if preprints:
@@ -127,10 +130,7 @@ class MattermostPaperPublisher:
         papers, preprints = self.format_papers(papers_list)
         message = self.build_message(papers, preprints)
         try:
-            post = self.driver.posts.create_post({
-                'channel_id': self.channel_id,
-                'message': message
-            })
+            post = self.driver.posts.create_post({"channel_id": self.channel_id, "message": message})
         except Exception as e:
             self.logger.error(f"Failed to create Mattermost post: {e}")
             raise RuntimeError("Could not create Mattermost post") from e
