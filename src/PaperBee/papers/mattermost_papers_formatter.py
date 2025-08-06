@@ -49,14 +49,12 @@ class MattermostPaperPublisher:
             team_obj = self.driver.teams.get_team_by_name(self.team)
             self.team_id = team_obj["id"]
         except Exception as e:
-            self.logger.error(f"Failed to get Mattermost team '{self.team}': {e}")
-            raise RuntimeError(f"Could not find Mattermost team '{self.team}'") from e
+            raise RuntimeError(f"Could not find Mattermost team '{self.team}'") from e  # noqa: TRY003
         try:
             channel_obj = self.driver.channels.get_channel_by_name(self.team_id, self.channel)
             self.channel_id = channel_obj["id"]
         except Exception as e:
-            self.logger.error(f"Failed to get Mattermost channel '{self.channel}' in team '{self.team}': {e}")
-            raise RuntimeError(f"Could not find Mattermost channel '{self.channel}' in team '{self.team}'") from e
+            raise RuntimeError(f"Could not find Mattermost channel '{self.channel}' in team '{self.team}'") from e  # noqa: TRY003
 
     @staticmethod
     def format_papers(
@@ -132,7 +130,6 @@ class MattermostPaperPublisher:
         try:
             post = self.driver.posts.create_post({"channel_id": self.channel_id, "message": message})
         except Exception as e:
-            self.logger.error(f"Failed to create Mattermost post: {e}")
-            raise RuntimeError("Could not create Mattermost post") from e
+            raise RuntimeError("Failed to create Mattermost post") from e  # noqa: TRY003
         self.logger.info(f"Message sent to Mattermost channel {self.channel}: {post['id']}")
         return post

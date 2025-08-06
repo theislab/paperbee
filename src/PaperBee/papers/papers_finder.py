@@ -386,7 +386,7 @@ class PapersFinder:
 
         self.cleanup_files()
 
-        return papers, response_slack, response_telegram, response_zulip
+        return papers, response_slack, response_telegram, response_zulip, response_mattermost
 
     def send_csv(self, user_id: str, user_query: str) -> Tuple[pd.DataFrame, Any]:
         """

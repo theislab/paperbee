@@ -5,14 +5,12 @@ import yaml
 from telegram import Bot
 
 from PaperBee.papers.telegram_papers_formatter import TelegramPaperPublisher
+from tests.sample_papers import sample_papers
 
 
 async def send_message(token, chat_id, text):
     bot = Bot(token)
     return await bot.send_message(chat_id=chat_id, text=text)
-
-
-from tests.sample_papers import sample_papers
 
 
 @pytest.fixture
