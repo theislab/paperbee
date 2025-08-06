@@ -22,16 +22,17 @@ async def daily_papers_search(
     interactive: bool = False,
     since: Optional[int] = None,
     databases: Optional[List[str]] = None,
-) -> Tuple[List[List[Any]], Any, Any, Any]:
+) -> Tuple[List[List[Any]], Any, Any, Any, Any]:
     """
     Searches for daily papers and posts them to Telegram.
 
     Returns:
-        Tuple[List[List[Any]], Any, Any, Any]:
+        Tuple[List[List[Any]], Any, Any, Any, Any]:
             - List of papers (list of lists of Any)
             - Slack response
             - Telegram response
             - Zulip response
+            - Mattermost response
     """
     root_dir, query, query_biorxiv, query_pubmed_arxiv = validate_configuration(config)
 
