@@ -1,11 +1,11 @@
-import tests.patch_editor
-import pytest
-import logging
-from PaperBee.papers.mattermost_papers_formatter import MattermostPaperPublisher
-from tests.sample_papers import sample_papers
-from unittest.mock import MagicMock
 import yaml
 import os
+import logging
+
+import pytest
+
+from tests.sample_papers import sample_papers
+from PaperBee.papers.mattermost_papers_formatter import MattermostPaperPublisher
 
 @pytest.fixture
 def papers():
@@ -47,7 +47,8 @@ def test_build_message(config, papers):
     assert "Papers" in message
     assert "Good morning" in message
 
-def test_publish_papers(config, papers):
+@pytest.mark.asyncio
+async def test_publish_papers(config, papers):
     mm_cfg = config["MATTERMOST"]
     # Only run this test if the config is not using placeholder values
     if "your-mattermost-url" in mm_cfg["url"] or "your-mattermost-access-token" in mm_cfg["token"]:
@@ -59,5 +60,5 @@ def test_publish_papers(config, papers):
         team=mm_cfg["team"],
         channel=mm_cfg["channel"],
     )
-    post = publisher.publish_papers(papers)
-    assert "id" in post 
+    post = await publisher.publish_papers(papers)
+    assert "id" in post
