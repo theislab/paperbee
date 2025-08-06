@@ -116,7 +116,7 @@ class MattermostPaperPublisher:
         message_blocks.append(footer)
         return "\n".join(message_blocks)
 
-    def publish_papers(self, papers_list: List[List[str]]) -> Any:
+    async def publish_papers(self, papers_list: List[List[str]]) -> Any:
         """
         Formats and posts the message to Mattermost.
         Args:
@@ -135,4 +135,4 @@ class MattermostPaperPublisher:
             self.logger.error(f"Failed to create Mattermost post: {e}")
             raise RuntimeError("Could not create Mattermost post") from e
         self.logger.info(f"Message sent to Mattermost channel {self.channel}: {post['id']}")
-        return post 
+        return post
