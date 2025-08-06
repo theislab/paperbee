@@ -38,6 +38,7 @@ async def daily_papers_search(
     slack_args = validate_platform_args(config, "SLACK")
     zulip_args = validate_platform_args(config, "ZULIP")
     telegram_args = validate_platform_args(config, "TELEGRAM")
+    mattermost_args = validate_platform_args(config, "MATTERMOST")
 
     print(slack_args, zulip_args, telegram_args)
 
@@ -80,6 +81,10 @@ async def daily_papers_search(
         zulip_prc=zulip_args["prc"],
         zulip_stream=zulip_args["stream"],
         zulip_topic=zulip_args["topic"],
+        mattermost_url=mattermost_args["url"],
+        mattermost_token=mattermost_args["token"],
+        mattermost_team=mattermost_args["team"],
+        mattermost_channel=mattermost_args["channel"],
         databases=databases,
     )
     papers, response_slack, response_telegram, response_zulip = await finder.run_daily(
