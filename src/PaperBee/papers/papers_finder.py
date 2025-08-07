@@ -371,6 +371,7 @@ class PapersFinder:
         response_slack = None
         response_telegram = None
         response_zulip = None
+        response_mattermost = None
 
         if post_to_slack:
             response_slack = self.post_paper_to_slack(papers)
