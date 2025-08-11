@@ -8,7 +8,7 @@ Currently supported platforms:
 - 🟣 Slack
 - 🔵 Telegram
 - 🟢 Zulip
-- 🔵 Mattermost
+- 🟠 Mattermost
 
 ---
 
@@ -93,7 +93,7 @@ Update the **TELEGRAM** variables in the `config.yml` file.
 
 Update the **ZULIP** variables in the `config.yml` file.
 
-#### 🔵 Mattermost (optional)
+#### 🟠 Mattermost (optional)
 
 1. You have to enable personal access tokens in Mattermost. If you are not the admin of the Mattermost server, you will need to ask the admin to enable personal access tokens. Follow [these instructions](https://developers.mattermost.com/integrate/reference/personal-access-token/), step 1. 
 2. The admin of the Mattermost server needs to give permission to your user account to create a personal access token. If you are not the admin of the Mattermost server, ask the admin of the Mattermost server to grant you permission to create a personal access token. Follow the previously linked instructions, steps 2-4.
