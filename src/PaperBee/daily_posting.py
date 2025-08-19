@@ -91,7 +91,7 @@ async def daily_papers_search(
         post_to_slack=slack_args["is_posting_on"],
         post_to_telegram=telegram_args["is_posting_on"],
         post_to_zulip=zulip_args["is_posting_on"],
-        post_to_mattermost=mattermost_args["is_posting_on"]
+        post_to_mattermost=mattermost_args["is_posting_on"],
     )
 
     return papers, response_slack, response_telegram, response_zulip, response_mattermost
