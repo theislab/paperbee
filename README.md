@@ -113,7 +113,7 @@ Update the **MATTERMOST** variables in the `config.yml` file. The `url`, `team` 
 The OpenAI API is not free, but it is really cheap, usually 5$ is more than enough for a year of everyday LLM filtering.
 
 - [Sign up for OpenAI](https://platform.openai.com/signup)
-- [Get your API key](https://platform.openai.com/settings/organization/api-api-keys)
+- [Get your API key](https://platform.openai.com/settings/organization/api-keys)
 - Add credits to your account.
 
 #### Ollama (Open Source LLMs)
@@ -239,6 +239,7 @@ You are a lab manager at a research lab focusing on machine learning methods dev
 
 ## ▶️ Running the Bot
 
+### From command line
 When everything is set up, run the bot with:
 
 ```bash
@@ -250,7 +251,15 @@ paperbee post --config /path/to/config.yml --interactive --since 10
 - `--since` : (Optional) How many days back to search for papers (default: last 24h).
 - `--databases`: (Optional) list of databases to search, default pubmed biorxiv
 
-See [daily_posting.py](src/PaperBee/daily_posting.py) for an example of running search from Python.
+### Automatic daily search
+
+To set up the automatic daily posting, you can schedule a cron job. For example, to run the search daily at 9 AM:
+1. Open `crontab` where you can add scheduled tasks by running `crontab -e` in your terminal
+2. Add there the following line: `0 9 * * * paperbee post --config /path/to/config.yml --since 1`
+
+### Running from Python
+
+See and example in the [daily_posting.py](src/PaperBee/daily_posting.py).
 
 ---
 
@@ -314,7 +323,7 @@ pytest
   title = {PaperBee: An Automated Daily Digest Bot for Scientific Literature Monitoring},
   year = {2025},
   url = {https://github.com/theislab/paperbee},
-  note = {Version 1.0.0}
+  note = {Version 1.2.0}
 }
 ```
 
