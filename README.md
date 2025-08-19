@@ -63,7 +63,7 @@ PaperBee uses the NCBI API to fetch papers and DOIs from PubMed.
 
 ### 3. 📢 Setup Posting Channels
 
-> **You must set up at least one of the three platforms below.**
+> **You must set up at least one of the four platforms below.**
 
 #### 🟣 Slack (optional)
 
@@ -175,6 +175,14 @@ ZULIP:
   prc: "path-to-your-zulip-prc"
   stream: "your-zulip-stream"
   topic: "your-zulip-topic"
+
+# Mattermost configuration
+MATTERMOST:
+  is_posting_on: false             
+  url: "your-mattermost-url"        # e.g. mattermost.example.com (do NOT include https://)
+  token: "your-mattermost-token"
+  team: "your-mattermost-team-name" # The team name (not display name)
+  channel: "your-channel-name" # The channel name (not display name)
 
 SLACK_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
 TELEGRAM_TEST_CHANNEL_ID: "your-slack-test-channel-id" # not required so left outside of dictionary
