@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+### Changed
+
+- Update documentation with Mattermost integration
+- Fixed mattermost integration: added missing pieces to posting functions
+
 ## 1.1.1
 
 ### Added
