@@ -41,16 +41,15 @@ async def daily_papers_search(
     telegram_args = validate_platform_args(config, "TELEGRAM")
     mattermost_args = validate_platform_args(config, "MATTERMOST")
 
-    print(slack_args, zulip_args, telegram_args)
-
     if telegram_args == {}:
         telegram_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
     if zulip_args == {}:
         zulip_args = {"prc": "", "stream": "", "topic": "", "is_posting_on": False}
     if slack_args == {}:
         slack_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
+    if mattermost_args == {}:
+        mattermost_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
 
-    print(slack_args, zulip_args, telegram_args)
     llm_filtering = config.get("LLM_FILTERING", False)
     if llm_filtering:
         filtering_prompt, LLM_PROVIDER, LANGUAGE_MODEL, OPENAI_API_KEY = validate_llm_args(config, root_dir)
@@ -92,6 +91,7 @@ async def daily_papers_search(
         post_to_slack=slack_args["is_posting_on"],
         post_to_telegram=telegram_args["is_posting_on"],
         post_to_zulip=zulip_args["is_posting_on"],
+        post_to_mattermost=mattermost_args["is_posting_on"],
     )
 
     return papers, response_slack, response_telegram, response_zulip, response_mattermost

@@ -6,8 +6,9 @@ PaperBee is a Python application designed to **automatically search for new scie
 Currently supported platforms:
 
 - 🟣 Slack
-- 🟢 Zulip
 - 🔵 Telegram
+- 🟢 Zulip
+- 🟠 Mattermost
 
 ---
 
@@ -91,6 +92,14 @@ Update the **TELEGRAM** variables in the `config.yml` file.
 2. Create a stream and subscribe the bot.
 
 Update the **ZULIP** variables in the `config.yml` file.
+
+#### 🟠 Mattermost (optional)
+
+1. You have to enable personal access tokens in Mattermost. If you are not the admin of the Mattermost server, you will need to ask the admin to enable personal access tokens. Follow [these instructions](https://developers.mattermost.com/integrate/reference/personal-access-token/), step 1. 
+2. The admin of the Mattermost server needs to give permission to your user account to create a personal access token. If you are not the admin of the Mattermost server, ask the admin of the Mattermost server to grant you permission to create a personal access token. Follow the previously linked instructions, steps 2-4.
+3. Create the personal access token with your user account. Also follow the previously linked instructions, steps 5-8. When you create the personal access token, copy the “Access Token” (highlighted in bold), and paste it in the `token` in the **MATTERMOST** variables of the `config.yml` file.
+
+Update the **MATTERMOST** variables in the `config.yml` file. The `url`, `team` and `channel` variables can be found out from the URL of the channel where you want to post the papers. For example, if the URL of the channel is https://mattermost.example.com/research-group/channels/test-paperbee, `url` is “mattermost.example.com”, `team` is “research-group” and `channel` is “test-paperbee”.
 
 ---
 
