@@ -178,7 +178,7 @@ ZULIP:
 
 # Mattermost configuration
 MATTERMOST:
-  is_posting_on: false             
+  is_posting_on: true             
   url: "your-mattermost-url"        # e.g. mattermost.example.com (do NOT include https://)
   token: "your-mattermost-token"
   team: "your-mattermost-team-name" # The team name (not display name)
