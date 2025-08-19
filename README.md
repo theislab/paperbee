@@ -18,7 +18,7 @@ Currently supported platforms:
 
 PaperBee queries scientific papers using user-specified keywords from PubMed and preprint services, relying on the [findpapers](https://github.com/jonatasgrosman/findpapers/) library.
 Papers are then filtered either **manually via a command-line interface** or **automatically via an LLM**.
-The filtered papers are posted to a Google Sheet and, if desired, to Slack, Telegram, or Zulip channels.
+The filtered papers are posted to a Google Sheet and, if desired, to Slack, Telegram, Zulip or Mattermost channels.
 PaperBee is easy to setup and configure with a simple `yml` file.
 
 ---
