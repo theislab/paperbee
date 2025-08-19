@@ -306,7 +306,7 @@ pytest
   title = {PaperBee: An Automated Daily Digest Bot for Scientific Literature Monitoring},
   year = {2025},
   url = {https://github.com/theislab/paperbee},
-  note = {Version 1.0.0}
+  note = {Version 1.2.0}
 }
 ```
 
