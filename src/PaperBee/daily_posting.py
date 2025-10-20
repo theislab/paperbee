@@ -48,7 +48,7 @@ async def daily_papers_search(
     if slack_args == {}:
         slack_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
     if mattermost_args == {}:
-        mattermost_args = {"bot_token": "", "channel_id": "", "is_posting_on": False}
+        mattermost_args = {"url": "", "token": "", "team": "", "channel": "", "is_posting_on": False}
 
     llm_filtering = config.get("LLM_FILTERING", False)
     if llm_filtering:
