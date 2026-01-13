@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Fix the error on setting up the Mattermost posting
+
 ## 1.2.0
 
 ### Changed
